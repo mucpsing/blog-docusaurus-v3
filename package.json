@@ -24,6 +24,7 @@
     "@mdx-js/react": "^3.0.0",
     "@types/conventional-changelog": "^3.1.5",
     "clsx": "^2.0.0",
+    "cz-custom": "^0.0.2",
     "prism-react-renderer": "^2.3.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0"
@@ -32,11 +33,10 @@
     "@docusaurus/module-type-aliases": "3.0.1",
     "@docusaurus/tsconfig": "3.0.1",
     "@docusaurus/types": "3.0.1",
-    "commitizen": "^4.3.0",
+    "commitizen": "^4.2.4",
     "commitlint-config-cz": "^0.13.3",
     "conventional-changelog": "^5.1.0",
     "conventional-changelog-cli": "^4.1.0",
-    "cz-customizable": "^7.0.0",
     "typescript": "~5.2.2"
   },
   "browserslist": {
@@ -56,7 +56,7 @@
   },
   "config": {
     "commitizen": {
-      "path": "node_modules/cz-customizable"
+      "path": "node_modules/cz-custom"
     }
   }
 }

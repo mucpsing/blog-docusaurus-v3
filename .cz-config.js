@@ -1,23 +1,3 @@
-/*
- * @Author: cpasion-office-win10 373704015@qq.com
- * @Date: 2024-02-19 09:18:09
- * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2024-02-20 16:07:11
- * @FilePath: \cps-blog-docusaurus-v3\.cz-config.js
- * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
- */
-/*!
- * @Author: CPS
- * @email: 373704015@qq.com
- * @Date: 2023-02-11 09:16:43.809037
- * @Last Modified by: CPS
- * @Last Modified time: 2023-02-11 09:16:43.809037
- * @Projectname
- * @file_path "D:\CPS\IDE\JS_SublmieText\Data\Packages\cps-fileheader"
- * @Filename "main.py"
- * @Description: git cz 自定义配置文件
- */
-
 module.exports = {
   types: [
     { value: "✨feat", name: "新增:    新增功能或者特性" },
@@ -31,7 +11,7 @@ module.exports = {
     { value: "⏪revert", name: "回滚:    用于撤销以前的 commit，后面跟着被撤销 Commit 的 Header。" },
     { value: "🔃ci", name: "更新:    更改我们的CI配置文件和脚本" },
   ],
-  // scopes: [{ name: "leetcode" }, { name: "javascript" }, { name: "typescript" }, { name: "Vue" }, { name: "node" }],
+  scopes: [{ name: "custom" }, { name: "leetcode" }, { name: "javascript" }, { name: "typescript" }, { name: "Vue" }, { name: "node" }],
   // it needs to match the value for field type. Eg.: 'fix'
   scopeOverrides: {
     fix: [{ name: "merge" }, { name: "style" }, { name: "e2eTest" }, { name: "unitTest" }],
@@ -39,17 +19,17 @@ module.exports = {
   // override the messages, defaults are as follows
   messages: {
     type: "选择一种你的提交类型:",
-    scopes: "影响范围",
     scope: "选择一个scope (可选):",
     // used if allowCustomScopes is true
-    customScope: "Denote the SCOPE of this change:",
+    // customScope: "Denote the SCOPE of this change:",
+    customScope: "选择一个scope (可选):",
     subject: "短说明:\n",
     body: '长说明，使用"|"换行(可选)：\n',
     breaking: "非兼容性说明 (可选):\n",
     footer: "关联关闭的issue，例如：#31, #34(可选):\n",
     confirmCommit: "确定提交说明?(yes/no)",
   },
-  allowCustomScopes: false,
+  allowCustomScopes: true,
   allowBreakingChanges: ["特性", "修复"],
   // limit subject length
   subjectLimit: 100,
