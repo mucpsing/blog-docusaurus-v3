@@ -15,7 +15,8 @@
     "typecheck": "tsc",
     "changelog1": "npx conventional-changelog -p angular -i CHANGELOG.md -w -r 0",
     "changelog2": "npx conventional-changelog -p -i CHANGELOG.md -s -r 0",
-    "git": "npx conventional-changelog -p -i CHANGELOG.md -s -r 0 & git add . & git cz"
+    "git": "npx conventional-changelog -p -i CHANGELOG.md -s -r 0 & git add . & git cz",
+    "push": "npx conventional-changelog -p -i CHANGELOG.md -s -r 0 & git add . & git cz & git push origin master"
   },
   "dependencies": {
     "@docusaurus/core": "3.0.1",
