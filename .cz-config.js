@@ -1,3 +1,11 @@
+/*
+ * @Author: cpasion-office-win10 373704015@qq.com
+ * @Date: 2024-02-19 09:18:09
+ * @LastEditors: cpasion-office-win10 373704015@qq.com
+ * @LastEditTime: 2024-02-20 15:32:58
+ * @FilePath: \cps-blog-docusaurus-v3\.cz-config.js
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
 /*!
  * @Author: CPS
  * @email: 373704015@qq.com
@@ -12,7 +20,7 @@
 
 module.exports = {
   types: [
-    { value: "✨新增", name: "✨新增:    新增功能或者特性" },
+    { value: "✨新增", name: "✨:art:新增:    新增功能或者特性" },
     { value: "⚡️性能", name: "⚡️性能:    提升性能" },
     { value: "🔃更新", name: "🔃更新:    更新一些内容" },
     { value: "✅测试", name: "✅测试:    添加一个测试" },
