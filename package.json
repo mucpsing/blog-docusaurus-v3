@@ -19,22 +19,32 @@
     "push": "npx conventional-changelog -p -i CHANGELOG.md -s -r 0 & git add . & git cz & git push origin master"
   },
   "dependencies": {
+    "@ant-design/icons": "^5.3.0",
     "@docusaurus/core": "3.1.1",
     "@docusaurus/preset-classic": "3.1.1",
     "@docusaurus/theme-mermaid": "^3.1.1",
     "@mdx-js/react": "^3.0.0",
     "@types/conventional-changelog": "^3.1.5",
+    "classnames": "^2.5.1",
     "clsx": "^2.0.0",
     "cz-custom": "^0.0.2",
+    "lodash": "^4.17.21",
     "prism-react-renderer": "^2.3.0",
+    "rc-banner-anim": "^2.4.5",
+    "rc-queue-anim": "^2.0.0",
+    "rc-tween-one": "^3.0.6",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
-    "tailwindcss": "^3.4.1"
+    "tailwindcss": "^3.4.1",
+    "typed.js": "^2.1.0"
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "3.01.1",
     "@docusaurus/tsconfig": "3.1.1",
     "@docusaurus/types": "3.1.1",
+    "@types/lodash": "^4.14.202",
+    "@types/react": "^18.2.57",
+    "@types/react-dom": "^18.2.19",
     "autoprefixer": "^10.4.17",
     "commitizen": "^4.2.4",
     "commitlint-config-cz": "^0.13.3",
