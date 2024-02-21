@@ -2,21 +2,45 @@ import { themes as prismThemes } from "prism-react-renderer";
 import type { Config } from "@docusaurus/types";
 import type * as Preset from "@docusaurus/preset-classic";
 
+import * as path from "path";
+import * as utils from "./src/scripts/utils";
+import { addHeaderTag } from "./src/scripts/customPlugs";
+
+import { extractTagline } from "./src/scripts/taglineList";
+
+/* 【首页】名人名言 */
+const taglineList = extractTagline(path.resolve("./docs/【07】常识科普/社会真实/名人名言.md"));
+
+/* 【上方导航】学习笔记 */
+const excludeDirList = ["【18】副业开发", ".obsidian", "gg", ".trash"];
+// const navBarDocsItems = {
+//   label: "📔 学习笔记",
+//   type: "dropdown",
+//   position: "right",
+//   items: utils.createNavItemByDir({ targetPath: path.resolve("./docs"), excludeDirList }),
+// };
+
+/* 【上方导航】生成项目页 相当于跳转/project路由 */
+const defaultPath = ["./docs/【05】项目经历/原创作品/", "./docs/【05】项目经历/完整项目/"];
+const defaultPrefix = ["/docs/【05】项目经历/原创作品", "/docs/【05】项目经历/完整项目"];
+const outputPath = path.resolve("./data/project.js");
+// (async () => await utils.createProjectDataByFolder(defaultPath, defaultPrefix, outputPath))();
+
 const config: Config = {
-  title: "My Site",
-  tagline: "Dinosaurs are cool",
+  title: "Capsion",
+  tagline: taglineList.join(","),
   favicon: "img/favicon.ico",
 
   // Set the production url of your site here
-  url: "https://your-docusaurus-site.example.com",
+  url: "https://www.capsion.top",
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: "/",
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: "facebook", // Usually your GitHub org/user name.
-  projectName: "docusaurus", // Usually your repo name.
+  organizationName: "capsion", // Usually your GitHub org/user name.
+  projectName: "cps-blog-docusaurus-v3", // Usually your repo name.
 
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
@@ -28,6 +52,11 @@ const config: Config = {
     defaultLocale: "en",
     locales: ["en"],
   },
+
+  markdown: {
+    mermaid: true,
+  },
+  themes: ["@docusaurus/theme-mermaid"],
 
   presets: [
     [
