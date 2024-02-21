@@ -4,7 +4,7 @@ import type * as Preset from "@docusaurus/preset-classic";
 
 import * as path from "path";
 import * as utils from "./src/scripts/utils";
-import { addHeaderTag } from "./src/scripts/customPlugs";
+// import { addHeaderTag } from "./src/scripts/customPlugs";
 
 import { extractTagline } from "./src/scripts/taglineList";
 
@@ -53,10 +53,18 @@ const config: Config = {
     locales: ["en"],
   },
 
-  markdown: {
-    mermaid: true,
-  },
+  // 开启mermaid（思维导图）支持
+  markdown: { mermaid: true },
   themes: ["@docusaurus/theme-mermaid"],
+
+  // 插入<scripts>标签
+  scripts: [
+    {
+      // src: "/scripts/beforeWindowLoad.js", // 插入图片修复脚本
+      src: "./src/scripts/beforeWindowLoad.ts", // 插入图片修复脚本
+      async: false,
+    },
+  ],
 
   presets: [
     [

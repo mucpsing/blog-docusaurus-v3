@@ -2,7 +2,7 @@
  * @Author: CPS holy.dandelion@139.com
  * @Date: 2023-04-04 17:09:26
  * @LastEditors: CPS holy.dandelion@139.com
- * @LastEditTime: 2024-02-21 23:32:21
+ * @LastEditTime: 2024-02-21 23:35:22
  * @FilePath: \cps-blog-test\static\cps.js
  * @Description: 用来修复docs中，所有采用了本地服务器图片的链接指定的cdn
  */
@@ -57,7 +57,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
     /* 捕获加载失败的图片标签，判断如果host不是指定的，则进行修正 */
     (e) => {
-      const elem = e.target;
+      const elem = e.target as any;
       if (elem.tagName.toLowerCase() === "img") {
         if (isSameDomain(elem.src)) return;
 

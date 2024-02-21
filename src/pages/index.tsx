@@ -1,8 +1,8 @@
 /*
  * @Author: cpasion-office-win10 373704015@qq.com
  * @Date: 2024-02-21 08:43:33
- * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2024-02-21 17:39:50
+ * @LastEditors: CPS holy.dandelion@139.com
+ * @LastEditTime: 2024-02-21 22:25:28
  * @FilePath: \cps-blog-docusaurus-v3\src\pages\index.tsx
  * @Description: 入口文件，首页
  */
@@ -14,7 +14,7 @@ import Layout from "@theme/Layout";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 
 import HomepageFeatures from "@site/src/pages/Home/features";
-// import HomepageSwiper from "@site/src/pages/Home/HomepageSwiper";
+import HomepageSwiper from "@site/src/pages/Home/swiper";
 
 export default function Home(): JSX.Element {
   const { siteConfig } = useDocusaurusContext();
@@ -25,13 +25,11 @@ export default function Home(): JSX.Element {
         <link rel="stylesheet" href="/css/globalcss.css" />
       </Head>
       <header className="relative flex flex-col">
-        {/* <HomepageSwiper /> */}
-        {/* <div>HomepageSwiper</div> */}
+        <HomepageSwiper />
       </header>
 
       <main>
         <HomepageFeatures />
-        {/* <div>HomepageFeatures</div> */}
       </main>
     </Layout>
   );

@@ -9,10 +9,6 @@
 @tailwind utilities;
 /* @import "rc-banner-anim/assets/index.css"; */
 
-.home-swiper-icon-default {
-  @apply hover:text-sky-500 hover:translate-y-5 cursor-pointer transition-all;
-}
-
 /* You can override the default Infima variables here. */
 :root {
   --ifm-color-primary: #2e8555;
@@ -36,6 +32,10 @@
   --ifm-color-primary-lighter: #32d8b4;
   --ifm-color-primary-lightest: #4fddbf;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+}
+
+.home-swiper-icon-default {
+  @apply hover:text-sky-500 hover:translate-y-5 cursor-pointer transition-all;
 }
 
 input {
