@@ -7,6 +7,7 @@ import * as utils from "./src/scripts/utils";
 // import { addHeaderTag } from "./src/scripts/customPlugs";
 
 import { extractTagline } from "./src/scripts/taglineList";
+import customPlugin from "./src/plugins/fixHostToCDN";
 
 /* 【首页】名人名言 */
 const taglineList = extractTagline(path.resolve("./docs/【07】常识科普/社会真实/名人名言.md"));
@@ -57,11 +58,14 @@ const config: Config = {
   markdown: { mermaid: true },
   themes: ["@docusaurus/theme-mermaid"],
 
-  // 插入<scripts>标签
-  scripts: [
+  // 插件
+  // plugins: [[customPlugin, { ccvb: "ccvbbadfasdf" }]],
+
+  // 插入<scripts>标签，
+  scripts: [ // 修复本地host的开发图片跳转问题
     {
-      // src: "/scripts/beforeWindowLoad.js", // 插入图片修复脚本
-      src: "./src/scripts/beforeWindowLoad.ts", // 插入图片修复脚本
+      src: "/scripts/beforeWindowLoad.js", // 插入图片修复脚本
+      // src: "./src/scripts/beforeWindowLoad.ts", // 插入图片修复脚本
       async: false,
     },
   ],

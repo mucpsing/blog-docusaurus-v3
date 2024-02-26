@@ -1,8 +1,8 @@
 /*
  * @Author: cpasion-office-win10 373704015@qq.com
  * @Date: 2024-02-21 08:43:33
- * @LastEditors: CPS holy.dandelion@139.com
- * @LastEditTime: 2024-02-21 22:25:28
+ * @LastEditors: cpasion-office-win10 373704015@qq.com
+ * @LastEditTime: 2024-02-22 14:52:58
  * @FilePath: \cps-blog-docusaurus-v3\src\pages\index.tsx
  * @Description: 入口文件，首页
  */
@@ -15,6 +15,21 @@ import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 
 import HomepageFeatures from "@site/src/pages/Home/features";
 import HomepageSwiper from "@site/src/pages/Home/swiper";
+
+import ExecutionEnvironment from "@docusaurus/ExecutionEnvironment";
+
+if (ExecutionEnvironment.canUseDOM) {
+  // As soon as the site loads in the browser, register a global event listener
+  window.addEventListener("keydown", (e) => {
+    if (e.code === "Period") {
+      location.assign(location.href.replace(".com", ".dev"));
+    }
+  });
+
+  window.addEventListener("DOMContentLoaded", () => {
+    console.log("cps-scripts 112233 on loaded");
+  });
+}
 
 export default function Home(): JSX.Element {
   const { siteConfig } = useDocusaurusContext();
