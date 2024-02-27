@@ -2,7 +2,7 @@
  * @Author: cpasion-office-win10 373704015@qq.com
  * @Date: 2024-02-21 08:43:33
  * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2024-02-22 14:52:58
+ * @LastEditTime: 2024-02-27 10:52:44
  * @FilePath: \cps-blog-docusaurus-v3\src\pages\index.tsx
  * @Description: 入口文件，首页
  */
@@ -14,7 +14,7 @@ import Layout from "@theme/Layout";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 
 import HomepageFeatures from "@site/src/pages/Home/features";
-import HomepageSwiper from "@site/src/pages/Home/swiper";
+import HomepageSwiper from "@site/src/pages/Home/swiper2";
 
 import ExecutionEnvironment from "@docusaurus/ExecutionEnvironment";
 
@@ -40,7 +40,7 @@ export default function Home(): JSX.Element {
         <link rel="stylesheet" href="/css/globalcss.css" />
       </Head>
       <header className="relative flex flex-col">
-        <HomepageSwiper />
+        <HomepageSwiper alignmentMode="horizontal" />
       </header>
 
       <main>

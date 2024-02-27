@@ -2,7 +2,7 @@
  * @Author: cpasion-office-win10 373704015@qq.com
  * @Date: 2024-02-21 17:19:21
  * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2024-02-21 17:30:00
+ * @LastEditTime: 2024-02-27 10:47:14
  * @FilePath: \cps-blog-docusaurus-v3\src\pages\Home\swiper.tsx
  * @Description: 首页轮播组件，抽离自CpsImgSwiper组件，进行了定制化
  */
@@ -17,7 +17,9 @@ import { RightOutlined, LeftOutlined } from "@ant-design/icons";
 import { ANIM_CONFIGS } from "@site/src/components/ImageSwiper/index";
 import { isSupportWebp } from "@site/src/components/ImageSwiper/utils";
 import ImgPreview from "@site/src/components/ImageSwiper/imagePreview";
-import dataArray, { type ICpsImgSwiperDataItem } from "@site/src/components/ImageSwiper/data";
+import dataArray from "@site/src/components/ImageSwiper/data";
+
+import type { ICpsImgSwiperDataItem } from "@site/src/components/ImageSwiper/data";
 import type { ICpsImgSwiperProps, ICpsImgSwiperState } from "@site/src/components/ImageSwiper/index";
 
 import HomeTitle from "./rightSide";
@@ -138,7 +140,7 @@ export default class HomeImgSwiper extends React.Component<ICpsImgSwiperProps, I
     /**
      * @description: 根据数据渲染左边【图片展示】区域
      */
-    const leftChildrens = this.DATA.map((item, i) => {
+    const imgComponent = this.DATA.map((item, i) => {
       let preview = item.preview;
       let logo = item.logo;
 
@@ -149,48 +151,17 @@ export default class HomeImgSwiper extends React.Component<ICpsImgSwiperProps, I
 
       return (
         <Element key={i} leaveChildHide>
-          <QueueAnim
-            className="relative flex items-center justify-center w-full h-full"
-            animConfig={this.currtAnim}
-            duration={(e) => (e.key === "map" ? 800 : 1000)}
-            delay={[!i ? this.state.delay : 300, 0]}
-            ease={["easeOutCubic", "easeInQuad"]}
-            key="img-wrapper"
-          >
-            <div
-              key="bg"
-              className={["absolute top-0 w-full", this.props.alignmentMode == "vertical" ? "h-1/2" : "h-2/3"].join(
-                " "
-              )}
-              style={{ background: item.mainColor }}
-            ></div>
+          <QueueAnim className="relative flex items-center justify-center w-full h-full" animConfig={this.currtAnim} duration={(e) => (e.key === "map" ? 800 : 1000)} delay={[!i ? this.state.delay : 300, 0]} ease={["easeOutCubic", "easeInQuad"]} key="img-wrapper">
+            <div key="bg" className={["absolute top-0 w-full", this.props.alignmentMode == "vertical" ? "h-1/2" : "h-2/3"].join(" ")} style={{ background: item.mainColor }}></div>
 
             {/* 小图片 */}
-            <div
-              className={[
-                "absolute",
-                this.props.alignmentMode == "vertical" ? "w-4/5 top-[10%]" : "w-[10%] top-4 right-4",
-              ].join(" ")}
-              key="pic"
-            >
+            {/* <div className={["absolute", this.props.alignmentMode == "vertical" ? "w-4/5 top-[10%]" : "w-[10%] top-4 right-4"].join(" ")} key="pic">
               <img src={logo} width="100%" height="100%" alt="" crossOrigin="anonymous" />
-            </div>
+            </div> */}
 
             {/* 主图片 */}
-            <div
-              className={[
-                this.props.alignmentMode == "vertical" ? "bottom-[15%] w-4/5" : "w-4/5",
-                "absolute cursor-pointer",
-              ].join(" ")}
-              key="map"
-            >
-              <img
-                src={preview}
-                className="object-fill w-full h-full hover:opacity-90"
-                alt=""
-                onClick={(e) => ImgPreview(item)}
-                crossOrigin="anonymous"
-              />
+            <div className={[this.props.alignmentMode == "vertical" ? "bottom-[15%] w-4/5" : "w-4/5", "absolute cursor-pointer"].join(" ")} key="map">
+              <img src={preview} className="object-fill w-full h-full hover:opacity-90" alt="" onClick={(e) => ImgPreview(item)} crossOrigin="anonymous" />
             </div>
           </QueueAnim>
         </Element>
@@ -200,21 +171,11 @@ export default class HomeImgSwiper extends React.Component<ICpsImgSwiperProps, I
     /**
      * @description: 根据数据渲染右边【文字描述】区域
      */
-    const rightChildrens = this.DATA.map((item, i) => {
+    const textComponent = this.DATA.map((item, i) => {
       const { title, content, subColor } = item;
       return (
-        <Element
-          key={i}
-          prefixCls={
-            this.props.alignmentMode == "vertical" ? "px-6 py-12 md:px-3 md:py-6" : "px-10 py-4 md:px-5 md:py-2"
-          }
-        >
-          <QueueAnim
-            className="flex flex-col items-start"
-            type="bottom"
-            duration={800}
-            delay={[!i ? this.state.delay + 500 : 800, 0]}
-          >
+        <Element key={i} prefixCls={this.props.alignmentMode == "vertical" ? "px-6 py-12 md:px-3 md:py-6" : "px-10 py-4 md:px-5 md:py-2"}>
+          <QueueAnim className="flex flex-col items-start" type="bottom" duration={800} delay={[!i ? this.state.delay + 500 : 800, 0]}>
             <h2 key="title" className="py-2 my-1 text-xl">
               <a className="text-gray-700" href={item.website}>
                 {title}
@@ -238,18 +199,7 @@ export default class HomeImgSwiper extends React.Component<ICpsImgSwiperProps, I
           {this.DATA.map((item, index) => {
             const { mainColor } = item;
             const key = index.toString();
-            return (
-              <div
-                key={key}
-                onClick={(e) => this.switchPage(index)}
-                style={{ background: mainColor }}
-                className={[
-                  "border-2 border-solid border-white",
-                  "w-5 h-5 rounded-full cursor-pointer",
-                  "hover:w-10 transition-all duration-300",
-                ].join(" ")}
-              ></div>
-            );
+            return <div key={key} onClick={(e) => this.switchPage(index)} style={{ background: mainColor }} className={["border-2 border-solid border-white", "w-5 h-5 rounded-full cursor-pointer", "hover:w-10 transition-all duration-300"].join(" ")}></div>;
           })}
         </div>
       );
@@ -264,21 +214,13 @@ export default class HomeImgSwiper extends React.Component<ICpsImgSwiperProps, I
     };
 
     return (
-      <div
-        className={[
-          `overflow-hidden relative w-full h-[600px]`,
-          "md:h-[650px]",
-          "lg:h-[750px]",
-          "xl:h-[900px]",
-          "flex justify-evenly items-center pt-60 pb-64 px-4 text-gray-700",
-        ].join(" ")}
-        style={{ background: this.DATA[this.state.showInt].subColor, transition: "background 1s" }}
-      >
-        {/* 左边标题 */}
+      <div className={[`overflow-hidden relative w-full h-[600px]`, "md:h-[650px]", "lg:h-[750px]", "xl:h-[900px]", "flex justify-evenly items-center pt-60 pb-64 px-4 text-gray-700"].join(" ")} style={{ background: this.DATA[this.state.showInt].subColor, transition: "background 1s" }}>
+        {/* 标题组件 */}
         <div id="homeTitleComment" className="home-title w-[400px]">
           <HomeTitle />
         </div>
 
+        {/* 泡泡组件 */}
         <Bubble width={600} height={200} bubbleScale={1.5} positionElementId="postitionElement"></Bubble>
 
         {/* <CpsImgSwiper
@@ -291,23 +233,11 @@ export default class HomeImgSwiper extends React.Component<ICpsImgSwiperProps, I
           ].join(" ")}
         ></CpsImgSwiper> */}
 
-        {/* 右边轮播 */}
-        <div
-          className={[
-            "md:w-[500px] md:h-[400px]",
-            "lg:w-[500px] lg:h-[350px]",
-            "xl:w-[950px] xl:h-[650px]",
-            "w-[4 50px] h-[550px] min-w-[300px]",
-            "shadow-xl bg-white rounded-md overflow-hidden relative",
-          ].join(" ")}
-        >
+        {/* 轮播组件 */}
+        <div className={["md:w-[500px] md:h-[400px]", "lg:w-[500px] lg:h-[350px]", "xl:w-[950px] xl:h-[650px]", "w-[4 50px] h-[550px] min-w-[300px]", "shadow-xl bg-white rounded-md overflow-hidden relative"].join(" ")}>
+          {/* 图片切换 */}
           <BannerAnim
-            className={[
-              "cps-swiper-img relative overflow-hidden",
-              this.props.alignmentMode == "vertical"
-                ? `w-1/2 h-full inline-block z-[1]`
-                : "w-full min-w-[450px] h-full block absolute z-[2]",
-            ].join(" ")}
+            className={["cps-swiper-img relative overflow-hidden", this.props.alignmentMode == "vertical" ? `w-1/2 h-full inline-block z-[1]` : "w-full min-w-[450px] h-full block absolute z-[2]"].join(" ")}
             sync
             type="across"
             duration={1000}
@@ -318,17 +248,13 @@ export default class HomeImgSwiper extends React.Component<ICpsImgSwiperProps, I
             onChange={this.onChange}
             dragPlay={false}
           >
-            {leftChildrens}
+            {imgComponent}
           </BannerAnim>
 
+          {/* 文字描述 */}
           <BannerAnim
             style={{ backdropFilter: "blur(5px)" }}
-            className={[
-              "cps-swiper-text overflow-hidden z-[3]",
-              this.props.alignmentMode == "vertical"
-                ? `w-1/2 h-full inline-block relative`
-                : "w-full h-1/3 block absolute bottom-0 bg-white/50",
-            ].join(" ")}
+            className={["cps-swiper-text overflow-hidden z-[3]", this.props.alignmentMode == "vertical" ? `w-1/2 h-full inline-block relative` : "w-full h-1/3 block absolute bottom-0 bg-white/50"].join(" ")}
             sync
             type="across"
             duration={1000}
@@ -338,9 +264,10 @@ export default class HomeImgSwiper extends React.Component<ICpsImgSwiperProps, I
             ref={(c) => (this.bannerText = c)}
             dragPlay={false}
           >
-            {rightChildrens}
+            {textComponent}
           </BannerAnim>
 
+          {/* 点击翻页箭头 */}
           {this.props.showArrow ? (
             <TweenOneGroup enter={{ opacity: 0, type: "from" }} leave={{ opacity: 0 }}>
               <LeftOutlined className="z-[3] absolute text-2xl left-1 -mt-[20px] top-1/2" onClick={this.onLeft} />
