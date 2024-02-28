@@ -2,13 +2,13 @@
  * @Author: cpasion-office-win10 373704015@qq.com
  * @Date: 2023-04-21 09:15:12
  * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2024-02-27 16:44:44
+ * @LastEditTime: 2024-02-28 11:20:17
  * @FilePath: \cps-blog\src\components\CpsImgSwiper\index.tsx
  * @Description: 这是一个图片轮播组件，支持横屏和竖屏排版，目前仅支持网页端浏览器，没做移动适配
  */
 import React from "react";
 
-import BannerAnim from "rc-banner-anim";
+import BannerAnim, { Element } from "rc-banner-anim";
 import QueueAnim from "rc-queue-anim";
 import { TweenOneGroup } from "rc-tween-one";
 import { RightOutlined, LeftOutlined } from "@ant-design/icons";
@@ -17,7 +17,35 @@ import { isSupportWebp, imgUrl2Webp } from "./utils";
 import defaultData, { type ICpsImgSwiperDataItem } from "./data";
 import ImgPreview from "./imagePreview";
 
-const Element = BannerAnim.Element;
+// const Element = BannerAnim.Element;
+
+export type AlignmentModeT = "horizontal" | "vertical";
+export interface ICpsImgSwiperProps {
+  alignmentMode?: AlignmentModeT; // 横向|垂直
+  showText?: boolean;
+  showImg?: boolean;
+  showArrow?: boolean; // 是否显示切换的箭头
+  autoSwitch?: number; // 是否自动切换，默认0不开启，单位为ms
+  data?: ICpsImgSwiperDataItem[];
+  classNames?: string;
+  imgPreview?: boolean; // 是否开启点击放大展示gif
+  useWebp?: boolean; // 是否使用webp
+  mainColorIndex: number;
+  subColorIndex: number;
+  mainColor?: string[];
+  subColor?: string[];
+}
+
+export interface ICpsImgSwiperState {
+  showInt: number;
+  delay: number;
+  oneEnter: boolean;
+  webp: boolean; // 是否启用webp，首先通过props确定是否使用，在通过函数判断环境是否支持，最终生成布尔值状态存储
+  mainColor?: string[];
+  subColor?: string[];
+  mainColorIndex?: number;
+  subColorIndex?: number;
+}
 
 /**
  * @description: 左右两边的动画滑动效果
@@ -33,35 +61,83 @@ export const ANIM_CONFIGS = {
   ],
 };
 
-export interface ICpsImgSwiperProps {
-  alignmentMode?: "horizontal" | "vertical"; // 横向|垂直
-  showText?: boolean;
-  showImg?: boolean;
-  showArrow?: boolean; // 是否显示切换的箭头
-  autoSwitch?: number; // 是否自动切换，默认0不开启，单位为ms
-  data?: ICpsImgSwiperDataItem[];
-  classNames?: string;
-  imgPreview?: boolean; // 是否开启点击放大展示gif
-  useWebp?: boolean; // 是否使用webp
-  mainColorIndex: number;
-  subColorIndex: number;
+/**
+ * @description: 【图片展示】组件
+ */
+function createImgComponent(props: {
+  alignmentMode: AlignmentModeT;
+  delay: number;
+  data: ICpsImgSwiperDataItem[];
+  webp: boolean;
+  currtAnim: typeof ANIM_CONFIGS.right | typeof ANIM_CONFIGS.left;
+  bgColor: string;
+}) {
+  return props.data.map((item, i) => {
+    let preview = item.gif ? item.gif : item.preview;
+    let logo = item.logo;
+
+    if (props.webp) {
+      preview = imgUrl2Webp(item.preview);
+      logo = imgUrl2Webp(item.logo);
+    }
+
+    return (
+      <Element key={i} leaveChildHide>
+        <QueueAnim
+          className="relative flex items-center justify-center w-full h-full"
+          animConfig={props.currtAnim}
+          duration={(e) => (e.key === "map" ? 800 : 1000)}
+          delay={[!i ? props.delay : 300, 0]}
+          ease={["easeOutCubic", "easeInQuad"]}
+          key="img-wrapper"
+        >
+          <div
+            key="bg"
+            className={["absolute top-0 w-full", props.alignmentMode == "vertical" ? "h-1/2" : "h-2/3"].join(" ")}
+            style={{ background: props.bgColor }}
+          ></div>
+
+          {/* 小图片 */}
+          <div className={["absolute", props.alignmentMode == "vertical" ? "w-4/5 top-[10%]" : "w-[10%] top-4 right-4"].join(" ")} key="pic">
+            <img src={logo} width="100%" height="100%" alt="" loading="lazy" crossOrigin="anonymous" />
+          </div>
+
+          {/* 主图片 */}
+          <div className={[props.alignmentMode == "vertical" ? "bottom-[15%] w-4/5" : "w-4/5", "absolute cursor-pointer"].join(" ")} key="map">
+            <img src={preview} className="object-fill w-full h-full" alt="" onClick={(e) => this.showImg(item)} crossOrigin="anonymous" />
+          </div>
+        </QueueAnim>
+      </Element>
+    );
+  });
 }
 
-export interface ICpsImgSwiperState {
-  showInt: number;
-  delay: number;
-  oneEnter: boolean;
-  webp: boolean; // 是否启用webp，首先通过props确定是否使用，在通过函数判断环境是否支持，最终生成布尔值状态存储
-  mainColor?: string[];
-  subColor?: string[];
-  mainColorIndex?: number;
-  subColorIndex?: number;
+/**
+ * @description: 【文字描述】组件
+ */
+function createTextComponent(props: { alignmentMode: AlignmentModeT; bgColor: string; delay: number; data: ICpsImgSwiperDataItem[] }) {
+  return props.data.map((item, i) => {
+    const { title, content } = item;
+    return (
+      <Element key={i} prefixCls={props.alignmentMode == "vertical" ? "px-6 py-12 md:px-3 md:py-6" : "px-10 py-4 md:px-5 md:py-2"}>
+        <QueueAnim className="flex flex-col items-start text-gray-700" type="bottom" duration={800} delay={[!i ? props.delay + 500 : 800, 0]}>
+          <h2 key="title" className="py-2 my-1 text-xl">
+            {title}
+          </h2>
+          <em key="line" style={{ background: props.bgColor }} className="inline-block rounded-sm w-16 h-[2px]" />
+          <p key="content" className="mt-3 text-sm">
+            {content}
+          </p>
+        </QueueAnim>
+      </Element>
+    );
+  });
 }
 
 export default class CpsImgSwiper extends React.Component<ICpsImgSwiperProps, ICpsImgSwiperState> {
   bannerImg: any;
   bannerText: any;
-  titleElement: Element;
+  // titleElement: Element;
   autoSwitchInterID: any;
 
   // 因为过渡效果分为左右两边，需要根据每次点击的按钮来重新指定是采用左边的过渡还是右边的过渡效果
@@ -78,6 +154,8 @@ export default class CpsImgSwiper extends React.Component<ICpsImgSwiperProps, IC
     data: defaultData,
     imgPreview: false,
     useWebp: false,
+    mainColor: ["#FC1E4F", "#FFF43D", "#9FDA7F"],
+    subColor: ["#FF4058", "#F6B429", "#64D487"],
     mainColorIndex: 0,
     subColorIndex: 0,
   };
@@ -89,28 +167,19 @@ export default class CpsImgSwiper extends React.Component<ICpsImgSwiperProps, IC
       delay: 0,
       oneEnter: false,
       webp: props.useWebp ? isSupportWebp() : false,
-      mainColor: ["#FC1E4F", "#FFF43D", "#9FDA7F"],
-      subColor: ["#FF4058", "#F6B429", "#64D487"],
       mainColorIndex: 0,
       subColorIndex: 0,
     };
   }
 
-  componentWillUnmount(): void {
-    if (this.autoSwitchInterID) clearInterval(this.autoSwitchInterID);
-
-    this.setState = (state, callback) => null;
+  componentDidMount(): void {
+    if (this.props.autoSwitch) this.autoSwitchOn(this.props.autoSwitch);
   }
 
-  componentDidMount(): void {
-    if (this.props.autoSwitch > 0) {
-      setTimeout(() => {
-        this.onRight("autoSwitch");
-        this.autoSwitchInterID = setInterval(() => {
-          this.onRight("autoSwitch");
-        }, this.props.autoSwitch);
-      }, 1000);
-    }
+  componentWillUnmount(): void {
+    if (this.autoSwitchInterID) this.autoSwitchOff();
+
+    this.setState = (state, callback) => null;
   }
 
   onChange = () => {
@@ -120,34 +189,17 @@ export default class CpsImgSwiper extends React.Component<ICpsImgSwiperProps, IC
     }
   };
 
+  // 向左翻页的控制函数
   onLeft = (e?) => {
-    console.log("onLeft");
-    if (typeof e != "string" && this.autoSwitchInterID) {
-      clearInterval(this.autoSwitchInterID);
-      this.autoSwitchInterID = 0;
-    }
+    // console.log("onLeft");
+    // 为防止正在切换功能与本次主动切换冲突，每次手动切换后将停止自动翻页定时器
+    this.autoSwitchOff(e);
 
-    let showInt = this.state.showInt;
-
-    if (showInt <= 0) {
-      showInt = this.props.data.length - 1;
-    } else {
-      showInt -= 1;
-    }
-
-    let mainColorIndex = this.state.mainColorIndex;
-    if (mainColorIndex <= 0) {
-      mainColorIndex = this.state.mainColor.length - 1;
-    } else {
-      mainColorIndex -= 1;
-    }
-
-    let subColorIndex = this.state.subColorIndex;
-    if (subColorIndex <= 0) {
-      subColorIndex = this.state.subColor.length - 1;
-    } else {
-      subColorIndex -= 1;
-    }
+    // 向左数组递减，为0时跳转到数组末尾，实现左边轮播循环
+    // 检查索引是否第一个，如果不是，否则减1，如果是则跳转到数组长度。
+    const showInt = (this.state.showInt - 1 + this.props.data.length) % this.props.data.length;
+    const mainColorIndex = (this.state.mainColorIndex - 1 + this.props.mainColor.length) % this.props.mainColor.length;
+    const subColorIndex = (this.state.subColorIndex - 1 + this.props.subColor.length) % this.props.subColor.length;
 
     this.currtAnim = ANIM_CONFIGS.left;
     this.setState({ showInt, subColorIndex, mainColorIndex });
@@ -155,49 +207,48 @@ export default class CpsImgSwiper extends React.Component<ICpsImgSwiperProps, IC
     this.bannerText.prev();
   };
 
+  // 向右翻页的控制函数
   onRight = (e?) => {
-    console.log("onRight");
-    if (typeof e != "string" && this.autoSwitchInterID) {
-      clearInterval(this.autoSwitchInterID);
-      this.autoSwitchInterID = 0;
-    }
+    // console.log("onRight");
+    // 为防止正在切换功能与本次主动切换冲突，每次手动切换后将停止自动翻页定时器
+    this.autoSwitchOff(e);
 
-    let showInt = this.state.showInt;
-    if (showInt >= this.props.data.length - 1) {
-      showInt = 0;
-    } else {
-      showInt += 1;
-    }
-
-    let mainColorIndex = this.state.mainColorIndex;
-    if (mainColorIndex >= this.state.mainColor.length - 1) {
-      mainColorIndex = 0;
-    } else {
-      mainColorIndex += 1;
-    }
-    let subColorIndex = this.state.subColorIndex;
-    if (subColorIndex >= this.state.subColor.length - 1) {
-      subColorIndex = 0;
-    } else {
-      subColorIndex += 1;
-    }
+    // 向右数组递增，为数组长度时跳转到数组开头，实现右边轮播循环
+    // 检查索引是否最后一个，如果不是，则加1，如果是则跳转到0。
+    const showInt = (this.state.showInt + 1) % this.props.data.length;
+    const mainColorIndex = (this.state.mainColorIndex + 1) % this.props.mainColor.length;
+    const subColorIndex = (this.state.subColorIndex + 1) % this.props.subColor.length;
 
     this.currtAnim = ANIM_CONFIGS.right;
     this.setState({ showInt, subColorIndex, mainColorIndex });
-
     this.bannerImg.next();
     this.bannerText.next();
   };
 
   switchPage = (index: number) => {
     const currtPage = this.state.showInt;
-
-    if (currtPage == index) {
-      return;
-    } else if (currtPage < index) {
+    if (currtPage < index) {
       this.onRight();
-    } else {
+    } else if (currtPage > index) {
       this.onLeft();
+    }
+  };
+
+  autoSwitchOn = (switchDelay: number) => {
+    setTimeout(() => {
+      this.onRight("autoSwitch");
+      this.autoSwitchInterID = setInterval(() => {
+        this.onRight("autoSwitch");
+      }, switchDelay);
+    }, 1000);
+  };
+
+  autoSwitchOff = (e?: any) => {
+    if (typeof e !== "string" && this.autoSwitchInterID) {
+      clearInterval(this.autoSwitchInterID);
+      this.autoSwitchInterID = 0;
+
+      console.log("autoSwitchOff");
     }
   };
 
@@ -206,77 +257,13 @@ export default class CpsImgSwiper extends React.Component<ICpsImgSwiperProps, IC
   };
 
   render() {
-    /**
-     * @description: 根据数据渲染左边【图片展示】区域
-     */
-    const elementImgs = this.props.data.map((item, i) => {
-      let preview = item.gif ? item.gif : item.preview;
-      let logo = item.logo;
-
-      if (this.state.webp) {
-        preview = imgUrl2Webp(item.preview);
-        logo = imgUrl2Webp(item.logo);
-      }
-
-      return (
-        <Element key={i} leaveChildHide>
-          <QueueAnim
-            className="relative flex items-center justify-center w-full h-full"
-            animConfig={this.currtAnim}
-            duration={(e) => (e.key === "map" ? 800 : 1000)}
-            delay={[!i ? this.state.delay : 300, 0]}
-            ease={["easeOutCubic", "easeInQuad"]}
-            key="img-wrapper"
-          >
-            <div
-              key="bg"
-              className={["absolute top-0 w-full", this.props.alignmentMode == "vertical" ? "h-1/2" : "h-2/3"].join(" ")}
-              style={{
-                background: this.state.mainColor[this.state.mainColorIndex],
-              }}
-            ></div>
-
-            {/* 小图片 */}
-            <div className={["absolute", this.props.alignmentMode == "vertical" ? "w-4/5 top-[10%]" : "w-[10%] top-4 right-4"].join(" ")} key="pic">
-              <img src={logo} width="100%" height="100%" alt="" loading="lazy" crossOrigin="anonymous" />
-            </div>
-
-            {/* 主图片 */}
-            <div className={[this.props.alignmentMode == "vertical" ? "bottom-[15%] w-4/5" : "w-4/5", "absolute cursor-pointer"].join(" ")} key="map">
-              <img src={preview} className="object-fill w-full h-full" alt="" onClick={(e) => this.showImg(item)} crossOrigin="anonymous" />
-            </div>
-          </QueueAnim>
-        </Element>
-      );
-    });
-
-    /**
-     * @description: 根据数据渲染右边【文字描述】区域
-     */
-    const elementTexts = this.props.data.map((item, i) => {
-      const { title, content, subColor } = item;
-      return (
-        <Element key={i} prefixCls={this.props.alignmentMode == "vertical" ? "px-6 py-12 md:px-3 md:py-6" : "px-10 py-4 md:px-5 md:py-2"}>
-          <QueueAnim className="flex flex-col items-start text-gray-700" type="bottom" duration={800} delay={[!i ? this.state.delay + 500 : 800, 0]}>
-            <h2 key="title" className="py-2 my-1 text-xl">
-              {title}
-            </h2>
-            <em key="line" style={{ background: this.state.subColor[this.state.subColorIndex] }} className="inline-block rounded-sm w-16 h-[2px]" />
-            <p key="content" className="mt-3 text-sm">
-              {content}
-            </p>
-          </QueueAnim>
-        </Element>
-      );
-    });
-
     return (
       <div
         className={[this.props.classNames, "shadow-xl", "w-[450px] h-[550px] min-w-[300px]", "bg-white rounded-md overflow-hidden relative"].join(
           " "
         )}
       >
-        {/* 图片 */}
+        {/* 图片展示 */}
         <BannerAnim
           className={[
             "cps-swiper-img relative overflow-hidden",
@@ -292,10 +279,17 @@ export default class CpsImgSwiper extends React.Component<ICpsImgSwiperProps, IC
           onChange={this.onChange}
           dragPlay={false}
         >
-          {elementImgs}
+          {createImgComponent({
+            alignmentMode: this.props.alignmentMode,
+            delay: this.state.delay,
+            data: this.props.data,
+            bgColor: this.props.mainColor[this.state.mainColorIndex],
+            webp: this.state.webp,
+            currtAnim: this.currtAnim,
+          })}
         </BannerAnim>
 
-        {/* 文字 */}
+        {/* 文字描述 */}
         <BannerAnim
           style={{ backdropFilter: "blur(5px)" }}
           className={[
@@ -311,10 +305,15 @@ export default class CpsImgSwiper extends React.Component<ICpsImgSwiperProps, IC
           ref={(c) => (this.bannerText = c)}
           dragPlay={false}
         >
-          {elementTexts}
+          {createTextComponent({
+            alignmentMode: this.props.alignmentMode,
+            delay: this.state.delay,
+            data: this.props.data,
+            bgColor: this.props.subColor[this.state.subColorIndex],
+          })}
         </BannerAnim>
 
-        {/* 左右切换的箭头 */}
+        {/* 左右箭头 - 触发换页 */}
         {this.props.showArrow ? (
           <TweenOneGroup enter={{ opacity: 0, type: "from" }} leave={{ opacity: 0 }}>
             <LeftOutlined className="z-[3] absolute text-2xl left-1 -mt-[20px] top-1/2" onClick={this.onLeft} />

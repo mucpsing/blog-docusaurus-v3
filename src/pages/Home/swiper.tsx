@@ -2,7 +2,7 @@
  * @Author: cpasion-office-win10 373704015@qq.com
  * @Date: 2024-02-21 17:19:21
  * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2024-02-27 10:47:14
+ * @LastEditTime: 2024-02-28 08:41:12
  * @FilePath: \cps-blog-docusaurus-v3\src\pages\Home\swiper.tsx
  * @Description: 首页轮播组件，抽离自CpsImgSwiper组件，进行了定制化
  */
@@ -140,7 +140,7 @@ export default class HomeImgSwiper extends React.Component<ICpsImgSwiperProps, I
     /**
      * @description: 根据数据渲染左边【图片展示】区域
      */
-    const imgComponent = this.DATA.map((item, i) => {
+    const ImgComponent = this.DATA.map((item, i) => {
       let preview = item.preview;
       let logo = item.logo;
 
@@ -171,7 +171,7 @@ export default class HomeImgSwiper extends React.Component<ICpsImgSwiperProps, I
     /**
      * @description: 根据数据渲染右边【文字描述】区域
      */
-    const textComponent = this.DATA.map((item, i) => {
+    const TextComponent = this.DATA.map((item, i) => {
       const { title, content, subColor } = item;
       return (
         <Element key={i} prefixCls={this.props.alignmentMode == "vertical" ? "px-6 py-12 md:px-3 md:py-6" : "px-10 py-4 md:px-5 md:py-2"}>
@@ -248,7 +248,7 @@ export default class HomeImgSwiper extends React.Component<ICpsImgSwiperProps, I
             onChange={this.onChange}
             dragPlay={false}
           >
-            {imgComponent}
+            {ImgComponent}
           </BannerAnim>
 
           {/* 文字描述 */}
@@ -264,7 +264,7 @@ export default class HomeImgSwiper extends React.Component<ICpsImgSwiperProps, I
             ref={(c) => (this.bannerText = c)}
             dragPlay={false}
           >
-            {textComponent}
+            {TextComponent}
           </BannerAnim>
 
           {/* 点击翻页箭头 */}

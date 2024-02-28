@@ -2,7 +2,7 @@
  * @Author: cpasion-office-win10 373704015@qq.com
  * @Date: 2024-02-21 17:19:21
  * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2024-02-27 16:07:38
+ * @LastEditTime: 2024-02-28 09:19:36
  * @FilePath: \cps-blog-docusaurus-v3\src\pages\Home\swiper.tsx
  * @Description: 首页轮播组件，抽离自CpsImgSwiper组件，进行了定制化
  */
@@ -103,7 +103,7 @@ export default class HomeImgSwiper extends React.Component<ICpsImgSwiperProps, S
 
         {/* 轮播组件 */}
         <CpsImgSwiper
-          showArrow={false}
+          showArrow={true}
           autoSwitch={0}
           classNames={[
             "md:w-[500px] md:h-[400px]",
