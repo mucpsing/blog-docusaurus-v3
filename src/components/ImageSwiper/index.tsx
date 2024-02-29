@@ -2,7 +2,7 @@
  * @Author: cpasion-office-win10 373704015@qq.com
  * @Date: 2023-04-21 09:15:12
  * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2024-02-28 11:20:17
+ * @LastEditTime: 2024-02-29 09:30:08
  * @FilePath: \cps-blog\src\components\CpsImgSwiper\index.tsx
  * @Description: 这是一个图片轮播组件，支持横屏和竖屏排版，目前仅支持网页端浏览器，没做移动适配
  */
@@ -16,8 +16,6 @@ import { isSupportWebp, imgUrl2Webp } from "./utils";
 
 import defaultData, { type ICpsImgSwiperDataItem } from "./data";
 import ImgPreview from "./imagePreview";
-
-// const Element = BannerAnim.Element;
 
 export type AlignmentModeT = "horizontal" | "vertical";
 export interface ICpsImgSwiperProps {
@@ -34,6 +32,7 @@ export interface ICpsImgSwiperProps {
   subColorIndex: number;
   mainColor?: string[];
   subColor?: string[];
+  page?: number;
 }
 
 export interface ICpsImgSwiperState {
@@ -60,6 +59,9 @@ export const ANIM_CONFIGS = {
     { translateX: [0, -300], opacity: [1, 0] },
   ],
 };
+
+export const DEFAULT_MAIN_COLOR = ["#FC1E4F", "#FFF43D", "#9FDA7F"];
+export const DEFAULT_SUB_COLOR = ["#FF4058", "#F6B429", "#64D487"];
 
 /**
  * @description: 【图片展示】组件
@@ -137,12 +139,10 @@ function createTextComponent(props: { alignmentMode: AlignmentModeT; bgColor: st
 export default class CpsImgSwiper extends React.Component<ICpsImgSwiperProps, ICpsImgSwiperState> {
   bannerImg: any;
   bannerText: any;
-  // titleElement: Element;
   autoSwitchInterID: any;
 
   // 因为过渡效果分为左右两边，需要根据每次点击的按钮来重新指定是采用左边的过渡还是右边的过渡效果
   currtAnim = ANIM_CONFIGS.right;
-  DATA: ICpsImgSwiperDataItem[] = [];
 
   static defaultProps: ICpsImgSwiperProps = {
     alignmentMode: "horizontal",
@@ -154,10 +154,11 @@ export default class CpsImgSwiper extends React.Component<ICpsImgSwiperProps, IC
     data: defaultData,
     imgPreview: false,
     useWebp: false,
-    mainColor: ["#FC1E4F", "#FFF43D", "#9FDA7F"],
-    subColor: ["#FF4058", "#F6B429", "#64D487"],
+    mainColor: DEFAULT_MAIN_COLOR,
+    subColor: DEFAULT_SUB_COLOR,
     mainColorIndex: 0,
     subColorIndex: 0,
+    page: 0,
   };
 
   constructor(props: ICpsImgSwiperProps) {
@@ -170,6 +171,15 @@ export default class CpsImgSwiper extends React.Component<ICpsImgSwiperProps, IC
       mainColorIndex: 0,
       subColorIndex: 0,
     };
+  }
+
+  componentDidUpdate(prevProps: Readonly<ICpsImgSwiperProps>, prevState: Readonly<ICpsImgSwiperState>, snapshot?: any): void {
+    if (this.props.page !== prevProps.page) {
+      console.log("触发换页右边");
+      this.onRight();
+
+      // this.switchPage(this.props.page)
+    }
   }
 
   componentDidMount(): void {
@@ -225,11 +235,11 @@ export default class CpsImgSwiper extends React.Component<ICpsImgSwiperProps, IC
     this.bannerText.next();
   };
 
-  switchPage = (index: number) => {
+  switchPage = (page: number) => {
     const currtPage = this.state.showInt;
-    if (currtPage < index) {
+    if (currtPage < page) {
       this.onRight();
-    } else if (currtPage > index) {
+    } else if (currtPage > page) {
       this.onLeft();
     }
   };
@@ -257,6 +267,21 @@ export default class CpsImgSwiper extends React.Component<ICpsImgSwiperProps, IC
   };
 
   render() {
+    let ImgComponents = createImgComponent({
+      alignmentMode: this.props.alignmentMode,
+      delay: this.state.delay,
+      data: this.props.data,
+      bgColor: this.props.mainColor[this.state.mainColorIndex],
+      webp: this.state.webp,
+      currtAnim: this.currtAnim,
+    });
+
+    let TextComponents = createTextComponent({
+      alignmentMode: this.props.alignmentMode,
+      delay: this.state.delay,
+      data: this.props.data,
+      bgColor: this.props.subColor[this.state.subColorIndex],
+    });
     return (
       <div
         className={[this.props.classNames, "shadow-xl", "w-[450px] h-[550px] min-w-[300px]", "bg-white rounded-md overflow-hidden relative"].join(
@@ -279,14 +304,7 @@ export default class CpsImgSwiper extends React.Component<ICpsImgSwiperProps, IC
           onChange={this.onChange}
           dragPlay={false}
         >
-          {createImgComponent({
-            alignmentMode: this.props.alignmentMode,
-            delay: this.state.delay,
-            data: this.props.data,
-            bgColor: this.props.mainColor[this.state.mainColorIndex],
-            webp: this.state.webp,
-            currtAnim: this.currtAnim,
-          })}
+          {ImgComponents}
         </BannerAnim>
 
         {/* 文字描述 */}
@@ -305,12 +323,7 @@ export default class CpsImgSwiper extends React.Component<ICpsImgSwiperProps, IC
           ref={(c) => (this.bannerText = c)}
           dragPlay={false}
         >
-          {createTextComponent({
-            alignmentMode: this.props.alignmentMode,
-            delay: this.state.delay,
-            data: this.props.data,
-            bgColor: this.props.subColor[this.state.subColorIndex],
-          })}
+          {TextComponents}
         </BannerAnim>
 
         {/* 左右箭头 - 触发换页 */}
