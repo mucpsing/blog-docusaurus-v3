@@ -62,7 +62,8 @@ const config: Config = {
   // plugins: [[customPlugin, { ccvb: "ccvbbadfasdf" }]],
 
   // 插入<scripts>标签，
-  scripts: [ // 修复本地host的开发图片跳转问题
+  scripts: [
+    // 修复本地host的开发图片跳转问题
     {
       src: "/scripts/beforeWindowLoad.js", // 插入图片修复脚本
       // src: "./src/scripts/beforeWindowLoad.ts", // 插入图片修复脚本
@@ -122,16 +123,16 @@ const config: Config = {
       style: "dark",
       links: [
         {
-          title: "Docs",
+          title: "NoteBooks",
           items: [
             {
-              label: "Tutorial",
-              to: "/docs/intro",
+              label: "Blog",
+              to: "/docs",
             },
           ],
         },
         {
-          title: "Community123",
+          title: "Community",
           items: [
             {
               label: "Stack Overflow",
@@ -151,12 +152,12 @@ const config: Config = {
           title: "More",
           items: [
             {
-              label: "Blog",
-              to: "/blog",
+              label: "Gitee",
+              href: "https://gitee.com/capsion/capsion",
             },
             {
               label: "GitHub",
-              href: "https://github.com/facebook/docusaurus",
+              href: "https://github.com/mucpsing/mucpsing",
             },
           ],
         },
