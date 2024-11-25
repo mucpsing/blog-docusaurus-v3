@@ -2,7 +2,7 @@
  * @Author: cpasion-office-win10 373704015@qq.com
  * @Date: 2024-02-21 17:19:21
  * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2024-02-29 09:32:30
+ * @LastEditTime: 2024-11-25 17:20:42
  * @FilePath: \cps-blog-docusaurus-v3\src\pages\Home\swiper.tsx
  * @Description: 首页轮播组件，抽离自CpsImgSwiper组件，进行了定制化
  */
@@ -12,7 +12,7 @@ import React from "react";
 import HomeTitle from "./rightSide";
 import Bubble from "@site/src/components/bubbleText";
 
-import data from "@site/src/components/ImageSwiper/data";
+// import data from "@site/src/components/ImageSwiper/data";
 import CpsImgSwiper, { DEFAULT_MAIN_COLOR, DEFAULT_SUB_COLOR } from "@site/src/components/ImageSwiper/index";
 import type { AlignmentModeT } from "@site/src/components/ImageSwiper/index";
 
@@ -72,28 +72,28 @@ export default class HomeImgSwiper extends React.Component<
     /**
      * @description: 位于组件中央的彩色轮播切换按钮
      */
-    const Items = () => {
-      return (
-        <div className="absolute w-full h-10 bottom-[5%] z-[1] flex items-center justify-center gap-4">
-          {data.map((item, index) => {
-            const { mainColor } = item;
-            const key = index.toString();
-            return (
-              <div
-                key={key}
-                onClick={(e) => this.switchPage(index)}
-                style={{ background: mainColor }}
-                className={[
-                  "border-2 border-solid border-white",
-                  "w-5 h-5 rounded-full cursor-pointer",
-                  "hover:w-10 transition-all duration-300",
-                ].join(" ")}
-              ></div>
-            );
-          })}
-        </div>
-      );
-    };
+    // const Items = () => {
+    //   return (
+    //     <div className="absolute w-full h-10 bottom-[5%] z-[1] flex items-center justify-center gap-4">
+    //       {data.map((item, index) => {
+    //         const { mainColor } = item;
+    //         const key = index.toString();
+    //         return (
+    //           <div
+    //             key={key}
+    //             onClick={(e) => this.switchPage(index)}
+    //             style={{ background: mainColor }}
+    //             className={[
+    //               "border-2 border-solid border-white",
+    //               "w-5 h-5 rounded-full cursor-pointer",
+    //               "hover:w-10 transition-all duration-300",
+    //             ].join(" ")}
+    //           ></div>
+    //         );
+    //       })}
+    //     </div>
+    //   );
+    // };
 
     return (
       <div
@@ -112,10 +112,16 @@ export default class HomeImgSwiper extends React.Component<
         </div>
 
         {/* 泡泡组件 */}
-        <Bubble width={600} height={200} bubbleScale={1.5} positionElementId="postitionElement"></Bubble>
+        <Bubble
+          image={require("@site/static/logo/capsion.png").default}
+          width={600}
+          height={200}
+          bubbleScale={1.5}
+          positionElementId="postitionElement"
+        ></Bubble>
 
         {/* 轮播组件 */}
-        <CpsImgSwiper
+        {/* <CpsImgSwiper
           showArrow={false}
           autoSwitch={0}
           page={this.state.page}
@@ -128,7 +134,7 @@ export default class HomeImgSwiper extends React.Component<
             "w-[4 50px] h-[550px] min-w-[300px]",
             "bg-white rounded-md overflow-hidden relative",
           ].join(" ")}
-        ></CpsImgSwiper>
+        ></CpsImgSwiper> */}
 
         {/* 切页圆点 */}
         {/* <Items key="items" /> */}

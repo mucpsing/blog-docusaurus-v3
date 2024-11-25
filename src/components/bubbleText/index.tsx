@@ -1,8 +1,8 @@
 /*
  * @Author: cpasion-office-win10 373704015@qq.com
  * @Date: 2023-03-28 16:25:46
- * @LastEditors: CPS holy.dandelion@139.com
- * @LastEditTime: 2023-04-20 22:54:25
+ * @LastEditors: cpasion-office-win10 373704015@qq.com
+ * @LastEditTime: 2024-11-25 17:28:17
  * @FilePath: \cps-blog\src\pages\test\index.tsx
  * @Description: 泡泡文字聚散效果组建，父级元素必须采用绝对定位，最终泡泡扩散的位置会根据最近一个绝对定位的父级来生成
  */
@@ -87,6 +87,8 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
 
     this.gather = true;
     this.interval = null;
+
+    console.log("BUG: ", this.props.image);
   }
 
   init = () => {
@@ -113,17 +115,7 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
 
     this.init();
 
-    document.addEventListener("visibilitychange", () => {
-      var isHidden = document.hidden;
 
-      if (isHidden) {
-        document.title = "死鬼，你去哪儿了！";
-        this.IS_CURRT_WEB_PAGE = false;
-      } else {
-        document.title = "死鬼，你终于回来拉！";
-        this.IS_CURRT_WEB_PAGE = true;
-      }
-    });
 
     this.resizeEvent = throttle(this.updatePositions, 200);
     window.addEventListener("resize", this.resizeEvent);
@@ -178,9 +170,7 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
     const children = [];
     this.pointArray.forEach((item, i) => {
       const r = (Math.random() * this.props.bubbleSizeMin + this.props.bubbleSizeMin) * this.props.bubbleScale;
-      const opacity = this.props.opacity
-        ? this.props.opacity
-        : Math.random() * this.props.opacitymin + this.props.opacitymin;
+      const opacity = this.props.opacity ? this.props.opacity : Math.random() * this.props.opacitymin + this.props.opacitymin;
 
       const delay = Math.floor(Math.random() * (this.props.intervalTime / 3));
       const start = this.props.intervalTime / 2 - delay;
@@ -262,9 +252,7 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
           height: r,
           x: Math.random() * rect.width - sideLeft - item.props.style.left,
           y: Math.random() * rect.height - sideTop - item.props.style.top,
-          opacity: this.props.opacity
-            ? this.props.opacity
-            : Math.random() * this.props.opacitymin + this.props.opacitymin,
+          opacity: this.props.opacity ? this.props.opacity : Math.random() * this.props.opacitymin + this.props.opacitymin,
           scale: Math.random() * 2.4 + 0.1,
           duration: Math.random() * 500 + 500,
           ease: "easeInOutQuint",
@@ -346,13 +334,11 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
       <div id="logoContainer" className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
         <TweenOne
           animation={this.state.boxAnim}
-          className={["absolute pointer-events-auto bg-orange-300/10 rounded-xl", this.isInit ? "shadow-md" : ""].join(
-            " "
-          )}
+          className={["absolute pointer-events-auto bg-orange-300/10 rounded-xl", this.isInit ? "shadow-md" : ""].join(" ")}
           style={{
             width: `${this.props.width}px`,
             height: `${this.props.height}px`,
-            top: this.state.top,
+            // top: this.state.top,
             left: this.state.left,
             bottom: this.state.bottom,
             right: this.state.right,

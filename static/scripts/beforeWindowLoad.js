@@ -2,7 +2,7 @@
  * @Author: CPS holy.dandelion@139.com
  * @Date: 2023-04-04 17:09:26
  * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2024-02-27 10:02:00
+ * @LastEditTime: 2024-03-05 15:56:48
  * @FilePath: \cps-blog-test\static\cps.js
  * @Description: 用来修复docs中，所有采用了本地服务器图片的链接指定的cdn
  */
@@ -56,17 +56,6 @@ function fixLocalHostToCDN(inputUrlStr, searchHost = SEARCH_HOST, newHost = CND_
     } else {
       return inputUrlStr.replace(location.host, newHost);
     }
-
-    // if (inputHost.indexOf(searchHost) > -1) {
-    //   // 如果没有指定替换新的host，则替换为当前源
-    //   if (newHost) {
-    //     return inputHost.replace(searchHost, newHost);
-    //   } else {
-    //     return inputHost.replace(searchHost, location.host);
-    //   }
-    // }
-
-    // return "";
   } catch (error) {
     console.log("图片替换失败123：", inputHost);
     console.log({ error });
@@ -75,7 +64,7 @@ function fixLocalHostToCDN(inputUrlStr, searchHost = SEARCH_HOST, newHost = CND_
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-  console.log("cps-scripts has loaded");
+  console.log("cps-scripts has loaded v0.04");
 
   document.addEventListener(
     "error",
@@ -105,27 +94,14 @@ window.addEventListener("DOMContentLoaded", () => {
           URL_OBJ.host = CDN_URL_OBJ.host;
           img.src = URL_OBJ.href;
 
-          FIXED_LIST.push(URL_OBJ.href);
-
           console.log("尝试修复2", img.src);
+        } else if (URL_OBJ.protocol == "https:") {
+          URL_OBJ.protocol = `http:`;
+          img.src = URL_OBJ.href;
+
+          FIXED_LIST.push(URL_OBJ.href);
+          console.log("尝试修复3", img.src);
         }
-
-        // 情况2，已经是cdn的图片，还是获取失败，不再进行修复
-
-        // 已经修复过，不再进行修复
-        // if (isHandled(img.src)) return;
-
-        // const newSrc = fixLocalHostToCDN(img.src, SEARCH_HOST, CND_HOST);
-
-        // console.log("newSrc: ", newSrc);
-
-        // // 这里有可能触发无限重新赋值同一个无法加载url的死循环
-        // if (newSrc && img.src != newSrc) {
-        //   console.log("尝试替换cdn图片: ", newSrc);
-        //   img.src = newSrc;
-
-        //   FIXED_LIST.push(newSrc);
-        // }
       }
     },
     true

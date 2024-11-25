@@ -5,7 +5,8 @@
   "scripts": {
     "docusaurus": "docusaurus",
     "start": "docusaurus start --port 3001",
-    "build": "docusaurus build",
+    "build": "docusaurus build ",
+    "build:github-page": "npx cross-env PAGE_TYPE=github docusaurus build",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
     "clear": "docusaurus clear",
@@ -36,7 +37,8 @@
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "tailwindcss": "^3.4.1",
-    "typed.js": "^2.1.0"
+    "typed.js": "^2.1.0",
+    "ua-parser-js": "^2.0.0"
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "3.01.1",
@@ -50,6 +52,7 @@
     "commitlint-config-cz": "^0.13.3",
     "conventional-changelog": "^5.1.0",
     "conventional-changelog-cli": "^4.1.0",
+    "cross-env": "^7.0.3",
     "postcss": "^8.4.35",
     "typescript": "~5.2.2",
     "yaml": "^2.3.4"

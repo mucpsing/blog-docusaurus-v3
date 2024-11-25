@@ -1,13 +1,14 @@
 import { themes as prismThemes } from "prism-react-renderer";
 import type { Config } from "@docusaurus/types";
 import type * as Preset from "@docusaurus/preset-classic";
+import process from "node:process";
 
 import * as path from "path";
-import * as utils from "./src/scripts/utils";
+// import * as utils from "./src/scripts/utils";
 // import { addHeaderTag } from "./src/scripts/customPlugs";
 
 import { extractTagline } from "./src/scripts/taglineList";
-import customPlugin from "./src/plugins/fixHostToCDN";
+// import customPlugin from "./src/plugins/fixHostToCDN";
 
 /* 【首页】名人名言 */
 const taglineList = extractTagline(path.resolve("./docs/【07】常识科普/社会真实/名人名言.md"));
@@ -40,8 +41,10 @@ const config: Config = {
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: "capsion", // Usually your GitHub org/user name.
-  projectName: "cps-blog-docusaurus-v3", // Usually your repo name.
+  projectName: "capsion-blog", // Usually your repo name.
+  organizationName: "capsion-blog", // Usually your GitHub org/user name.
+  // deploymentBranch: "pages",
+  // trailingSlash: false,
 
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
@@ -66,7 +69,6 @@ const config: Config = {
     // 修复本地host的开发图片跳转问题
     {
       src: "/scripts/beforeWindowLoad.js", // 插入图片修复脚本
-      // src: "./src/scripts/beforeWindowLoad.ts", // 插入图片修复脚本
       async: false,
     },
   ],
@@ -170,5 +172,22 @@ const config: Config = {
     },
   } satisfies Preset.ThemeConfig,
 };
+
+if (process.env.PAGE_TYPE && process.env.PAGE_TYPE == "github") {
+  const githubConfig = {
+    url: "https://mucpsing.github.io",
+    baseUrl: "/blog-docusaurus-v3/",
+    projectName: "blog-docusaurus-v3", // Usually your repo name.
+    organizationName: "mucpsing", // Usually your GitHub org/user name.
+    deploymentBranch: "pages",
+    scripts: [
+      {
+        src: "/blog-docusaurus-v3/scripts/beforeWindowLoad.js", // 插入图片修复脚本
+      },
+    ],
+  };
+
+  Object.assign(config, githubConfig);
+}
 
 export default config;

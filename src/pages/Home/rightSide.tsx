@@ -1,8 +1,8 @@
 /*
  * @Author: CPS holy.dandelion@139.com
  * @Date: 2023-03-06 23:17:09
- * @LastEditors: CPS holy.dandelion@139.com
- * @LastEditTime: 2023-04-07 00:27:06
+ * @LastEditors: cpasion-office-win10 373704015@qq.com
+ * @LastEditTime: 2024-11-25 17:13:50
  * @FilePath: \cps-blog\src\components\HomepageSwiper\rightSide.tsx
  * @Description: 首页标题区域
  */
@@ -42,6 +42,7 @@ function TypedTitle() {
 
 export default function HomeTitle() {
   const { siteConfig } = useDocusaurusContext();
+
   return (
     <QueueAnim type="left" duration={800} className="px-4 text-center text-white">
       {/* 仅作定位使用 */}
