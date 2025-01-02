@@ -2,7 +2,7 @@
  * @Author: cpasion-office-win10 373704015@qq.com
  * @Date: 2024-02-21 17:19:21
  * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2024-11-25 17:20:42
+ * @LastEditTime: 2024-11-26 15:39:55
  * @FilePath: \cps-blog-docusaurus-v3\src\pages\Home\swiper.tsx
  * @Description: 首页轮播组件，抽离自CpsImgSwiper组件，进行了定制化
  */
@@ -94,6 +94,20 @@ export default class HomeImgSwiper extends React.Component<
     //     </div>
     //   );
     // };
+
+    
+    // document.addEventListener("visibilitychange", () => {
+    //   var isHidden = document.hidden;
+
+    //   if (isHidden) {
+    //     document.title = "死鬼，你去哪儿了！";
+    //     this.IS_CURRT_WEB_PAGE = false;
+    //   } else {
+    //     document.title = "死鬼，你终于回来拉！";
+    //     this.IS_CURRT_WEB_PAGE = true;
+    //   }
+    // });
+
 
     return (
       <div
