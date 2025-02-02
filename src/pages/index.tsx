@@ -1,8 +1,8 @@
 /*
  * @Author: cpasion-office-win10 373704015@qq.com
  * @Date: 2024-02-21 08:43:33
- * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2024-11-25 17:08:15
+ * @LastEditors: capsion_surfacePro7 capsion@surfacePro2.com
+ * @LastEditTime: 2025-01-26 17:27:29
  * @FilePath: \cps-blog-docusaurus-v3\src\pages\index.tsx
  * @Description: 入口文件，首页
  */
@@ -15,6 +15,14 @@ import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 
 import HomepageBody from "@site/src/pages/Home/index";
 import HomepageFeatures from "@site/src/pages/Home/features";
+// import BubbleTextEffect from "@site/src/components/bubbleThreejs";
+
+// function Bubble() {
+//   const container = document.getElementById("canvas-container");
+//   const bubbleText = new BubbleTextEffect(container, "Hello World", null, 5000);
+
+//   return <canvas id="canvas-container"></canvas>;
+// }
 
 export default function Home(): JSX.Element {
   const { siteConfig } = useDocusaurusContext();
@@ -33,6 +41,8 @@ export default function Home(): JSX.Element {
       <div>
         <HomepageFeatures />
       </div>
+
+      {/* <Bubble></Bubble> */}
     </Layout>
   );
 }

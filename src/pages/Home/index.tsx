@@ -1,8 +1,8 @@
 /*
  * @Author: cpasion-office-win10 373704015@qq.com
  * @Date: 2024-02-21 17:19:21
- * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2024-11-26 15:39:55
+ * @LastEditors: capsion_surfacePro7 capsion@surfacePro2.com
+ * @LastEditTime: 2025-01-25 19:28:17
  * @FilePath: \cps-blog-docusaurus-v3\src\pages\Home\swiper.tsx
  * @Description: 首页轮播组件，抽离自CpsImgSwiper组件，进行了定制化
  */
@@ -45,10 +45,10 @@ export default class HomeImgSwiper extends React.Component<
   }
 
   componentDidMount(): void {
-    this.autoSwitch(20000);
+    this.switchOnce(20000);
   }
 
-  autoSwitch = (switchDelay: number) => {
+  switchOnce = (switchDelay: number) => {
     setTimeout(() => {
       if (!this.state.isStartAutoSwitch) {
         let isStartAutoSwitch = setInterval(() => {
@@ -95,7 +95,6 @@ export default class HomeImgSwiper extends React.Component<
     //   );
     // };
 
-    
     // document.addEventListener("visibilitychange", () => {
     //   var isHidden = document.hidden;
 
@@ -107,7 +106,6 @@ export default class HomeImgSwiper extends React.Component<
     //     this.IS_CURRT_WEB_PAGE = true;
     //   }
     // });
-
 
     return (
       <div
@@ -121,18 +119,21 @@ export default class HomeImgSwiper extends React.Component<
         style={{ background: DEFAULT_SUB_COLOR[this.state.page], transition: "background 1s" }}
       >
         {/* 标题组件 */}
-        <div id="homeTitleComment" className="home-title w-[400px]">
+        {/* <div id="homeTitleComment" className="home-title w-[400px]">
           <HomeTitle />
-        </div>
+        </div> */}
 
         {/* 泡泡组件 */}
-        <Bubble
-          image={require("@site/static/logo/capsion.png").default}
-          width={600}
-          height={200}
-          bubbleScale={1.5}
-          positionElementId="postitionElement"
-        ></Bubble>
+        {/* <div className="top-10"></div> */}
+        {/* <div className={["top-10"].join(" ")}>
+          <Bubble
+            image={require("@site/static/logo/capsion.png").default}
+            width={600}
+            height={200}
+            bubbleScale={1.5}
+            positionElementId="postitionElement"
+          ></Bubble>
+        </div> */}
 
         {/* 轮播组件 */}
         {/* <CpsImgSwiper

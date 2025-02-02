@@ -1,19 +1,22 @@
 /*
  * @Author: cpasion-office-win10 373704015@qq.com
  * @Date: 2023-03-28 16:25:46
- * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2024-11-25 17:28:17
+ * @LastEditors: capsion_surfacePro7 capsion@surfacePro2.com
+ * @LastEditTime: 2025-01-25 19:27:12
  * @FilePath: \cps-blog\src\pages\test\index.tsx
  * @Description: 泡泡文字聚散效果组建，父级元素必须采用绝对定位，最终泡泡扩散的位置会根据最近一个绝对定位的父级来生成
  */
 import React from "react";
 import ReactDOM from "react-dom";
 import TweenOne from "rc-tween-one";
-import { throttle, type DebouncedFunc } from "lodash";
+import { throttle, type DebouncedFunc, isNumber, isString } from "lodash";
+import { createRef, Component } from "react";
 
 // import "./bubble.css";
 
 interface LogoGatherProps {
+  top?: number | "center"; // 顶部间距，默认上下居中
+  left?: number | "center"; // 左部间距，默认左右居中
   image?: string;
   width?: number;
   height?: number;
@@ -49,6 +52,7 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
     image: "/logo/capsion.png",
     width: 600,
     height: 200,
+    top: "auto",
     bubbleScale: 1,
     bubbleSize: 10,
     bubbleSizeMin: 5,
@@ -88,7 +92,7 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
     this.gather = true;
     this.interval = null;
 
-    console.log("BUG: ", this.props.image);
+    // console.log("DEBUG: ", this.props.image);
   }
 
   init = () => {
@@ -112,10 +116,9 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
 
   componentDidMount() {
     this.dom = ReactDOM.findDOMNode(this) as Element;
+    // this.dom = createRef(null).current as Element;
 
     this.init();
-
-
 
     this.resizeEvent = throttle(this.updatePositions, 200);
     window.addEventListener("resize", this.resizeEvent);
@@ -287,29 +290,37 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
     }
 
     // 以下代码根据最近一个相对定位的父级元素重新计算泡泡散开时候的位置
-    const { top, left, transform } = this.state;
+    // const { top, left, transform } = this.state;
 
-    const refElement = this.positionElement.getBoundingClientRect();
-    const parent = this.dom.getBoundingClientRect();
+    // const refElement = this.positionElement.getBoundingClientRect();
+    // const parent = this.dom.getBoundingClientRect();
+    // let newState: { top?: number; left?: number; transform?: string } = {};
 
-    const translateX = this.props.width / 2 - refElement.width / 2;
-    const translateY = this.props.height / 2 - refElement.height / 2;
-    const newTransform = `translate(-${translateX}px, -${translateY}px)`;
+    // if (this.props.top == "center") {
+    //   const translateX = this.props.width / 2 - refElement.width / 2;
+    //   const translateY = this.props.height / 2 - refElement.height / 2;
+    //   const newTransform = `translate(-${translateX}px, -${translateY}px)`;
 
-    const newTop = refElement.y - parent.y;
-    const newLeft = refElement.x - parent.x;
+    //   const newTop = refElement.y - parent.y; // 进行垂直居中
+    //   const newLeft = refElement.x - parent.x; // 进行左右居中
+    //   newState = { top: newTop, left: newLeft, transform: newTransform };
+    // } else if (isNumber(this.props.top) && this.props.top > 0) {
+    //   newState.top == this.props.top;
+    // }
 
-    const newState = { top: newTop, left: newLeft, transform: newTransform };
+    // if (isString(this.props.left) && this.props.left == "center") {
+    // }
 
-    const oldStateString = JSON.stringify({ top, left, transform });
-    const newStateString = JSON.stringify(newState);
+    // const oldStateString = JSON.stringify({ top, left, transform });
+    // const newStateString = JSON.stringify(newState);
 
-    if (oldStateString != newStateString) this.setState(newState);
+    // if (oldStateString != newStateString) this.setState(newState);
 
     return true;
   };
 
   updateTweenData = () => {
+    const thisDomRef = createRef();
     try {
       if (!this.IS_CURRT_WEB_PAGE) return;
 
@@ -338,7 +349,7 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
           style={{
             width: `${this.props.width}px`,
             height: `${this.props.height}px`,
-            // top: this.state.top,
+            top: this.state.top,
             left: this.state.left,
             bottom: this.state.bottom,
             right: this.state.right,
