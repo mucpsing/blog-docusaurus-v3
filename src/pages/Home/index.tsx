@@ -1,8 +1,8 @@
 /*
  * @Author: cpasion-office-win10 373704015@qq.com
  * @Date: 2024-02-21 17:19:21
- * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2024-11-26 15:39:55
+ * @LastEditors: Capsion 373704015@qq.com
+ * @LastEditTime: 2025-02-04 15:56:08
  * @FilePath: \cps-blog-docusaurus-v3\src\pages\Home\swiper.tsx
  * @Description: 首页轮播组件，抽离自CpsImgSwiper组件，进行了定制化
  */
@@ -10,12 +10,9 @@
 import React from "react";
 
 import HomeTitle from "./rightSide";
-import Bubble from "@site/src/components/bubbleText";
 
-// import data from "@site/src/components/ImageSwiper/data";
 import CpsImgSwiper, { DEFAULT_MAIN_COLOR, DEFAULT_SUB_COLOR } from "@site/src/components/ImageSwiper/index";
 import type { AlignmentModeT } from "@site/src/components/ImageSwiper/index";
-
 export default class HomeImgSwiper extends React.Component<
   { alignmentMode: AlignmentModeT },
   {
@@ -45,10 +42,10 @@ export default class HomeImgSwiper extends React.Component<
   }
 
   componentDidMount(): void {
-    this.autoSwitch(20000);
+    this.switchOnce(20000);
   }
 
-  autoSwitch = (switchDelay: number) => {
+  switchOnce = (switchDelay: number) => {
     setTimeout(() => {
       if (!this.state.isStartAutoSwitch) {
         let isStartAutoSwitch = setInterval(() => {
@@ -69,46 +66,6 @@ export default class HomeImgSwiper extends React.Component<
   };
 
   render() {
-    /**
-     * @description: 位于组件中央的彩色轮播切换按钮
-     */
-    // const Items = () => {
-    //   return (
-    //     <div className="absolute w-full h-10 bottom-[5%] z-[1] flex items-center justify-center gap-4">
-    //       {data.map((item, index) => {
-    //         const { mainColor } = item;
-    //         const key = index.toString();
-    //         return (
-    //           <div
-    //             key={key}
-    //             onClick={(e) => this.switchPage(index)}
-    //             style={{ background: mainColor }}
-    //             className={[
-    //               "border-2 border-solid border-white",
-    //               "w-5 h-5 rounded-full cursor-pointer",
-    //               "hover:w-10 transition-all duration-300",
-    //             ].join(" ")}
-    //           ></div>
-    //         );
-    //       })}
-    //     </div>
-    //   );
-    // };
-
-    
-    // document.addEventListener("visibilitychange", () => {
-    //   var isHidden = document.hidden;
-
-    //   if (isHidden) {
-    //     document.title = "死鬼，你去哪儿了！";
-    //     this.IS_CURRT_WEB_PAGE = false;
-    //   } else {
-    //     document.title = "死鬼，你终于回来拉！";
-    //     this.IS_CURRT_WEB_PAGE = true;
-    //   }
-    // });
-
-
     return (
       <div
         className={[
@@ -121,37 +78,9 @@ export default class HomeImgSwiper extends React.Component<
         style={{ background: DEFAULT_SUB_COLOR[this.state.page], transition: "background 1s" }}
       >
         {/* 标题组件 */}
-        <div id="homeTitleComment" className="home-title w-[400px]">
+        <div id="homeTitleComment" className="mt-10 home-title w-[400px]">
           <HomeTitle />
         </div>
-
-        {/* 泡泡组件 */}
-        <Bubble
-          image={require("@site/static/logo/capsion.png").default}
-          width={600}
-          height={200}
-          bubbleScale={1.5}
-          positionElementId="postitionElement"
-        ></Bubble>
-
-        {/* 轮播组件 */}
-        {/* <CpsImgSwiper
-          showArrow={false}
-          autoSwitch={0}
-          page={this.state.page}
-          mainColor={DEFAULT_MAIN_COLOR}
-          subColor={DEFAULT_SUB_COLOR}
-          classNames={[
-            "md:w-[500px] md:h-[300px]",
-            "lg:w-[600px] lg:h-[450px]",
-            "xl:w-[850px] xl:h-[550px]",
-            "w-[4 50px] h-[550px] min-w-[300px]",
-            "bg-white rounded-md overflow-hidden relative",
-          ].join(" ")}
-        ></CpsImgSwiper> */}
-
-        {/* 切页圆点 */}
-        {/* <Items key="items" /> */}
       </div>
     );
   }

@@ -4,7 +4,7 @@ import type * as Preset from "@docusaurus/preset-classic";
 import process from "node:process";
 
 import * as path from "path";
-// import * as utils from "./src/scripts/utils";
+import * as scripts from "./src/scripts";
 // import { addHeaderTag } from "./src/scripts/customPlugs";
 
 import { extractTagline } from "./src/scripts/taglineList";
@@ -13,23 +13,11 @@ import { extractTagline } from "./src/scripts/taglineList";
 /* 【首页】名人名言 */
 const taglineList = extractTagline(path.resolve("./docs/【07】常识科普/社会真实/名人名言.md"));
 
-/* 【上方导航】学习笔记 */
+/* 排除的文件夹 */
 const excludeDirList = ["【18】副业开发", ".obsidian", "gg", ".trash"];
-// const navBarDocsItems = {
-//   label: "📔 学习笔记",
-//   type: "dropdown",
-//   position: "right",
-//   items: utils.createNavItemByDir({ targetPath: path.resolve("./docs"), excludeDirList }),
-// };
-
-/* 【上方导航】生成项目页 相当于跳转/project路由 */
-const defaultPath = ["./docs/【05】项目经历/原创作品/", "./docs/【05】项目经历/完整项目/"];
-const defaultPrefix = ["/docs/【05】项目经历/原创作品", "/docs/【05】项目经历/完整项目"];
-const outputPath = path.resolve("./data/project.js");
-// (async () => await utils.createProjectDataByFolder(defaultPath, defaultPrefix, outputPath))();
 
 const config: Config = {
-  title: "Capsion",
+  title: "Capsion | 个人博客 | 编程资料整理",
   tagline: taglineList.join(","),
   favicon: "img/favicon.ico",
 
@@ -46,7 +34,8 @@ const config: Config = {
   // deploymentBranch: "pages",
   // trailingSlash: false,
 
-  onBrokenLinks: "throw",
+  // onBrokenLinks: "throw",
+  onBrokenLinks: "warn",
   onBrokenMarkdownLinks: "warn",
 
   // Even if you don't use internationalization, you can use this field to set
@@ -57,12 +46,26 @@ const config: Config = {
     locales: ["en"],
   },
 
+  plugins: ["@docusaurus/plugin-ideal-image"],
+
   // 开启mermaid（思维导图）支持
   markdown: { mermaid: true },
-  themes: ["@docusaurus/theme-mermaid"],
+  themes: [
+    "@docusaurus/theme-mermaid",
+    [
+      "@easyops-cn/docusaurus-search-local",
+      {
+        // `hashed` is recommended as long-term-cache of index file is possible.
+        hashed: true,
 
-  // 插件
-  // plugins: [[customPlugin, { ccvb: "ccvbbadfasdf" }]],
+        // For Docs using Chinese, it is recomended to set:
+        language: ["en", "zh"],
+
+        // If you're using `noIndex: true`, set `forceIgnoreNoIndex` to enable local index:
+        // forceIgnoreNoIndex: true,
+      },
+    ],
+  ],
 
   // 插入<scripts>标签，
   scripts: [
@@ -101,23 +104,75 @@ const config: Config = {
     // Replace with your project's social card
     image: "img/docusaurus-social-card.jpg",
     navbar: {
-      title: "My Site",
-      logo: {
-        alt: "My Site Logo",
-        src: "img/logo.svg",
-      },
+      title: "🍌 Capsion Lab 🍌",
+      logo: { alt: "My Site Logo", src: "img/logo.svg" },
       items: [
+        { to: "/", label: "🏠 首页", position: "left" },
+
         {
-          type: "docSidebar",
-          sidebarId: "tutorialSidebar",
+          label: "📔 笔记",
+          type: "dropdown",
           position: "left",
-          label: "Tutorial112233",
+          items: scripts.createNavItemByDir({ targetPath: path.resolve("./docs"), excludeDirList }),
         },
-        // { to: "/blog", label: "Blog", position: "left" },
+
+        { type: "search", position: "left" },
+
+        // {
+        //   type: "dropdown",
+        //   label: "🧪 我的实验",
+        //   position: "left",
+        //   items: [
+        //     {
+        //       to: "/sample/jiuhao",
+        //       label: "🛵 真智能自电",
+        //     },
+        //     {
+        //       to: "/sample/ai",
+        //       label: "🤖 AI模特换装",
+        //     },
+        //   ],
+        // },
+
         {
-          href: "https://github.com/facebook/docusaurus",
-          label: "GitHub",
+          label: "💼 作品案例",
           position: "right",
+          to: "/project",
+        },
+
+        {
+          type: "dropdown",
+          label: "🤸 联系我",
+          position: "right",
+          items: [
+            {
+              type: "html",
+              className: "dropdown-archived-versions",
+              value: "<b>我的代码</b>",
+            },
+            {
+              href: "https://gitee.com/capsion/capsion",
+              label: "Gitee",
+            },
+            {
+              href: "https://github.com/mucpsing/mucpsing",
+              label: "GitHub",
+            },
+
+            {
+              type: "html",
+              value: '<hr class="dropdown-separator">',
+            },
+            // {
+            //   type: "html",
+            //   className: "dropdown-archived-versions",
+            //   value: "<b>个人信息</b>",
+            // },
+            {
+              href: "https://gitee.com/capsion/resume",
+              label: "📃 个人简历",
+            },
+          ],
         },
       ],
     },

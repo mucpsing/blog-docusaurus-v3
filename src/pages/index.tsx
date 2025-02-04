@@ -1,8 +1,8 @@
 /*
  * @Author: cpasion-office-win10 373704015@qq.com
  * @Date: 2024-02-21 08:43:33
- * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2024-11-25 17:08:15
+ * @LastEditors: Capsion 373704015@qq.com
+ * @LastEditTime: 2025-02-04 16:00:59
  * @FilePath: \cps-blog-docusaurus-v3\src\pages\index.tsx
  * @Description: 入口文件，首页
  */
@@ -15,6 +15,7 @@ import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 
 import HomepageBody from "@site/src/pages/Home/index";
 import HomepageFeatures from "@site/src/pages/Home/features";
+import Bubble from "@site/src/components/bubbleText";
 
 export default function Home(): JSX.Element {
   const { siteConfig } = useDocusaurusContext();
@@ -26,8 +27,10 @@ export default function Home(): JSX.Element {
         <link rel="stylesheet" href={require("/css/globalcss.css").default} />
       </Head>
 
-      <div className="relative flex flex-col">
+      <div className="relative flex flex-col" id="ccvb">
         <HomepageBody alignmentMode="horizontal" />
+
+        <Bubble positionElementId="ccvb" top="60px" left="center"></Bubble>
       </div>
 
       <div>

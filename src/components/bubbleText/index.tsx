@@ -2,18 +2,17 @@
  * @Author: cpasion-office-win10 373704015@qq.com
  * @Date: 2023-03-28 16:25:46
  * @LastEditors: Capsion 373704015@qq.com
- * @LastEditTime: 2025-02-02 00:27:15
+ * @LastEditTime: 2025-02-03 00:13:22
  * @FilePath: \cps-blog\src\pages\test\index.tsx
  * @Description: 泡泡文字聚散效果组建，父级元素必须采用绝对定位，最终泡泡扩散的位置会根据最近一个绝对定位的父级来生成
  */
 import React from "react";
-import ReactDOM from "react-dom";
 import TweenOne from "rc-tween-one";
 import { throttle, type DebouncedFunc } from "lodash";
 
-// import "./bubble.css";
-
 interface LogoGatherProps {
+  top?: number | string | "center" | "auto"; // 顶部间距，默认上下居中
+  left?: number | string | "center" | "auto"; // 左部间距，默认左右居中
   image?: string;
   width?: number;
   height?: number;
@@ -49,6 +48,7 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
     image: "/logo/capsion.png",
     width: 600,
     height: 200,
+    top: "center",
     bubbleScale: 1,
     bubbleSize: 10,
     bubbleSizeMin: 5,
@@ -88,7 +88,7 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
     this.gather = true;
     this.interval = null;
 
-    console.log("BUG: ", this.props.image);
+    // console.log("DEBUG: ", this.props.image);
   }
 
   init = () => {
@@ -111,11 +111,10 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
   };
 
   componentDidMount() {
-    this.dom = ReactDOM.findDOMNode(this) as Element;
+    this.dom = document.getElementById("logoContainer");
+    this.sideBox = document.getElementById("LogoGather.hoverZone");
 
     this.init();
-
-
 
     this.resizeEvent = throttle(this.updatePositions, 200);
     window.addEventListener("resize", this.resizeEvent);
@@ -129,8 +128,6 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
 
   onMouseEnter = (e) => {
     if (!e || !e.target.id.startsWith("LogoGather")) return;
-
-    console.log("onMouseEnter");
 
     this.setState({ isMouseEnter: true }, () => {
       if (!this.gather) this.updateTweenData();
@@ -264,11 +261,10 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
   };
 
   updatePositions = (): boolean => {
-    // console.log("updatePositions");
-
+    console.log("updatePositions...");
     // 不需要获取定位信息
     if (!this.props.positionElementId) {
-      // console.log("不需要定位");
+      console.log("不需要定位");
       return true;
     }
 
@@ -288,21 +284,40 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
 
     // 以下代码根据最近一个相对定位的父级元素重新计算泡泡散开时候的位置
     const { top, left, transform } = this.state;
-
-    const refElement = this.positionElement.getBoundingClientRect();
-    const parent = this.dom.getBoundingClientRect();
-
-    const translateX = this.props.width / 2 - refElement.width / 2;
-    const translateY = this.props.height / 2 - refElement.height / 2;
-    const newTransform = `translate(-${translateX}px, -${translateY}px)`;
-
-    const newTop = refElement.y - parent.y;
-    const newLeft = refElement.x - parent.x;
-
-    const newState = { top: newTop, left: newLeft, transform: newTransform };
-
     const oldStateString = JSON.stringify({ top, left, transform });
+
+    const positionElement = this.positionElement.getBoundingClientRect();
+    const self = this.sideBox.getBoundingClientRect();
+
+    const newState: { top?: number | string; left?: number | string; transform?: string } = { transform: `translate(0, 0)` };
+    let translateX, translateY;
+
+    if (this.props.top == "auto" || this.props.top == "center") {
+      translateY = positionElement.height / 2 - this.props.height / 2;
+
+      // newState.top = positionElement.y - self.y; // 进行垂直居中
+    } else if (this.props.top) {
+      newState.top = this.props.top;
+    }
+
+    if (["center", "auto"].includes(this.props.left as string)) {
+      translateX = positionElement.width / 2 - this.props.width / 2;
+      // newState.left = positionElement.x - self.x; // 进行左右居中
+    } else if (this.props.left) {
+      newState.left = this.props.left;
+    }
+
+    if (translateX && translateY) {
+      newState.transform = `translate(${translateX}px, ${translateY}px)`;
+    } else if (translateX) {
+      newState.transform = `translate(${translateX}px, 0)`;
+    } else if (translateY) {
+      newState.transform = `translate(0, ${translateY}px)`;
+    }
+
     const newStateString = JSON.stringify(newState);
+
+    console.log({ newState });
 
     if (oldStateString != newStateString) this.setState(newState);
 
@@ -312,9 +327,6 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
   updateTweenData = () => {
     try {
       if (!this.IS_CURRT_WEB_PAGE) return;
-
-      this.dom = ReactDOM.findDOMNode(this) as Element;
-      this.sideBox = ReactDOM.findDOMNode(this.sideBoxComp) as Element;
 
       if (this.gather) {
         if (this.state.isMouseEnter) return;

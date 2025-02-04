@@ -40,7 +40,7 @@ export interface NavItemParams {
 /**
  * @description: 根据指定的文件夹生成菜单：学习笔记 【子菜单】
  * @param {string} targetPath 指定的文件夹
- * @param {string} excludeDirList 一些不想包含在内的目录
+ * @param {string[]} excludeDirList 需要排除的文件夹
  * @param {boolean} inDeep 是否递归读取，如果递归，则列出所有md文件，否则仅列出顶层的目录
  * @param {string} prefixUrl url的前缀，如果使用inDeep，这个是必须的
  */
