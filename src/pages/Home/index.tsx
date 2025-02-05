@@ -1,8 +1,8 @@
 /*
  * @Author: cpasion-office-win10 373704015@qq.com
  * @Date: 2024-02-21 17:19:21
- * @LastEditors: Capsion 373704015@qq.com
- * @LastEditTime: 2025-02-04 15:56:08
+ * @LastEditors: capsion_surfacePro7 capsion@surfacePro2.com
+ * @LastEditTime: 2025-02-04 21:14:03
  * @FilePath: \cps-blog-docusaurus-v3\src\pages\Home\swiper.tsx
  * @Description: 首页轮播组件，抽离自CpsImgSwiper组件，进行了定制化
  */
@@ -69,13 +69,15 @@ export default class HomeImgSwiper extends React.Component<
     return (
       <div
         className={[
-          `overflow-hidden relative w-full h-[600px]`,
-          "md:h-[650px]",
-          "lg:h-[750px]",
-          "xl:h-[850px]",
+          "cps-blog__titleTyping",
+          `overflow-hidden relative w-full`,
+          // "h-[600px]",
+          // "md:h-[650px]",
+          // "lg:h-[750px]",
+          // "xl:h-[850px]",
           "flex justify-evenly items-center pt-60 pb-64 px-4 text-gray-700",
         ].join(" ")}
-        style={{ background: DEFAULT_SUB_COLOR[this.state.page], transition: "background 1s" }}
+        style={{ height: "calc(-60px + 100vh)", background: DEFAULT_SUB_COLOR[this.state.page], transition: "background 1s" }}
       >
         {/* 标题组件 */}
         <div id="homeTitleComment" className="mt-10 home-title w-[400px]">
