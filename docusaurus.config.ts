@@ -46,7 +46,7 @@ const config: Config = {
     locales: ["en"],
   },
 
-  plugins: ["@docusaurus/plugin-ideal-image"],
+  plugins: ["@docusaurus/plugin-ideal-image", "docusaurus-plugin-sass"],
 
   // 开启mermaid（思维导图）支持
   markdown: { mermaid: true },
@@ -94,7 +94,7 @@ const config: Config = {
         //     'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
         // },
         theme: {
-          customCss: "./src/css/custom.css",
+          customCss: ["./src/css/custom.css", "./src/pages/project/romdenDownTagStyle.sass"],
         },
       } satisfies Preset.Options,
     ],

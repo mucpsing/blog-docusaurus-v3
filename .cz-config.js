@@ -1,3 +1,11 @@
+/*
+ * @Author: Capsion 373704015@qq.com
+ * @Date: 2024-02-20 21:08:48
+ * @LastEditors: Capsion 373704015@qq.com
+ * @LastEditTime: 2025-02-10 12:20:36
+ * @FilePath: \cps-blog-docusaurus-v3\.cz-config.js
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
 module.exports = {
   types: [
     { value: "✨feat", name: "新增:    新增功能或者特性" },
@@ -13,9 +21,9 @@ module.exports = {
   ],
   scopes: [{ name: "custom" }, { name: "leetcode" }, { name: "javascript" }, { name: "typescript" }, { name: "Vue" }, { name: "node" }],
   // it needs to match the value for field type. Eg.: 'fix'
-  scopeOverrides: {
-    fix: [{ name: "merge" }, { name: "style" }, { name: "e2eTest" }, { name: "unitTest" }],
-  },
+  // scopeOverrides: {
+  //   fix: [{ name: "merge" }, { name: "style" }, { name: "e2eTest" }, { name: "unitTest" }],
+  // },
   // override the messages, defaults are as follows
   messages: {
     type: "选择一种你的提交类型:",

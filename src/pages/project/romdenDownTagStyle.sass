@@ -1,0 +1,27 @@
+// 项目来源 https://docusaurus.io/zh-CN/docs/styling-layout#sassscss
+
+$count: 51
+@function randomNum($max, $min: 0, $u: 1)
+    @return ($min + random($max)) * $u
+
+@function randomColor()
+    @return rgb(randomNum(255), randomNum(255), randomNum(255))
+
+ul
+    display: flex
+    gap: 4px
+    flex-direction: row
+    flex-wrap: wrap
+    justify-content: center
+    width: 640px
+    height: 420px
+
+li
+    flex-shrink: 0
+    height: 30px
+    border-radius: 30px
+
+@for $i from 1 to $count
+    li:nth-child(#{$i})
+        width: #{randomNum(110, 90)}px
+        background: randomColor()

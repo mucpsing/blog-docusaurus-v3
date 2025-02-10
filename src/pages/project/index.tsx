@@ -23,6 +23,7 @@ import { useHistory, useLocation } from "@docusaurus/router";
 import ExecutionEnvironment from "@docusaurus/ExecutionEnvironment";
 
 import styles from "./styles.module.css";
+// import stylesS from "./style.module.sass";
 
 const TITLE = "🌟作品&项目💼";
 const DESCRIPTION = "以下展示的项目均由本人独立开发，商业产品类型的项目均已取得甲方同意方才展示或开源。";
@@ -255,7 +256,6 @@ function Showcase(): JSX.Element {
         <ShowcaseFilters />
 
         <ShowcaseCards />
-        {/* <ShowcaseCards /> */}
       </main>
     </Layout>
   );
