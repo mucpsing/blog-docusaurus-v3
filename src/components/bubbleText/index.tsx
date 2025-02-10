@@ -1,8 +1,8 @@
 /*
  * @Author: cpasion-office-win10 373704015@qq.com
  * @Date: 2023-03-28 16:25:46
- * @LastEditors: Capsion 373704015@qq.com
- * @LastEditTime: 2025-02-10 11:50:31
+ * @LastEditors: cpasion-office-win10 373704015@qq.com
+ * @LastEditTime: 2025-02-10 14:35:29
  * @FilePath: \cps-blog\src\pages\test\index.tsx
  * @Description: 泡泡文字聚散效果组建，父级元素必须采用绝对定位，最终泡泡扩散的位置会根据最近一个绝对定位的父级来生成
  */
@@ -209,7 +209,7 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
               //   background: `radial-gradient(circle, rgba(${R},${G},${B}, 0.8) 0%, rgba(${R},${G},${B}, 0.4) 60%, rgba(${R},${G},${B}, 0) 100%)`,
               backgroundColor: `rgb(${R},${G},${B})`,
               //   animation: `up-and-down-${(i % 2) + 1} ${start}ms ease-in-out ${delay}ms infinite`,
-              filter: "blur(.5px)",
+              // filter: "blur(.5px)",
             }}
           ></div>
         </TweenOne>

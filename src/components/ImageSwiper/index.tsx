@@ -2,7 +2,7 @@
  * @Author: cpasion-office-win10 373704015@qq.com
  * @Date: 2023-04-21 09:15:12
  * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2024-02-29 09:30:08
+ * @LastEditTime: 2025-02-10 17:41:41
  * @FilePath: \cps-blog\src\components\CpsImgSwiper\index.tsx
  * @Description: 这是一个图片轮播组件，支持横屏和竖屏排版，目前仅支持网页端浏览器，没做移动适配
  */
@@ -329,8 +329,16 @@ export default class CpsImgSwiper extends React.Component<ICpsImgSwiperProps, IC
         {/* 左右箭头 - 触发换页 */}
         {this.props.showArrow ? (
           <TweenOneGroup enter={{ opacity: 0, type: "from" }} leave={{ opacity: 0 }}>
-            <LeftOutlined className="z-[3] absolute text-2xl left-1 -mt-[20px] top-1/2" onClick={this.onLeft} />
-            <RightOutlined className="z-[3] right-1 absolute text-2xl -mt-[20px] top-1/2" onClick={this.onRight} />
+            <LeftOutlined
+              className={["z-[3] left-1 absolute text-2xl top-1/2", "h-full w-[100px]", "text-white"].join(" ")}
+              onClick={this.onLeft}
+              style={{ transform: "translateY(-50%)" }}
+            />
+            <RightOutlined
+              className={["z-[3] right-1 absolute text-2xl top-1/2", "h-full w-[100px]", "text-white"].join(" ")}
+              style={{ transform: "translateY(-50%)" }}
+              onClick={this.onRight}
+            />
           </TweenOneGroup>
         ) : null}
       </div>

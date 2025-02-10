@@ -23,6 +23,8 @@ import { useHistory, useLocation } from "@docusaurus/router";
 import ExecutionEnvironment from "@docusaurus/ExecutionEnvironment";
 
 import styles from "./styles.module.css";
+import "@site/src/components/FallingItemsList/style.css";
+
 // import stylesS from "./style.module.sass";
 
 const TITLE = "🌟作品&项目💼";
@@ -105,29 +107,32 @@ function ShowcaseFilters() {
         {TagList.map((tag, i) => {
           const { label, description, color } = Tags[tag];
           const id = `showcase_checkbox_id_${tag}`;
+          const count = TagList.length;
 
+          const animationDelay = `${50 * (count - i) + (Math.random() * 150 - Math.random() * 300)}ms`;
+          const animation = `falldown 0.9s cubic-bezier(.44, .02, .65, 1.3) ${animationDelay} forwards`;
+
+          const warpStyle = {
+            animation,
+            opacity: 0,
+            transition: "opacity 0.9s",
+          };
+
+          const textStyle = {
+            backgroundColor: color,
+            width: 10,
+            height: 10,
+            borderRadius: "50%",
+            marginLeft: 8,
+          };
           return (
-            <li key={i} className={styles.checkboxListItem}>
+            <li key={i} className={styles.checkboxListItem} style={warpStyle}>
               <ShowcaseTooltip id={id} text={description} anchorEl="#__docusaurus">
                 <ShowcaseTagSelect
                   tag={tag}
                   id={id}
                   label={label}
-                  icon={
-                    tag === "favorite" ? (
-                      <FavoriteIcon svgClass={styles.svgIconFavoriteXs} />
-                    ) : (
-                      <span
-                        style={{
-                          backgroundColor: color,
-                          width: 10,
-                          height: 10,
-                          borderRadius: "50%",
-                          marginLeft: 8,
-                        }}
-                      />
-                    )
-                  }
+                  icon={tag === "favorite" ? <FavoriteIcon svgClass={styles.svgIconFavoriteXs} /> : <span style={textStyle} />}
                 />
               </ShowcaseTooltip>
             </li>
