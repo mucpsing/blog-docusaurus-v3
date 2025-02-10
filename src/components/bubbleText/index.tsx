@@ -2,13 +2,15 @@
  * @Author: cpasion-office-win10 373704015@qq.com
  * @Date: 2023-03-28 16:25:46
  * @LastEditors: Capsion 373704015@qq.com
- * @LastEditTime: 2025-02-03 00:13:22
+ * @LastEditTime: 2025-02-10 11:50:31
  * @FilePath: \cps-blog\src\pages\test\index.tsx
  * @Description: 泡泡文字聚散效果组建，父级元素必须采用绝对定位，最终泡泡扩散的位置会根据最近一个绝对定位的父级来生成
  */
 import React from "react";
 import TweenOne from "rc-tween-one";
 import { throttle, type DebouncedFunc } from "lodash";
+
+import style from "./styles.module.css";
 
 interface LogoGatherProps {
   top?: number | string | "center" | "auto"; // 顶部间距，默认上下居中
@@ -17,6 +19,7 @@ interface LogoGatherProps {
   width?: number;
   height?: number;
   bubbleSize?: number;
+  bubbleCount?: number; // 泡泡数量
   bubbleSizeMin?: number; // 泡泡的最小尺寸
   intervalTime?: number;
   bubbleScale?: number;
@@ -32,6 +35,7 @@ interface LogoGatherState {
   right: number | string;
   bottom: number | string;
   transform: string;
+  bubbleSize: number;
 
   children: any[];
   boxAnim: any;
@@ -44,20 +48,6 @@ declare global {
   }
 }
 export default class LogoGather extends React.Component<LogoGatherProps, LogoGatherState> {
-  static defaultProps = {
-    image: "/logo/capsion.png",
-    width: 600,
-    height: 200,
-    top: "center",
-    bubbleScale: 1,
-    bubbleSize: 10,
-    bubbleSizeMin: 5,
-    intervalTime: 8000,
-    positionElementId: "",
-    opacityMax: 0.9,
-    opacitymin: 0.7,
-  };
-
   public isInit: boolean = false;
   public gather: boolean;
   public interval: null | number;
@@ -72,6 +62,21 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
   public IS_CURRT_WEB_PAGE: boolean = true;
   public resizeEvent: DebouncedFunc<() => boolean>;
 
+  static defaultProps = {
+    image: "/logo/capsion.png",
+    width: 600,
+    height: 200,
+    top: "center",
+    bubbleScale: 1.2,
+    bubbleSize: 15,
+    bubbleCount: 10,
+    bubbleSizeMin: 7,
+    intervalTime: 8000,
+    positionElementId: "",
+    opacityMax: 0.9,
+    opacitymin: 0.6,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -83,12 +88,11 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
       boxAnim: {},
       transform: null,
       isMouseEnter: false,
+      bubbleSize: 0,
     };
 
     this.gather = true;
     this.interval = null;
-
-    // console.log("DEBUG: ", this.props.image);
   }
 
   init = () => {
@@ -103,9 +107,10 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
         this.createPointData();
         this.isInit = true;
 
+        // 首屏短期内触发一次动画
         setTimeout(() => {
           this.onMouseLeave({ target: { id: "LogoGather.init" } });
-        }, this.props.intervalTime / 2);
+        }, 3000);
       }
     }, 1000);
   };
@@ -126,25 +131,41 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
     this.resizeEvent.cancel();
   }
 
+  componentDidUpdate(prevProps) {
+    // console.log("componentDidUpdate 1");
+    if (this.state.bubbleSize !== prevProps.bubbleSize) {
+      this.setState({ bubbleSize: this.props.bubbleSize });
+
+      // console.log("componentDidUpdate 2", this.props.bubbleSize);
+      this.cleanInterval();
+
+      this.gatherData();
+    }
+  }
+
   onMouseEnter = (e) => {
     if (!e || !e.target.id.startsWith("LogoGather")) return;
 
     this.setState({ isMouseEnter: true }, () => {
       if (!this.gather) this.updateTweenData();
-      if (window.CPS_ENV.CPS_INTERVAL_LIST.length > 0) {
-        window.CPS_ENV.CPS_INTERVAL_LIST.forEach((intervalID) => clearInterval(intervalID));
-        window.CPS_ENV.CPS_INTERVAL_LIST = [];
-      }
+
+      this.cleanInterval();
     });
+  };
+
+  cleanInterval = () => {
+    if (window.CPS_ENV.CPS_INTERVAL_LIST.length > 0) {
+      window.CPS_ENV.CPS_INTERVAL_LIST.forEach((intervalID) => clearInterval(intervalID));
+      window.CPS_ENV.CPS_INTERVAL_LIST = [];
+    }
   };
 
   onMouseLeave = (e) => {
     if (!e || !e.target.id.startsWith("LogoGather")) return;
 
-    console.log("onMouseLeave");
-
     this.setState({ isMouseEnter: false }, () => {
       if (this.gather) this.updateTweenData();
+
       if (window.CPS_ENV.CPS_INTERVAL_LIST.length > 0) {
         window.CPS_ENV.CPS_INTERVAL_LIST.forEach((intervalID) => clearInterval(intervalID));
         window.CPS_ENV.CPS_INTERVAL_LIST = [];
@@ -179,13 +200,16 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
       children.push(
         <TweenOne className="absolute rounded-[100%]" key={i} style={{ left: item.x, top: item.y }}>
           <div
-            className="point rounded-[100%]"
+            // className={`${style.bubble} rounded-[100%]`}
             style={{
               width: r,
               height: r,
-              opacity,
+              opacity: opacity / 2,
+              borderRadius: "50%",
+              //   background: `radial-gradient(circle, rgba(${R},${G},${B}, 0.8) 0%, rgba(${R},${G},${B}, 0.4) 60%, rgba(${R},${G},${B}, 0) 100%)`,
               backgroundColor: `rgb(${R},${G},${B})`,
-              animation: `up-and-down-${(i % 2) + 1} ${start}ms ease-in-out ${delay}ms infinite`,
+              //   animation: `up-and-down-${(i % 2) + 1} ${start}ms ease-in-out ${delay}ms infinite`,
+              filter: "blur(.5px)",
             }}
           ></div>
         </TweenOne>
@@ -261,10 +285,9 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
   };
 
   updatePositions = (): boolean => {
-    console.log("updatePositions...");
     // 不需要获取定位信息
     if (!this.props.positionElementId) {
-      console.log("不需要定位");
+      console.warn("不需要定位");
       return true;
     }
 
@@ -272,13 +295,13 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
       this.positionElement = document.getElementById(this.props.positionElementId);
 
       if (!this.positionElement) {
-        console.log("获取元素失败");
+        console.warn("获取元素失败");
         return false;
       }
     }
 
     if (!this.dom) {
-      console.log("父级包裹元素实例读取失败");
+      console.warn("父级包裹元素实例读取失败");
       return false;
     }
 
@@ -317,8 +340,6 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
 
     const newStateString = JSON.stringify(newState);
 
-    console.log({ newState });
-
     if (oldStateString != newStateString) this.setState(newState);
 
     return true;
@@ -337,7 +358,7 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
 
       this.gather = !this.gather;
     } catch (error) {
-      console.log("更新数据失败: ", error);
+      console.warn("更新数据失败: ", error);
     }
   };
 
@@ -346,7 +367,7 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
       <div id="logoContainer" className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
         <TweenOne
           animation={this.state.boxAnim}
-          className={["absolute pointer-events-auto bg-orange-300/10 rounded-xl", this.isInit ? "shadow-md" : ""].join(" ")}
+          className={["absolute pointer-events-auto bg-orange-300/10 rounded-xl", this.isInit ? "shadow-md" : "opacity-0"].join(" ")}
           style={{
             width: `${this.props.width}px`,
             height: `${this.props.height}px`,
@@ -363,6 +384,9 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
         >
           {this.state.children}
         </TweenOne>
+
+        {/* <div>{`当前bubbleSize: ${this.props.bubbleSize}`}</div>
+        <div>{`当前bubbleSize: ${this.state.bubbleSize}`}</div> */}
       </div>
     );
   }

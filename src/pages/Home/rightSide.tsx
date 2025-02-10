@@ -1,8 +1,8 @@
 /*
  * @Author: CPS holy.dandelion@139.com
  * @Date: 2023-03-06 23:17:09
- * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2024-11-25 17:13:50
+ * @LastEditors: Capsion 373704015@qq.com
+ * @LastEditTime: 2025-02-10 12:09:35
  * @FilePath: \cps-blog\src\components\HomepageSwiper\rightSide.tsx
  * @Description: 首页标题区域
  */
@@ -57,11 +57,11 @@ export default function HomeTitle() {
       <TypedTitle />
 
       <div className={`${styles.buttons} mx-2 mt-4 flex justify-center gap-2`} key="btns">
-        <Link key="b1" className="button button--secondary button--lg" to="/">
-          作品集 💼
+        <Link key="b1" className="button button--secondary button--lg" to="/project">
+          作品案例 💼
         </Link>
 
-        <Link key="b2" className="button button--secondary button--lg" to="/">
+        <Link key="b2" className="button button--secondary button--lg" to="https://gitee.com/capsion/resume">
           个人简介 📄
         </Link>
       </div>
