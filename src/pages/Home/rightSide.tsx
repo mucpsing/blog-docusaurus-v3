@@ -2,7 +2,7 @@
  * @Author: CPS holy.dandelion@139.com
  * @Date: 2023-03-06 23:17:09
  * @LastEditors: Capsion 373704015@qq.com
- * @LastEditTime: 2025-02-10 12:09:35
+ * @LastEditTime: 2025-02-11 20:36:20
  * @FilePath: \cps-blog\src\components\HomepageSwiper\rightSide.tsx
  * @Description: 首页标题区域
  */
@@ -25,14 +25,15 @@ function TypedTitle() {
     const typed = new Typed(el.current, {
       strings: _.shuffle(siteConfig.tagline.split(",")),
       startDelay: 1000,
-      typeSpeed: 120,
-      backSpeed: 120,
+      typeSpeed: 80,
+      backSpeed: 60,
       backDelay: 4000,
       loop: true,
     });
 
     return () => typed.destroy();
   }, []);
+
   return (
     <p className="my-2 min-h-[10rem] hero__subtitle">
       <span className="transform" ref={el}></span>

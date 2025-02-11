@@ -1,8 +1,8 @@
 /*
  * @Author: cpasion-office-win10 373704015@qq.com
  * @Date: 2023-03-28 16:25:46
- * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2025-02-11 10:27:48
+ * @LastEditors: Capsion 373704015@qq.com
+ * @LastEditTime: 2025-02-11 22:01:51
  * @FilePath: \cps-blog\src\pages\test\index.tsx
  * @Description: 泡泡文字聚散效果组建，父级元素必须采用绝对定位，最终泡泡扩散的位置会根据最近一个绝对定位的父级来生成
  */
@@ -116,7 +116,7 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
   };
 
   componentDidMount() {
-    this.dom = document.getElementById("logoContainer");
+    this.dom = document.getElementById("bubbleWarp");
     this.sideBox = document.getElementById("LogoGather.hoverZone");
 
     this.init();
@@ -199,10 +199,11 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
       const B = Math.round(Math.random() * 95 + 160);
 
       children.push(
-        <TweenOne className="absolute rounded-[100%]" key={i} style={{ left: item.x, top: item.y }}>
+        <TweenOne className="absolute rounded-[100%]" key={i} style={{ left: item.x, top: item.y, pointerEvents: "none" }}>
           <div
             // className={`${style.bubble} rounded-[100%]`}
             style={{
+              pointerEvents: "none",
               width: r,
               height: r,
               opacity: opacity / 2,
@@ -365,7 +366,7 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
 
   render() {
     return (
-      <div id="logoContainer" className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+      <div id="bubbleWarp" className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
         <TweenOne
           animation={this.state.boxAnim}
           className={["absolute pointer-events-auto bg-orange-300/10 rounded-xl", this.isInit ? "shadow-md" : "opacity-0"].join(" ")}
@@ -385,9 +386,6 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
         >
           {this.state.children}
         </TweenOne>
-
-        {/* <div>{`当前bubbleSize: ${this.props.bubbleSize}`}</div>
-        <div>{`当前bubbleSize: ${this.state.bubbleSize}`}</div> */}
       </div>
     );
   }

@@ -2,7 +2,7 @@
  * @Author: cpasion-office-win10 373704015@qq.com
  * @Date: 2023-04-21 09:15:12
  * @LastEditors: Capsion 373704015@qq.com
- * @LastEditTime: 2025-02-10 23:45:31
+ * @LastEditTime: 2025-02-11 23:02:33
  * @FilePath: \cps-blog\src\components\CpsImgSwiper\index.tsx
  * @Description: 这是一个图片轮播组件，支持横屏和竖屏排版，目前仅支持网页端浏览器，没做移动适配
  */
@@ -59,9 +59,6 @@ export const ANIM_CONFIGS = {
     { translateX: [0, -300], opacity: [1, 0] },
   ],
 };
-
-export const DEFAULT_MAIN_COLOR = ["#FC1E4F", "#FFF43D", "#9FDA7F"];
-export const DEFAULT_SUB_COLOR = ["#FF4058", "#F6B429", "#64D487"];
 
 /**
  * @description: 【图片展示】组件
@@ -154,8 +151,8 @@ export default class CpsImgSwiper extends React.Component<ICpsImgSwiperProps, IC
     data: defaultData,
     imgPreview: false,
     useWebp: false,
-    mainColor: DEFAULT_MAIN_COLOR,
-    subColor: DEFAULT_SUB_COLOR,
+    mainColor: ["#FC1E4F", "#FFF43D", "#9FDA7F"], // 主背景颜色
+    subColor: ["#FF4058", "#F6B429", "#64D487"], // 副背景颜色
     mainColorIndex: 0,
     subColorIndex: 0,
     page: 0,
@@ -256,6 +253,7 @@ export default class CpsImgSwiper extends React.Component<ICpsImgSwiperProps, IC
   autoSwitchOff = (e?: any) => {
     if (typeof e !== "string" && this.autoSwitchInterID) {
       clearInterval(this.autoSwitchInterID);
+
       this.autoSwitchInterID = 0;
 
       console.log("autoSwitchOff");

@@ -1,90 +1,82 @@
 /*
- * @Author: cpasion-office-win10 373704015@qq.com
- * @Date: 2024-02-21 17:19:21
+ * @Author: Capsion 373704015@qq.com
+ * @Date: 2025-02-11 23:11:21
  * @LastEditors: Capsion 373704015@qq.com
- * @LastEditTime: 2025-02-05 23:24:30
- * @FilePath: \cps-blog-docusaurus-v3\src\pages\Home\swiper.tsx
- * @Description: 首页轮播组件，抽离自CpsImgSwiper组件，进行了定制化
+ * @LastEditTime: 2025-02-12 00:26:17
+ * @FilePath: \cps-blog-docusaurus-v3\src\pages\Home\index_func.tsx
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
-
-import React from "react";
-
+import React, { useState, useEffect, useRef } from "react";
 import HomeTitle from "./rightSide";
-import { useGlobalState } from "@site/src/context/GlobalStateContext";
+import { _useGlobalStore, DEFAULT_SUB_COLOR, useGlobalStore } from "@site/src/store";
 
-import CpsImgSwiper, { DEFAULT_MAIN_COLOR, DEFAULT_SUB_COLOR } from "@site/src/components/ImageSwiper/index";
-import type { AlignmentModeT } from "@site/src/components/ImageSwiper/index";
-export default class HomeImgSwiper extends React.Component<
-  { alignmentMode: AlignmentModeT },
-  {
-    bgColor: string[];
-    bgColorIndex: number;
-    page: number;
-    isStartAutoSwitch: NodeJS.Timeout;
-  }
-> {
-  static defaultProps = {
-    alignmentMode: "horizontal",
-  };
+/** 默认的 HomeImgSwiper 组件属性 */
+export const DEFAULT_HOME_IMG_SWIPER_PROPS = {
+  alignmentMode: "horizontal" as "horizontal" | "vertical",
+  isAutoSwitch: true, // 是否自动切换背景色
+  switchDelay: 20000, // 背景切换间隔（毫秒）
+  className: "", // 允许外部传入额外的 class
+  style: {},
+};
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      page: 0,
-      bgColor: ["#F6B429"],
-      bgColorIndex: 0,
-      isStartAutoSwitch: null,
+/** 提取 props 的类型 */
+export type HomeImgSwiperProps = typeof DEFAULT_HOME_IMG_SWIPER_PROPS;
+
+const HomeImgSwiper: React.FC<Partial<HomeImgSwiperProps>> = (props) => {
+  // 使用默认值填充 props
+  const { alignmentMode, isAutoSwitch, switchDelay, className } = { ...DEFAULT_HOME_IMG_SWIPER_PROPS, ...props };
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null); // 存储定时器引用，防止重复调用
+
+  // 这是全局的，不是useState
+  const [colorIndex, setColorIndex] = useGlobalStore("colorIndex");
+  const switchColor = () => setColorIndex(DEFAULT_SUB_COLOR[colorIndex + 1] ? colorIndex + 1 : 0);
+
+  useEffect(() => {
+    if (!isAutoSwitch) return;
+
+    // 清除之前的定时器，防止多次触发
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+
+    timeoutRef.current = setTimeout(() => switchColor(), switchDelay);
+
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
-  }
+  }, [colorIndex, isAutoSwitch, switchDelay]);
 
-  componentWillUnmount(): void {
-    this.setState = (state, callback) => null;
-    clearInterval(this.state.isStartAutoSwitch);
-  }
-
-  componentDidMount(): void {
-    this.switchOnce(20000);
-  }
-
-  switchOnce = (switchDelay: number) => {
-    setTimeout(() => {
-      if (!this.state.isStartAutoSwitch) {
-        let isStartAutoSwitch = setInterval(() => {
-          let newIndex = this.state.page + 1;
-
-          if (!DEFAULT_SUB_COLOR[newIndex]) newIndex = 0; // 已到最后一个长度，恢复
-
-          this.setState({ page: newIndex });
-        }, switchDelay);
-        this.setState({ isStartAutoSwitch });
-      }
-    }, 1000);
-  };
-
-  switchPage = (page: number) => {
-    console.log("switchPage: ", page);
-    this.setState({ page });
-  };
-
-  render() {
-    return (
-      <div
-        className={[
-          "cps-blog__titleTyping",
-          `overflow-hidden relative w-full`,
-          // "h-[600px]",
-          // "md:h-[650px]",
-          // "lg:h-[750px]",
-          // "xl:h-[850px]",
-          "flex justify-evenly items-center pt-60 pb-64 px-4 text-gray-700",
-        ].join(" ")}
-        style={{ height: "clamp(100px, calc(-60px + 100vh), 1200px)", background: DEFAULT_SUB_COLOR[this.state.page], transition: "background 1s" }}
-      >
-        {/* 标题组件 */}
-        <div id="homeTitleComment" className="mt-10 home-title w-[400px]">
-          <HomeTitle />
+  return (
+    <div
+      className={[
+        "cps-blog__titleTyping",
+        `overflow-hidden relative w-full`,
+        "flex justify-evenly items-center pt-60 pb-64 px-4 text-gray-700",
+        className,
+      ].join(" ")}
+      style={{ height: "clamp(100px, calc(-60px + 100vh), 1200px)", ...props.style }}
+    >
+      {/* 标题组件 */}
+      <div id="homeTitleComment" className="mt-10 home-title w-[400px]">
+        <HomeTitle />
+        <div>
+          <div>{colorIndex}</div>
+          <button onClick={() => switchColor()}>切换</button>
         </div>
       </div>
-    );
-  }
-}
+
+      {/* 背景色切换 */}
+      {DEFAULT_SUB_COLOR.map((bgColor, i) => (
+        <div
+          key={i}
+          className="absolute top-0 left-0 w-full h-full z-[-1]"
+          style={{
+            background: bgColor,
+            opacity: DEFAULT_SUB_COLOR[colorIndex] === bgColor ? 1 : 0,
+            transition: "opacity .6s",
+          }}
+        ></div>
+      ))}
+    </div>
+  );
+};
+
+export default HomeImgSwiper;

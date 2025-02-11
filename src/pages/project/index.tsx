@@ -22,6 +22,7 @@ import { sortedProjects, Tags, TagList, type Project, type TagType } from "./_co
 import { useHistory, useLocation } from "@docusaurus/router";
 import ExecutionEnvironment from "@docusaurus/ExecutionEnvironment";
 import * as utils from "@site/src/utils";
+import { DEFAULT_MAIN_COLOR, DEFAULT_SUB_COLOR } from "@site/src/store";
 
 import styles from "./styles.module.css";
 import "@site/src/components/FallingItemsList/style.css";
@@ -153,7 +154,7 @@ function ShowcaseFilters() {
         display: "flex",
         borderRadius: "15px",
         // color: textColor,
-        color: 'white',
+        color: "white",
       },
 
       iconStyle: {
@@ -307,7 +308,11 @@ function Showcase(): JSX.Element {
   return (
     <Layout title={TITLE} description={DESCRIPTION}>
       <header className="flex justify-center my-10">
-        <CpsImgSwiper classNames={"md:w-[650px] md:h-[450px] lg:w-[800px] lg:h-[600px] xl:w-[1050px] xl:h-[750px]"}></CpsImgSwiper>
+        <CpsImgSwiper
+          mainColor={DEFAULT_MAIN_COLOR}
+          subColor={DEFAULT_SUB_COLOR}
+          classNames={"md:w-[650px] md:h-[450px] lg:w-[800px] lg:h-[600px] xl:w-[1050px] xl:h-[750px]"}
+        ></CpsImgSwiper>
       </header>
       <main className="margin-vert--lg">
         <ProjectHeader title={TITLE} />
