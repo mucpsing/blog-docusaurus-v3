@@ -2,13 +2,13 @@
  * @Author: Capsion 373704015@qq.com
  * @Date: 2025-02-11 23:11:21
  * @LastEditors: Capsion 373704015@qq.com
- * @LastEditTime: 2025-02-12 00:36:33
+ * @LastEditTime: 2025-02-12 00:48:45
  * @FilePath: \cps-blog-docusaurus-v3\src\pages\Home\index_func.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import React, { useState, useEffect, useRef } from "react";
 import HomeTitle from "./rightSide";
-import { _useGlobalStore, DEFAULT_SUB_COLOR, useGlobalStore } from "@site/src/store";
+import { useGlobalStore, DEFAULT_SUB_COLOR } from "@site/src/store";
 
 /** 默认的 HomeImgSwiper 组件属性 */
 export const DEFAULT_HOME_IMG_SWIPER_PROPS = {
@@ -28,8 +28,8 @@ const HomeImgSwiper: React.FC<Partial<HomeImgSwiperProps>> = (props) => {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null); // 存储定时器引用，防止重复调用
 
   // 这是全局的，不是useState;
-  const switchColor = _useGlobalStore((state) => state.switchColor);
-  const colorIndex = _useGlobalStore((state) => state.colorIndex);
+  const colorIndex = useGlobalStore((state) => state.colorIndex);
+  const switchColor = useGlobalStore((state) => state.switchColor);
 
   useEffect(() => {
     if (!isAutoSwitch) return;
