@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useRef } from "react";
 
 import Layout from "@theme/Layout";
 import clsx from "clsx";
@@ -101,30 +101,70 @@ function useFilteredProjects() {
 }
 
 function ShowcaseFilters() {
+  const [inView, setInView] = useState(false);
+  const ulRef = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true); // ul 完全进入视口时，触发动画
+        } else {
+          setInView(false); // ul 离开视口时，重置动画
+        }
+      },
+      {
+        threshold: 0.1, // 视口完全包含 ul 时触发
+      }
+    );
+
+    if (ulRef.current) {
+      observer.observe(ulRef.current);
+    }
+
+    return () => {
+      if (ulRef.current) {
+        observer.unobserve(ulRef.current);
+      }
+    };
+  }, []);
+
+  const styleList = TagList.map((tag, i) => {
+    const { label, description, color } = Tags[tag];
+    const id = `showcase_checkbox_id_${tag}`;
+    const count = TagList.length;
+
+    const animationDelay = `${50 * (count - i) + (Math.random() * 150 - Math.random() * 300)}ms`;
+
+    const falldown = `falldown 0.6s cubic-bezier(.44, .02, .65, 1.3) ${animationDelay} forwards`;
+    const riseup = `riseup 0.6s cubic-bezier(.44, .02, .65, 1.3) ${animationDelay} forwards`;
+    const animation = inView ? falldown : riseup;
+
+    return {
+      warpStyle: {
+        animation,
+        opacity: inView ? 0 : 1,
+        transition: inView ? "opacity 0.6s" : "",
+      },
+
+      textStyle: {
+        backgroundColor: color,
+        width: 10,
+        height: 10,
+        borderRadius: "50%",
+        marginLeft: 8,
+      },
+      id,
+      tag,
+      label,
+      description,
+    };
+  });
+
   return (
     <section className="container flex flex-col items-center justify-center margin-top--l margin-bottom--lg">
-      <ul className={clsx("flex justify-center my-5", styles.checkboxList)}>
-        {TagList.map((tag, i) => {
-          const { label, description, color } = Tags[tag];
-          const id = `showcase_checkbox_id_${tag}`;
-          const count = TagList.length;
-
-          const animationDelay = `${50 * (count - i) + (Math.random() * 150 - Math.random() * 300)}ms`;
-          const animation = `falldown 0.9s cubic-bezier(.44, .02, .65, 1.3) ${animationDelay} forwards`;
-
-          const warpStyle = {
-            animation,
-            opacity: 0,
-            transition: "opacity 0.9s",
-          };
-
-          const textStyle = {
-            backgroundColor: color,
-            width: 10,
-            height: 10,
-            borderRadius: "50%",
-            marginLeft: 8,
-          };
+      <ul className={clsx("flex justify-center my-5 min-h-[180px]", styles.checkboxList)} ref={ulRef}>
+        {styleList.map(({ tag, warpStyle, textStyle, id, label, description }, i) => {
           return (
             <li key={i} className={styles.checkboxListItem} style={warpStyle}>
               <ShowcaseTooltip id={id} text={description} anchorEl="#__docusaurus">

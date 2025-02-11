@@ -1,8 +1,8 @@
 /*
  * @Author: cpasion-office-win10 373704015@qq.com
  * @Date: 2023-04-21 09:15:12
- * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2025-02-10 17:41:41
+ * @LastEditors: Capsion 373704015@qq.com
+ * @LastEditTime: 2025-02-10 23:45:31
  * @FilePath: \cps-blog\src\components\CpsImgSwiper\index.tsx
  * @Description: 这是一个图片轮播组件，支持横屏和竖屏排版，目前仅支持网页端浏览器，没做移动适配
  */
@@ -311,7 +311,8 @@ export default class CpsImgSwiper extends React.Component<ICpsImgSwiperProps, IC
         <BannerAnim
           style={{ backdropFilter: "blur(5px)" }}
           className={[
-            "cps-swiper-text overflow-hidden z-[3]",
+            // z-5 是因为标题需要点击，会被左右切换的按钮遮挡
+            "cps-swiper-text overflow-hidden z-[5]",
             this.props.alignmentMode == "vertical" ? `w-1/2 h-full inline-block relative` : "w-full h-1/3 block absolute bottom-0 bg-white/50",
           ].join(" ")}
           sync
@@ -330,12 +331,12 @@ export default class CpsImgSwiper extends React.Component<ICpsImgSwiperProps, IC
         {this.props.showArrow ? (
           <TweenOneGroup enter={{ opacity: 0, type: "from" }} leave={{ opacity: 0 }}>
             <LeftOutlined
-              className={["z-[3] left-1 absolute text-2xl top-1/2", "h-full w-[100px]", "text-white"].join(" ")}
+              className={["z-[3] left-1 absolute text-2xl top-1/2", "h-full w-[100px] flex items-center justify-start", "text-white"].join(" ")}
               onClick={this.onLeft}
               style={{ transform: "translateY(-50%)" }}
             />
             <RightOutlined
-              className={["z-[3] right-1 absolute text-2xl top-1/2", "h-full w-[100px]", "text-white"].join(" ")}
+              className={["z-[3] right-1 absolute text-2xl top-1/2", "h-full w-[100px] flex items-center justify-end", "text-white"].join(" ")}
               style={{ transform: "translateY(-50%)" }}
               onClick={this.onRight}
             />
