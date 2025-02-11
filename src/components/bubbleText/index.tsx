@@ -2,7 +2,7 @@
  * @Author: cpasion-office-win10 373704015@qq.com
  * @Date: 2023-03-28 16:25:46
  * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2025-02-10 14:35:29
+ * @LastEditTime: 2025-02-11 10:27:48
  * @FilePath: \cps-blog\src\pages\test\index.tsx
  * @Description: 泡泡文字聚散效果组建，父级元素必须采用绝对定位，最终泡泡扩散的位置会根据最近一个绝对定位的父级来生成
  */
@@ -189,9 +189,10 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
     this.pointArray.forEach((item, i) => {
       const r = (Math.random() * this.props.bubbleSizeMin + this.props.bubbleSizeMin) * this.props.bubbleScale;
       const opacity = this.props.opacity ? this.props.opacity : Math.random() * this.props.opacitymin + this.props.opacitymin;
+      const baseIntervalTime = 10000;
 
-      const delay = Math.floor(Math.random() * (this.props.intervalTime / 3));
-      const start = this.props.intervalTime / 2 - delay;
+      const delay = Math.floor(Math.random() * (baseIntervalTime / 3));
+      const start = baseIntervalTime / 2 - delay;
 
       const R = Math.round(Math.random() * 95 + 160);
       const G = Math.round(Math.random() * 95 + 160);
@@ -208,7 +209,7 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
               borderRadius: "50%",
               //   background: `radial-gradient(circle, rgba(${R},${G},${B}, 0.8) 0%, rgba(${R},${G},${B}, 0.4) 60%, rgba(${R},${G},${B}, 0) 100%)`,
               backgroundColor: `rgb(${R},${G},${B})`,
-              //   animation: `up-and-down-${(i % 2) + 1} ${start}ms ease-in-out ${delay}ms infinite`,
+              animation: `up-and-down-${(i % 2) + 1} ${start}ms ease-in-out ${delay}ms infinite`,
               // filter: "blur(.5px)",
             }}
           ></div>
