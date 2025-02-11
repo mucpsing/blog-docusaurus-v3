@@ -21,6 +21,7 @@ import { sortedProjects, Tags, TagList, type Project, type TagType } from "./_co
 
 import { useHistory, useLocation } from "@docusaurus/router";
 import ExecutionEnvironment from "@docusaurus/ExecutionEnvironment";
+import * as utils from "@site/src/utils";
 
 import styles from "./styles.module.css";
 import "@site/src/components/FallingItemsList/style.css";
@@ -140,20 +141,33 @@ function ShowcaseFilters() {
     const riseup = `riseup 0.6s cubic-bezier(.44, .02, .65, 1.3) ${animationDelay} forwards`;
     const animation = inView ? falldown : riseup;
 
+    const backgroundColor = utils.randomColor(0.5);
+    const textColor = utils.invertColor(backgroundColor);
+
     return {
-      warpStyle: {
+      liWarpStyle: {
         animation,
         opacity: inView ? 0 : 1,
         transition: inView ? "opacity 0.6s" : "",
+        backgroundColor,
+        display: "flex",
+        borderRadius: "15px",
+        // color: textColor,
+        color: 'white',
       },
 
-      textStyle: {
+      iconStyle: {
         backgroundColor: color,
         width: 10,
         height: 10,
         borderRadius: "50%",
         marginLeft: 8,
       },
+
+      textStyle: {
+        border: 0,
+      },
+
       id,
       tag,
       label,
@@ -163,16 +177,16 @@ function ShowcaseFilters() {
 
   return (
     <section className="container flex flex-col items-center justify-center margin-top--l margin-bottom--lg">
-      <ul className={clsx("flex justify-center my-5 min-h-[180px]", styles.checkboxList)} ref={ulRef}>
-        {styleList.map(({ tag, warpStyle, textStyle, id, label, description }, i) => {
+      <ul className={clsx("flex justify-center my-5 min-h-[100px]", styles.checkboxList)} ref={ulRef}>
+        {styleList.map(({ tag, liWarpStyle, iconStyle, id, label, description }, i) => {
           return (
-            <li key={i} className={styles.checkboxListItem} style={warpStyle}>
+            <li key={i} className={styles.checkboxListItem} style={liWarpStyle}>
               <ShowcaseTooltip id={id} text={description} anchorEl="#__docusaurus">
                 <ShowcaseTagSelect
                   tag={tag}
                   id={id}
                   label={label}
-                  icon={tag === "favorite" ? <FavoriteIcon svgClass={styles.svgIconFavoriteXs} /> : <span style={textStyle} />}
+                  icon={tag === "favorite" ? <FavoriteIcon svgClass={styles.svgIconFavoriteXs} /> : <span style={iconStyle} />}
                 />
               </ShowcaseTooltip>
             </li>

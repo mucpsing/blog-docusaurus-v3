@@ -14,7 +14,10 @@ function randomNum(max: number, min: number = 0, u: number = 1): number {
   return (min + Math.floor(Math.random() * (max + 1))) * u;
 }
 
-function randomColor(): string {
+function randomColor(opacity: number = null): string {
+  if (opacity) {
+    return `rgba(${randomNum(255)}, ${randomNum(255)}, ${randomNum(255)}, ${opacity})`;
+  }
   return `rgb(${randomNum(255)}, ${randomNum(255)}, ${randomNum(255)})`;
 }
 
