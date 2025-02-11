@@ -2,7 +2,7 @@
  * @Author: Capsion 373704015@qq.com
  * @Date: 2025-02-11 23:11:21
  * @LastEditors: Capsion 373704015@qq.com
- * @LastEditTime: 2025-02-12 00:26:17
+ * @LastEditTime: 2025-02-12 00:36:33
  * @FilePath: \cps-blog-docusaurus-v3\src\pages\Home\index_func.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -27,9 +27,9 @@ const HomeImgSwiper: React.FC<Partial<HomeImgSwiperProps>> = (props) => {
   const { alignmentMode, isAutoSwitch, switchDelay, className } = { ...DEFAULT_HOME_IMG_SWIPER_PROPS, ...props };
   const timeoutRef = useRef<NodeJS.Timeout | null>(null); // 存储定时器引用，防止重复调用
 
-  // 这是全局的，不是useState
-  const [colorIndex, setColorIndex] = useGlobalStore("colorIndex");
-  const switchColor = () => setColorIndex(DEFAULT_SUB_COLOR[colorIndex + 1] ? colorIndex + 1 : 0);
+  // 这是全局的，不是useState;
+  const switchColor = _useGlobalStore((state) => state.switchColor);
+  const colorIndex = _useGlobalStore((state) => state.colorIndex);
 
   useEffect(() => {
     if (!isAutoSwitch) return;
@@ -58,8 +58,7 @@ const HomeImgSwiper: React.FC<Partial<HomeImgSwiperProps>> = (props) => {
       <div id="homeTitleComment" className="mt-10 home-title w-[400px]">
         <HomeTitle />
         <div>
-          <div>{colorIndex}</div>
-          <button onClick={() => switchColor()}>切换</button>
+          <button onClick={() => switchColor()}> 切换颜色 </button>
         </div>
       </div>
 
