@@ -1,8 +1,8 @@
 /*
  * @Author: cpasion-office-win10 373704015@qq.com
  * @Date: 2024-02-21 08:43:33
- * @LastEditors: Capsion 373704015@qq.com
- * @LastEditTime: 2025-02-12 00:48:16
+ * @LastEditors: cpasion-office-win10 373704015@qq.com
+ * @LastEditTime: 2025-02-12 17:27:44
  * @FilePath: \cps-blog-docusaurus-v3\src\pages\index.tsx
  * @Description: 入口文件，首页
  */
@@ -10,8 +10,9 @@
 import React from "react";
 import Head from "@docusaurus/Head";
 
-// import Layout from "@site/src/theme/GlobalLayout";
-import Layout from "@theme/Layout";
+
+// import Layout from "@theme/Layout";
+import Layout from "@site/src/theme/GlobalLayout";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 
 import HomepageBody from "@site/src/pages/Home";
@@ -19,6 +20,7 @@ import HomepageFeatures from "@site/src/pages/Home/features";
 // import Bubble from "@site/src/components/bubbleText/index_func2";
 // import Bubble from "@site/src/components/bubbleText/index_new";
 import Bubble from "@site/src/components/bubbleText";
+import BubbleComponent from "@site/src/components/BubbleRises/index_svg";
 
 import { useGlobalStore } from "@site/src/store";
 
@@ -42,6 +44,10 @@ export default function Home(): JSX.Element {
       <div>
         <HomepageFeatures />
       </div>
+
+      <div style={{ overflowX: "hidden" }}></div>
+
+      <BubbleComponent />
     </Layout>
   );
 }

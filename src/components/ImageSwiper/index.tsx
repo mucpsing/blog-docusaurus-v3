@@ -1,8 +1,8 @@
 /*
  * @Author: cpasion-office-win10 373704015@qq.com
  * @Date: 2023-04-21 09:15:12
- * @LastEditors: Capsion 373704015@qq.com
- * @LastEditTime: 2025-02-11 23:02:33
+ * @LastEditors: cpasion-office-win10 373704015@qq.com
+ * @LastEditTime: 2025-02-12 17:18:39
  * @FilePath: \cps-blog\src\components\CpsImgSwiper\index.tsx
  * @Description: 这是一个图片轮播组件，支持横屏和竖屏排版，目前仅支持网页端浏览器，没做移动适配
  */
@@ -142,6 +142,7 @@ export default class CpsImgSwiper extends React.Component<ICpsImgSwiperProps, IC
   currtAnim = ANIM_CONFIGS.right;
 
   static defaultProps: ICpsImgSwiperProps = {
+    // alignmentMode: "vertical",
     alignmentMode: "horizontal",
     showText: false,
     showImg: true,
@@ -281,10 +282,19 @@ export default class CpsImgSwiper extends React.Component<ICpsImgSwiperProps, IC
       bgColor: this.props.subColor[this.state.subColorIndex],
     });
     return (
+      // classNames={["sm:w-[300px] sm:h-[200px]","md:w-[650px] md:h-[450px]", "lg:w-[800px] lg:h-[600px]", "xl:w-[1050px] xl:h-[750px]"].join(" ")}
+
       <div
-        className={[this.props.classNames, "shadow-xl", "w-[450px] h-[550px] min-w-[300px]", "bg-white rounded-md overflow-hidden relative"].join(
-          " "
-        )}
+        className={[
+          this.props.classNames,
+          "shadow-xl",
+          "min-w-[100px] min-h-[250px]",
+          "sm:w-[200px] sm:h-[250px]",
+          "md:w-[650px] md:h-[450px]",
+          "lg:w-[800px] lg:h-[600px]",
+          "xl:w-[1050px] xl:h-[750px]",
+          "bg-white rounded-md overflow-hidden relative",
+        ].join(" ")}
       >
         {/* 图片展示 */}
         <BannerAnim
