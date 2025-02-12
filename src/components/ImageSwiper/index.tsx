@@ -1,8 +1,8 @@
 /*
  * @Author: cpasion-office-win10 373704015@qq.com
  * @Date: 2023-04-21 09:15:12
- * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2025-02-12 17:18:39
+ * @LastEditors: Capsion 373704015@qq.com
+ * @LastEditTime: 2025-02-12 21:50:24
  * @FilePath: \cps-blog\src\components\CpsImgSwiper\index.tsx
  * @Description: 这是一个图片轮播组件，支持横屏和竖屏排版，目前仅支持网页端浏览器，没做移动适配
  */
@@ -118,13 +118,17 @@ function createTextComponent(props: { alignmentMode: AlignmentModeT; bgColor: st
   return props.data.map((item, i) => {
     const { title, content } = item;
     return (
-      <Element key={i} prefixCls={props.alignmentMode == "vertical" ? "px-6 py-12 md:px-3 md:py-6" : "px-10 py-4 md:px-5 md:py-2"}>
+      <Element key={i} prefixCls={props.alignmentMode == "vertical" ? "" : ""} style={{ padding: "clamp(0.5rem, calc(10%), 0.8rem)" }}>
         <QueueAnim className="flex flex-col items-start text-gray-700" type="bottom" duration={800} delay={[!i ? props.delay + 500 : 800, 0]}>
-          <h2 key="title" className="py-2 my-1 text-xl">
+          <h2 key="title" style={{ fontSize: "clamp(0.7rem, 0.489rem + 1.05vw, 1.2rem)", margin: 0 }}>
             {title}
           </h2>
-          <em key="line" style={{ background: props.bgColor }} className="inline-block rounded-sm w-16 h-[2px]" />
-          <p key="content" className="mt-3 text-sm">
+          <em
+            key="line"
+            style={{ background: props.bgColor, margin: "clamp(0.5vh, 2.5rem, 1vw) 0", transition: "background 1s .3s" }}
+            className="inline-block w-16 h-[2px]"
+          />
+          <p key="content" style={{ fontSize: "clamp(0.5rem, 0.5rem + 0.5vw, 1rem)", margin: 0 }}>
             {content}
           </p>
         </QueueAnim>
@@ -172,6 +176,8 @@ export default class CpsImgSwiper extends React.Component<ICpsImgSwiperProps, IC
   }
 
   componentDidUpdate(prevProps: Readonly<ICpsImgSwiperProps>, prevState: Readonly<ICpsImgSwiperState>, snapshot?: any): void {
+    if (!this.props.autoSwitch) return;
+
     if (this.props.page !== prevProps.page) {
       console.log("触发换页右边");
       this.onRight();
@@ -288,19 +294,21 @@ export default class CpsImgSwiper extends React.Component<ICpsImgSwiperProps, IC
         className={[
           this.props.classNames,
           "shadow-xl",
-          "min-w-[100px] min-h-[250px]",
-          "sm:w-[200px] sm:h-[250px]",
+          "min-w-[300px] min-h-[250px]",
+          "sm:w-[500px] sm:h-[300px]",
           "md:w-[650px] md:h-[450px]",
           "lg:w-[800px] lg:h-[600px]",
           "xl:w-[1050px] xl:h-[750px]",
+          "w-full",
           "bg-white rounded-md overflow-hidden relative",
+          "flex justify-center items-center",
         ].join(" ")}
       >
         {/* 图片展示 */}
         <BannerAnim
           className={[
             "cps-swiper-img relative overflow-hidden",
-            this.props.alignmentMode == "vertical" ? `w-1/2 h-full inline-block z-[1]` : "w-full min-w-[450px] h-full block absolute z-[2]",
+            this.props.alignmentMode == "vertical" ? `w-1/2 h-full inline-block z-[1]` : "min-w-[200px] w-full h-full block absolute z-[2]",
           ].join(" ")}
           sync
           type="across"

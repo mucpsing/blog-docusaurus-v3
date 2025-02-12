@@ -307,10 +307,12 @@ function ProjectHeader({ title }: { title: string }) {
 function Showcase(): JSX.Element {
   return (
     <Layout title={TITLE} description={DESCRIPTION}>
-      <header className="flex justify-center my-10">
+      {/* <header className="flex justify-center" style={{ margin: "clamp(0.5rem, 2.5rem, 3vh) 0" }}> */}
+      <header className={["flex justify-center", "sm:mt-2 md:mt-4 lg:mt-8 xl:mt-10"].join(" ")}>
         <CpsImgSwiper
           mainColor={DEFAULT_MAIN_COLOR}
           subColor={DEFAULT_SUB_COLOR}
+          autoSwitch={0}
           // classNames={"md:w-[650px] md:h-[450px] lg:w-[800px] lg:h-[600px] xl:w-[1050px] xl:h-[750px]"}
           // classNames={["sm:w-[300px] sm:h-[200px]","md:w-[650px] md:h-[450px]", "lg:w-[800px] lg:h-[600px]", "xl:w-[1050px] xl:h-[750px]"].join(" ")}
         ></CpsImgSwiper>
