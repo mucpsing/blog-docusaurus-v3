@@ -1,8 +1,8 @@
 /*
  * @Author: cpasion-office-win10 373704015@qq.com
  * @Date: 2023-03-28 16:25:46
- * @LastEditors: Capsion 373704015@qq.com
- * @LastEditTime: 2025-02-11 22:01:51
+ * @LastEditors: cpasion-office-win10 373704015@qq.com
+ * @LastEditTime: 2025-02-13 17:00:36
  * @FilePath: \cps-blog\src\pages\test\index.tsx
  * @Description: 泡泡文字聚散效果组建，父级元素必须采用绝对定位，最终泡泡扩散的位置会根据最近一个绝对定位的父级来生成
  */
@@ -27,6 +27,7 @@ interface LogoGatherProps {
   opacity?: number;
   opacityMax?: number;
   opacitymin?: number;
+  offset_y?: number; // 如果页面存在导航条，比如60px，则输入-60
 }
 
 interface LogoGatherState {
@@ -75,6 +76,7 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
     positionElementId: "",
     opacityMax: 0.9,
     opacitymin: 0.6,
+    offset_y: 0,
   };
 
   constructor(props) {
@@ -99,18 +101,19 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
     if (!window.CPS_ENV) window.CPS_ENV = { CPS_INTERVAL_LIST: [] };
 
     let isDone: boolean = false;
-    const taskID = setInterval(() => {
+    const taskID = setTimeout(() => {
       isDone = this.updatePositions();
+      console.log({ isDone });
 
       if (isDone) {
-        clearInterval(taskID);
+        clearTimeout(taskID);
         this.createPointData();
         this.isInit = true;
 
         // 首屏短期内触发一次动画
         setTimeout(() => {
           this.onMouseLeave({ target: { id: "LogoGather.init" } });
-        }, 3000);
+        }, 2000);
       }
     }, 1000);
   };
@@ -132,11 +135,9 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
   }
 
   componentDidUpdate(prevProps) {
-    // console.log("componentDidUpdate 1");
     if (this.state.bubbleSize !== prevProps.bubbleSize) {
       this.setState({ bubbleSize: this.props.bubbleSize });
 
-      // console.log("componentDidUpdate 2", this.props.bubbleSize);
       this.cleanInterval();
 
       this.gatherData();
@@ -151,13 +152,8 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
 
       this.cleanInterval();
     });
-  };
 
-  cleanInterval = () => {
-    if (window.CPS_ENV.CPS_INTERVAL_LIST.length > 0) {
-      window.CPS_ENV.CPS_INTERVAL_LIST.forEach((intervalID) => clearInterval(intervalID));
-      window.CPS_ENV.CPS_INTERVAL_LIST = [];
-    }
+    window.CPS_ENV.CPS_INTERVAL_LIST.push(setTimeout(this.updateTweenData, this.props.intervalTime));
   };
 
   onMouseLeave = (e) => {
@@ -166,18 +162,24 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
     this.setState({ isMouseEnter: false }, () => {
       if (this.gather) this.updateTweenData();
 
-      if (window.CPS_ENV.CPS_INTERVAL_LIST.length > 0) {
-        window.CPS_ENV.CPS_INTERVAL_LIST.forEach((intervalID) => clearInterval(intervalID));
-        window.CPS_ENV.CPS_INTERVAL_LIST = [];
-      }
+      this.cleanInterval();
 
-      window.CPS_ENV.CPS_INTERVAL_LIST.push(setInterval(this.updateTweenData, this.props.intervalTime));
+      window.CPS_ENV.CPS_INTERVAL_LIST.push(setTimeout(this.updateTweenData, this.props.intervalTime));
     });
   };
 
+  cleanInterval = () => {
+    if (window.CPS_ENV.CPS_INTERVAL_LIST.length > 0) {
+      window.CPS_ENV.CPS_INTERVAL_LIST.forEach((intervalID) => clearTimeout(intervalID));
+      window.CPS_ENV.CPS_INTERVAL_LIST = [];
+    }
+  };
   setDataToDom(data: Uint8ClampedArray, w: number, h: number) {
+    const rect = this.dom.getBoundingClientRect();
+    console.log({ rect });
+
     this.pointArray = [];
-    const number = this.props.bubbleSize;
+    const number = this.props.bubbleCount;
     for (let i = 0; i < w; i += number) {
       for (let j = 0; j < h; j += number) {
         if (data[(i + j * w) * 4 + 3] > 150) {
@@ -199,7 +201,11 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
       const B = Math.round(Math.random() * 95 + 160);
 
       children.push(
-        <TweenOne className="absolute rounded-[100%]" key={i} style={{ left: item.x, top: item.y, pointerEvents: "none" }}>
+        <TweenOne
+          className="absolute rounded-[100%]"
+          key={i}
+          style={{ left: rect.x + item.x, top: rect.y + item.y + this.props.offset_y, pointerEvents: "none" }}
+        >
           <div
             // className={`${style.bubble} rounded-[100%]`}
             style={{
@@ -243,6 +249,8 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
   };
 
   gatherData = () => {
+    // const rect = this.positionElement.getBoundingClientRect();
+
     const children = this.state.children.map((item) =>
       React.cloneElement(item, {
         animation: {
@@ -260,11 +268,15 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
   };
 
   disperseData = () => {
-    const rect = this.dom.getBoundingClientRect();
+    // const rect = this.dom.getBoundingClientRect();
     const sideRect = this.sideBox.getBoundingClientRect();
+    const rect = this.positionElement.getBoundingClientRect();
 
     const sideTop = sideRect.top - rect.top;
     const sideLeft = sideRect.left - rect.left;
+
+    console.log({ rect });
+    console.log({ sideRect });
 
     const children = this.state.children.map((item) => {
       const r = (Math.random() * this.props.bubbleSizeMin + this.props.bubbleSizeMin) * 2;
@@ -297,7 +309,7 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
       this.positionElement = document.getElementById(this.props.positionElementId);
 
       if (!this.positionElement) {
-        console.warn("获取元素失败");
+        console.warn("获取元素失败: ", this.props.positionElementId);
         return false;
       }
     }
@@ -308,38 +320,58 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
     }
 
     // 以下代码根据最近一个相对定位的父级元素重新计算泡泡散开时候的位置
+    // const { top, left, transform } = this.state;
+    // const oldStateString = JSON.stringify({ top, left, transform });
+
+    // const positionElement = this.positionElement.getBoundingClientRect();
+    // const self = this.sideBox.getBoundingClientRect();
+
+    // const newState: { top?: number | string; left?: number | string; transform?: string } = { transform: `translate(0, 0)` };
+    // let translateX, translateY;
+
+    // if (this.props.top == "auto" || this.props.top == "center") {
+    //   translateY = positionElement.height / 2 - this.props.height / 2;
+
+    //   // newState.top = positionElement.y - self.y; // 进行垂直居中
+    // } else if (this.props.top) {
+    //   newState.top = this.props.top;
+    // }
+
+    // if (["center", "auto"].includes(this.props.left as string)) {
+    //   translateX = positionElement.width / 2 - this.props.width / 2;
+    //   // newState.left = positionElement.x - self.x; // 进行左右居中
+    // } else if (this.props.left) {
+    //   newState.left = this.props.left;
+    // }
+
+    // if (translateX && translateY) {
+    //   newState.transform = `translate(${translateX}px, ${translateY}px)`;
+    // } else if (translateX) {
+    //   newState.transform = `translate(${translateX}px, 0)`;
+    // } else if (translateY) {
+    //   newState.transform = `translate(0, ${translateY}px)`;
+    // }
+
+    // const newStateString = JSON.stringify(newState);
+
+    // if (oldStateString != newStateString) this.setState(newState);
+
+    // 以下代码根据最近一个相对定位的父级元素重新计算泡泡散开时候的位置
     const { top, left, transform } = this.state;
+
+    const refElement = this.positionElement.getBoundingClientRect();
+    const parent = this.dom.getBoundingClientRect();
+
+    const translateX = this.props.width / 2 - refElement.width / 2;
+    const translateY = this.props.height / 2 - refElement.height / 2;
+    const newTransform = `translate(-${translateX}px, -${translateY}px)`;
+
+    const newTop = refElement.y - parent.y;
+    const newLeft = refElement.x - parent.x;
+
+    const newState = { top: newTop, left: newLeft, transform: newTransform };
+
     const oldStateString = JSON.stringify({ top, left, transform });
-
-    const positionElement = this.positionElement.getBoundingClientRect();
-    const self = this.sideBox.getBoundingClientRect();
-
-    const newState: { top?: number | string; left?: number | string; transform?: string } = { transform: `translate(0, 0)` };
-    let translateX, translateY;
-
-    if (this.props.top == "auto" || this.props.top == "center") {
-      translateY = positionElement.height / 2 - this.props.height / 2;
-
-      // newState.top = positionElement.y - self.y; // 进行垂直居中
-    } else if (this.props.top) {
-      newState.top = this.props.top;
-    }
-
-    if (["center", "auto"].includes(this.props.left as string)) {
-      translateX = positionElement.width / 2 - this.props.width / 2;
-      // newState.left = positionElement.x - self.x; // 进行左右居中
-    } else if (this.props.left) {
-      newState.left = this.props.left;
-    }
-
-    if (translateX && translateY) {
-      newState.transform = `translate(${translateX}px, ${translateY}px)`;
-    } else if (translateX) {
-      newState.transform = `translate(${translateX}px, 0)`;
-    } else if (translateY) {
-      newState.transform = `translate(0, ${translateY}px)`;
-    }
-
     const newStateString = JSON.stringify(newState);
 
     if (oldStateString != newStateString) this.setState(newState);
@@ -366,27 +398,33 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
 
   render() {
     return (
-      <div id="bubbleWarp" className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-        <TweenOne
-          animation={this.state.boxAnim}
-          className={["absolute pointer-events-auto bg-orange-300/10 rounded-xl", this.isInit ? "shadow-md" : "opacity-0"].join(" ")}
-          style={{
-            width: `${this.props.width}px`,
-            height: `${this.props.height}px`,
-            top: this.state.top,
-            left: this.state.left,
-            bottom: this.state.bottom,
-            right: this.state.right,
-            transform: this.state.transform,
-          }}
-          onMouseEnter={this.onMouseEnter}
-          onMouseLeave={this.onMouseLeave}
-          id="LogoGather.hoverZone"
-          ref={(c) => (this.sideBoxComp = c as any)}
-        >
-          {this.state.children}
-        </TweenOne>
-      </div>
+      // <div id="bubbleWarp" className={["top-0 left-0 w-full h-full overflow-hidden pointer-events-none", ""].join(" ")}>
+      <TweenOne
+        id="bubbleWarp"
+        animation={this.state.boxAnim}
+        className={["pointer-events-auto bg-orange-300/10 rounded-xl", "w-full h-full", this.isInit ? "shadow-md" : "opacity-0"].join(" ")}
+        style={{
+          width: `${this.props.width}px`,
+          height: `${this.props.height}px`,
+          // top: this.state.top,
+          // left: this.state.left,
+          // bottom: this.state.bottom,
+          // right: this.state.right,
+          // transform: this.state.transform,
+        }}
+        onMouseEnter={this.onMouseEnter}
+        onMouseLeave={this.onMouseLeave}
+        // id="LogoGather.hoverZone"
+        ref={(c) => (this.sideBox = c as any)}
+      >
+        {this.state.children}
+
+        <div className="translate-y-3">
+          <button onClick={this.gatherData}> 聚合 </button>
+          <button onClick={this.disperseData}> 散开 </button>
+        </div>
+      </TweenOne>
+      // </div>
     );
   }
 }

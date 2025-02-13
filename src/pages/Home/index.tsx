@@ -2,13 +2,14 @@
  * @Author: Capsion 373704015@qq.com
  * @Date: 2025-02-11 23:11:21
  * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2025-02-12 16:20:41
+ * @LastEditTime: 2025-02-13 17:15:13
  * @FilePath: \cps-blog-docusaurus-v3\src\pages\Home\index_func.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import React, { useState, useEffect, useRef } from "react";
 import HomeTitle from "./rightSide";
 import { useGlobalStore, DEFAULT_SUB_COLOR } from "@site/src/store";
+import Bubble from "@site/src/components/bubbleText";
 
 /** 默认的 HomeImgSwiper 组件属性 */
 export const DEFAULT_HOME_IMG_SWIPER_PROPS = {
@@ -28,8 +29,9 @@ const HomeImgSwiper: React.FC<Partial<HomeImgSwiperProps>> = (props) => {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null); // 存储定时器引用，防止重复调用
 
   // 这是全局的，不是useState;
-  const colorIndex = useGlobalStore((state) => state.colorIndex);
-  const switchColor = useGlobalStore((state) => state.switchColor);
+  // const colorIndex = useGlobalStore((state) => state.colorIndex);
+  // const switchColor = useGlobalStore((state) => state.switchColor);
+  const { colorIndex, isMobile, switchColor } = useGlobalStore();
 
   useEffect(() => {
     if (!isAutoSwitch) return;
@@ -41,7 +43,7 @@ const HomeImgSwiper: React.FC<Partial<HomeImgSwiperProps>> = (props) => {
 
     return () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
-      console.log('home unmounted')
+      console.log("home unmounted");
     };
   }, [colorIndex, isAutoSwitch, switchDelay]);
 
@@ -56,12 +58,12 @@ const HomeImgSwiper: React.FC<Partial<HomeImgSwiperProps>> = (props) => {
       style={{ height: "clamp(100px, calc(-60px + 100vh), 1200px)", ...props.style }}
     >
       {/* 标题组件 */}
-      <div id="homeTitleComment" className="mt-10 home-title w-[400px]">
+      {/* <div id="homeTitleComment" className="mt-10 home-title w-[400px]">
         <HomeTitle />
         <div>
           <button onClick={() => switchColor()}> 切换颜色 </button>
         </div>
-      </div>
+      </div> */}
 
       {/* 背景色切换 */}
       {DEFAULT_SUB_COLOR.map((bgColor, i) => (
@@ -75,6 +77,20 @@ const HomeImgSwiper: React.FC<Partial<HomeImgSwiperProps>> = (props) => {
           }}
         ></div>
       ))}
+
+      {/* 气泡 */}
+      <div className="w-full h-full pointer-events-none">
+        <Bubble
+          positionElementId="ccvb"
+          offset_y={-60}
+          top="60px"
+          width={600}
+          height={220}
+          left="center"
+          bubbleSize={10}
+          bubbleCount={isMobile ? 15 : 10}
+        ></Bubble>
+      </div>
     </div>
   );
 };

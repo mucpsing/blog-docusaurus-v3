@@ -49,24 +49,6 @@
   }
 }
 
-/* @keyframes bubble-size {
-  0% {
-    transform: scale(0.5);
-    clip-path: circle(50%);
-    opacity: 0.5;
-  }
-  50% {
-    transform: scale(1);
-    clip-path: circle(100%);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1.2);
-    clip-path: circle(0%);
-    opacity: 0;
-  }
-} */
-
 @keyframes bubble-move {
   0% {
     bottom: -4rem;
@@ -75,13 +57,3 @@
     bottom: var(--distance, 10rem);
   }
 }
-
-/* @keyframes bubble-move {
-  0% {
-    transform: translateY(0) scale(0.5);
-  }
-  100% {
-    transform: translateY(var(--distance, -10rem)) scale(1.2);
-    opacity: 0;
-  }
-} */

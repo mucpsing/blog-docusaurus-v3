@@ -288,10 +288,11 @@ function ProjectHeader({ title }: { title: string }) {
         <h1 className="mb-0">{title}</h1>
         <span>{`(${filteredUsers.length} site${filteredUsers.length > 1 ? "s" : ""})`}</span>
       </div>
-      <p>
+      <div>
         <strong>重要声明：</strong>
         {DESCRIPTION}
-      </p>
+      </div>
+      <div className="mt-2"></div>
       <div>
         <a className="mr-2 button button--primary" href={GITHUB_URL} target="_blank" rel="noreferrer">
           前往 Github

@@ -14,19 +14,20 @@ import { useGlobalStore } from "@site/src/store";
 
 const GlobalLayout: React.FC<{ children: ReactNode }> = (props) => {
   // 从 Zustand store 中获取当前窗口的宽度和高度
-  const { setSize } = useGlobalStore();
+  const { setSize, setIsMobile } = useGlobalStore();
 
   // 使用 useEffect 来监听 window 的 resize 事件
   useEffect(() => {
     // 调用 setSize 更新状态
     const handleResize = () => setSize();
-    console.log("Layout: onMounted");
+    setIsMobile();
+    console.log("Layout app: onMounted");
 
     // 添加 resize 事件监听器
     window.addEventListener("resize", handleResize);
 
     // 清理副作用：组件卸载时移除事件监听
-    console.log("Layout: unMounted");
+    console.log("Layout app: unMounted");
     return () => window.removeEventListener("resize", handleResize);
   }, [setSize]); // 只在 setSize 改变时重新绑定事件
   return <Layout {...props} />;
