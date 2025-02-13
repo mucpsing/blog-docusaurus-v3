@@ -2,7 +2,7 @@
  * @Author: CPS holy.dandelion@139.com
  * @Date: 2023-03-06 23:17:09
  * @LastEditors: Capsion 373704015@qq.com
- * @LastEditTime: 2025-02-13 22:47:55
+ * @LastEditTime: 2025-02-13 22:48:47
  * @FilePath: \cps-blog\src\components\HomepageSwiper\rightSide.tsx
  * @Description: 首页标题区域
  */
@@ -16,7 +16,7 @@ import QueueAnim from "rc-queue-anim";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 
 import Iconfont from "@site/src/components/Iconfont";
-import styles from "./styles.module.css";
+import styles from "./index.module.css";
 
 function TypedTitle() {
   const { siteConfig } = useDocusaurusContext();
@@ -25,14 +25,15 @@ function TypedTitle() {
     const typed = new Typed(el.current, {
       strings: _.shuffle(siteConfig.tagline.split(",")),
       startDelay: 1000,
-      typeSpeed: 120,
-      backSpeed: 120,
+      typeSpeed: 80,
+      backSpeed: 60,
       backDelay: 4000,
       loop: true,
     });
 
     return () => typed.destroy();
   }, []);
+
   return (
     <p className="my-2 min-h-[10rem] hero__subtitle">
       <span className="transform" ref={el}></span>
@@ -42,6 +43,7 @@ function TypedTitle() {
 
 export default function HomeTitle() {
   const { siteConfig } = useDocusaurusContext();
+
   return (
     <QueueAnim type="left" duration={800} className="px-4 text-center text-white">
       {/* 仅作定位使用 */}
@@ -56,11 +58,11 @@ export default function HomeTitle() {
       <TypedTitle />
 
       <div className={`${styles.buttons} mx-2 mt-4 flex justify-center gap-2`} key="btns">
-        <Link key="b1" className="button button--secondary button--lg" to="/">
-          作品集 💼
+        <Link key="b1" className="button button--secondary button--lg" to="/project">
+          作品案例 💼
         </Link>
 
-        <Link key="b2" className="button button--secondary button--lg" to="/">
+        <Link key="b2" className="button button--secondary button--lg" to="https://gitee.com/capsion/resume">
           个人简介 📄
         </Link>
       </div>

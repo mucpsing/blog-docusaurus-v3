@@ -1,10 +1,10 @@
 /*
- * @Author: cpasion-office-win10 373704015@qq.com
- * @Date: 2024-02-21 17:17:28
- * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2025-02-12 10:59:59
+ * @Author: Capsion 373704015@qq.com
+ * @Date: 2025-02-13 22:17:47
+ * @LastEditors: Capsion 373704015@qq.com
+ * @LastEditTime: 2025-02-13 22:17:56
  * @FilePath: \cps-blog-docusaurus-v3\src\pages\Home\features.tsx
- * @Description: 首页下方的脚注部分
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
 import React from "react";
 import clsx from "clsx";

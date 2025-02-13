@@ -314,8 +314,14 @@ function Showcase(): JSX.Element {
           mainColor={DEFAULT_MAIN_COLOR}
           subColor={DEFAULT_SUB_COLOR}
           autoSwitch={0}
-          // classNames={"md:w-[650px] md:h-[450px] lg:w-[800px] lg:h-[600px] xl:w-[1050px] xl:h-[750px]"}
-          // classNames={["sm:w-[300px] sm:h-[200px]","md:w-[650px] md:h-[450px]", "lg:w-[800px] lg:h-[600px]", "xl:w-[1050px] xl:h-[750px]"].join(" ")}
+          classNames={[
+            "shadow-xl",
+            "min-w-[300px] min-h-[250px]",
+            "sm:w-[500px] sm:h-[300px]",
+            "md:w-[650px] md:h-[450px]",
+            "lg:w-[800px] lg:h-[600px]",
+            "xl:w-[1050px] xl:h-[750px]",
+          ].join(" ")}
         ></CpsImgSwiper>
       </header>
       <main className="margin-vert--lg">

@@ -1,98 +1,49 @@
 /*
- * @Author: Capsion 373704015@qq.com
- * @Date: 2025-02-11 23:11:21
- * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2025-02-13 17:15:13
- * @FilePath: \cps-blog-docusaurus-v3\src\pages\Home\index_func.tsx
- * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ * @Author: CPS holy.dandelion@139.com
+ * @Date: 2023-02-07 19:55:02
+ * @LastEditors: Capsion 373704015@qq.com
+ * @LastEditTime: 2025-02-13 23:07:42
+ * @FilePath: \cps-blog\src\pages\index.tsx
+ * @Description: 首页
  */
-import React, { useState, useEffect, useRef } from "react";
-import HomeTitle from "./rightSide";
-import { useGlobalStore, DEFAULT_SUB_COLOR } from "@site/src/store";
-import Bubble from "@site/src/components/bubbleText";
+import React from "react";
+import Head from "@docusaurus/Head";
+import Layout from "@site/src/theme/GlobalLayout";
 
-/** 默认的 HomeImgSwiper 组件属性 */
-export const DEFAULT_HOME_IMG_SWIPER_PROPS = {
-  alignmentMode: "horizontal" as "horizontal" | "vertical",
-  isAutoSwitch: true, // 是否自动切换背景色
-  switchDelay: 20000, // 背景切换间隔（毫秒）
-  className: "", // 允许外部传入额外的 class
-  style: {},
-};
+import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 
-/** 提取 props 的类型 */
-export type HomeImgSwiperProps = typeof DEFAULT_HOME_IMG_SWIPER_PROPS;
+// import HomepageSwiper from "./body";
+import HomepageSwiper from "./body_func";
+import HomepageFeatures from "./features";
 
-const HomeImgSwiper: React.FC<Partial<HomeImgSwiperProps>> = (props) => {
-  // 使用默认值填充 props
-  const { alignmentMode, isAutoSwitch, switchDelay, className } = { ...DEFAULT_HOME_IMG_SWIPER_PROPS, ...props };
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null); // 存储定时器引用，防止重复调用
+import ExecutionEnvironment from "@docusaurus/ExecutionEnvironment";
 
-  // 这是全局的，不是useState;
-  // const colorIndex = useGlobalStore((state) => state.colorIndex);
-  // const switchColor = useGlobalStore((state) => state.switchColor);
-  const { colorIndex, isMobile, switchColor } = useGlobalStore();
+export default function Home(): JSX.Element {
+  const { siteConfig } = useDocusaurusContext();
 
-  useEffect(() => {
-    if (!isAutoSwitch) return;
-
-    // 清除之前的定时器，防止多次触发
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
-
-    timeoutRef.current = setTimeout(() => switchColor(), switchDelay);
-
-    return () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-      console.log("home unmounted");
-    };
-  }, [colorIndex, isAutoSwitch, switchDelay]);
+  if (ExecutionEnvironment.canUseDOM) {
+    // As soon as the site loads in the browser, register a global event listener
+    window.addEventListener("keydown", (e) => {
+      if (e.code === "Period") {
+        location.assign(location.href.replace(".com", ".dev"));
+      }
+    });
+  }
 
   return (
-    <div
-      className={[
-        "cps-blog__titleTyping",
-        `overflow-hidden relative w-full`,
-        "flex justify-evenly items-center pt-60 pb-64 px-4 text-gray-700",
-        className,
-      ].join(" ")}
-      style={{ height: "clamp(100px, calc(-60px + 100vh), 1200px)", ...props.style }}
-    >
-      {/* 标题组件 */}
-      {/* <div id="homeTitleComment" className="mt-10 home-title w-[400px]">
-        <HomeTitle />
-        <div>
-          <button onClick={() => switchColor()}> 切换颜色 </button>
-        </div>
-      </div> */}
+    <Layout title={siteConfig.title} description="Description will go into a meta tag in <head />">
+      <Head>
+        {/* 修复css不加载的问题 */}
+        <link rel="stylesheet" href="/css/globalcss.css" />
+      </Head>
 
-      {/* 背景色切换 */}
-      {DEFAULT_SUB_COLOR.map((bgColor, i) => (
-        <div
-          key={i}
-          className="absolute top-0 left-0 w-full h-full z-[-1]"
-          style={{
-            background: bgColor,
-            opacity: DEFAULT_SUB_COLOR[colorIndex] === bgColor ? 1 : 0,
-            transition: "opacity .6s",
-          }}
-        ></div>
-      ))}
-
-      {/* 气泡 */}
-      <div className="w-full h-full pointer-events-none">
-        <Bubble
-          positionElementId="ccvb"
-          offset_y={-60}
-          top="60px"
-          width={600}
-          height={220}
-          left="center"
-          bubbleSize={10}
-          bubbleCount={isMobile ? 15 : 10}
-        ></Bubble>
+      <div className="relative flex flex-col">
+        <HomepageSwiper />
       </div>
-    </div>
-  );
-};
 
-export default HomeImgSwiper;
+      <div>
+        <HomepageFeatures />
+      </div>
+    </Layout>
+  );
+}
