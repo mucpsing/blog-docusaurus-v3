@@ -1,8 +1,8 @@
 /*
  * @Author: cpasion-office-win10 373704015@qq.com
  * @Date: 2023-03-28 16:25:46
- * @LastEditors: Capsion 373704015@qq.com
- * @LastEditTime: 2025-02-13 23:09:21
+ * @LastEditors: cpasion-office-win10 373704015@qq.com
+ * @LastEditTime: 2025-02-14 17:04:01
  * @FilePath: \cps-blog\src\pages\test\index.tsx
  * @Description: 泡泡文字聚散效果组建，父级元素必须采用绝对定位，最终泡泡扩散的位置会根据最近一个绝对定位的父级来生成
  */
@@ -23,6 +23,7 @@ interface LogoGatherProps {
   opacity?: number;
   opacityMax?: number;
   opacitymin?: number;
+  autoGather?: boolean;
 }
 
 interface LogoGatherState {
@@ -35,6 +36,7 @@ interface LogoGatherState {
   children: any[];
   boxAnim: any;
   isMouseEnter: boolean;
+  currtState: "dispersing" | "done" | "gathing";
 }
 
 declare global {
@@ -55,6 +57,7 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
     positionElementId: "",
     opacityMax: 0.9,
     opacitymin: 0.7,
+    autoGather: true,
   };
 
   public isInit: boolean = false;
@@ -62,6 +65,7 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
   public interval: null | number;
   public intervalTime: number;
   public pointArray: { x: number; y: number }[];
+  public currtState: "dispersing" | "done" | "gathing" = "done";
 
   public dom: Element;
   public sideBox: Element;
@@ -69,7 +73,7 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
   public parent: Element;
   public positionElement: Element;
   public IS_CURRT_WEB_PAGE: boolean = true;
-  public resizeEvent: DebouncedFunc<() => boolean>;
+  public resizeEvent: DebouncedFunc<() => void>;
 
   constructor(props) {
     super(props);
@@ -82,6 +86,7 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
       boxAnim: {},
       transform: null,
       isMouseEnter: false,
+      currtState: "done", // dispersing|default
     };
 
     this.gather = true;
@@ -92,6 +97,8 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
     if (!window.CPS_ENV) window.CPS_ENV = { CPS_INTERVAL_LIST: [] };
 
     let isDone: boolean = false;
+
+    // 这里必须使用setInterval防止setTimeout时，dom未完全生成
     const taskID = setInterval(() => {
       isDone = this.updatePositions();
 
@@ -100,33 +107,40 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
         this.createPointData();
         this.isInit = true;
 
-        setTimeout(() => {
-          this.onMouseLeave({ target: { id: "LogoGather.init" } });
-        }, 2000);
+        if (this.props.autoGather) {
+          setTimeout(() => {
+            // BUG 如果这里直接调用 this.disperseData() 则会触发找不到元素id
+            this.onMouseLeave({ target: { id: "LogoGather.init" } });
+          }, 2000);
+        }
       }
-    }, 1000);
+    }, 100);
   };
 
   componentDidMount() {
-    // this.dom = ReactDOM.findDOMNode(this) as Element;
     this.dom = document.getElementById("bubbleWarp");
 
     this.init();
 
-    document.addEventListener("visibilitychange", () => {
-      var isHidden = document.hidden;
+    // 防止界面更新泰国频繁
+    this.resizeEvent = throttle(() => {
+      // this.cleanInterval();
 
-      if (isHidden) {
-        document.title = "死鬼，你去哪儿了！";
-        this.IS_CURRT_WEB_PAGE = false;
-      } else {
-        document.title = "死鬼，你终于回来拉！";
-        this.IS_CURRT_WEB_PAGE = true;
-      }
-    });
+      this.updatePositions();
+    }, 200);
 
-    this.resizeEvent = throttle(this.updatePositions, 200);
     window.addEventListener("resize", this.resizeEvent);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.bubbleCount !== this.props.bubbleCount) {
+      console.log("新 propse: ", this.props.bubbleCount);
+      console.log("旧 propse: ", prevProps.bubbleCount);
+    }
+
+    if (prevProps.width !== this.props.width) {
+      console.log("尺寸改变！");
+    }
   }
 
   componentWillUnmount() {
@@ -140,34 +154,13 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
   onMouseEnter = (e) => {
     if (!e || !e.target.id.startsWith("LogoGather")) return;
 
-    console.log("onMouseEnter");
-
-    this.setState({ isMouseEnter: true }, () => {
-      if (!this.gather) this.updateTweenData();
-      if (window.CPS_ENV.CPS_INTERVAL_LIST.length > 0) {
-        window.CPS_ENV.CPS_INTERVAL_LIST.forEach((intervalID) => clearInterval(intervalID));
-        window.CPS_ENV.CPS_INTERVAL_LIST = [];
-      }
-    });
+    this.updateTweenData();
   };
 
   onMouseLeave = (e) => {
     if (!e || !e.target.id.startsWith("LogoGather")) return;
 
-    this.setState({ isMouseEnter: false }, () => {
-      if (this.gather) this.updateTweenData();
-
-      this.cleanInterval();
-
-      window.CPS_ENV.CPS_INTERVAL_LIST.push(setInterval(this.updateTweenData, this.props.intervalTime));
-    });
-  };
-
-  cleanInterval = () => {
-    if (window.CPS_ENV.CPS_INTERVAL_LIST.length > 0) {
-      window.CPS_ENV.CPS_INTERVAL_LIST.forEach((intervalID) => clearInterval(intervalID));
-      window.CPS_ENV.CPS_INTERVAL_LIST = [];
-    }
+    this.updateTweenData();
   };
 
   setDataToDom(data: Uint8ClampedArray, w: number, h: number) {
@@ -235,6 +228,9 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
   };
 
   gatherData = () => {
+    if (!this.dom || !this.sideBox) return console.warn("bubble: 无法获取dom或者sideBox");
+    this.currtState = "gathing";
+
     const children = this.state.children.map((item) =>
       React.cloneElement(item, {
         animation: {
@@ -248,11 +244,14 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
         },
       })
     );
-    this.setState({ children });
+
+    this.setState({ children }, () => {
+      this.currtState = "done";
+    });
   };
 
   disperseData = () => {
-    if (!this.dom || !this.sideBox) return;
+    if (!this.dom || !this.sideBox) return console.warn("bubble: 无法获取dom或者sideBox");
 
     const rect = this.dom.getBoundingClientRect();
     const sideRect = this.sideBox.getBoundingClientRect();
@@ -277,7 +276,9 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
       });
     });
 
-    this.setState({ children });
+    this.setState({ children }, () => {
+      this.currtState = "done";
+    });
   };
 
   updatePositions = (): boolean => {
@@ -334,6 +335,8 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
 
       if (!this.sideBox) this.sideBox = document.getElementById("LogoGather.hoverZone");
 
+      console.log("当前状态: ", this.currtState);
+
       if (this.gather) {
         if (this.state.isMouseEnter) return;
         this.disperseData();
@@ -344,6 +347,13 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
       this.gather = !this.gather;
     } catch (error) {
       console.log("更新数据失败: ", error);
+    }
+  };
+
+  cleanInterval = () => {
+    if (window.CPS_ENV.CPS_INTERVAL_LIST.length > 0) {
+      window.CPS_ENV.CPS_INTERVAL_LIST.forEach((intervalID) => clearInterval(intervalID));
+      window.CPS_ENV.CPS_INTERVAL_LIST = [];
     }
   };
 

@@ -1,8 +1,8 @@
 /*
  * @Author: CPS holy.dandelion@139.com
  * @Date: 2023-03-06 23:17:09
- * @LastEditors: Capsion 373704015@qq.com
- * @LastEditTime: 2025-02-13 22:47:55
+ * @LastEditors: cpasion-office-win10 373704015@qq.com
+ * @LastEditTime: 2025-02-14 15:31:44
  * @FilePath: \cps-blog\src\components\HomepageSwiper\rightSide.tsx
  * @Description: 首页标题区域
  */
@@ -43,7 +43,7 @@ function TypedTitle() {
 export default function HomeTitle() {
   const { siteConfig } = useDocusaurusContext();
   return (
-    <QueueAnim type="left" duration={800} className="px-4 text-center text-white">
+    <QueueAnim type="left" duration={800} className="text-center text-white">
       {/* 仅作定位使用 */}
       <h1 id="postitionElement" className="hero__title h-[200px] pointer-events-none" key="title">
         {/* <strong className="text-green-700">{siteConfig.title}</strong> */}
@@ -56,11 +56,11 @@ export default function HomeTitle() {
       <TypedTitle />
 
       <div className={`${styles.buttons} mx-2 mt-4 flex justify-center gap-2`} key="btns">
-        <Link key="b1" className="button button--secondary button--lg" to="/">
-          作品集 💼
+        <Link key="b1" className="button button--secondary button--lg" to="/project">
+          作品案例 💼
         </Link>
 
-        <Link key="b2" className="button button--secondary button--lg" to="/">
+        <Link key="b2" className="button button--secondary button--lg" to="/https://gitee.com/capsion/resume">
           个人简介 📄
         </Link>
       </div>

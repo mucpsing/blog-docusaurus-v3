@@ -9,7 +9,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import HomeTitle from "./rightSide";
 import { useGlobalStore, DEFAULT_SUB_COLOR } from "@site/src/store";
-import Bubble from "@site/src/components/bubbleText";
+import Bubble from "@site/src/components/BubbleText";
 
 /** 默认的 HomeImgSwiper 组件属性 */
 export const DEFAULT_HOME_IMG_SWIPER_PROPS = {

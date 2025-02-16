@@ -1,8 +1,8 @@
 /*
  * @Author: CPS holy.dandelion@139.com
  * @Date: 2023-02-07 19:55:02
- * @LastEditors: Capsion 373704015@qq.com
- * @LastEditTime: 2025-02-13 23:07:42
+ * @LastEditors: cpasion-office-win10 373704015@qq.com
+ * @LastEditTime: 2025-02-14 14:48:52
  * @FilePath: \cps-blog\src\pages\index.tsx
  * @Description: 首页
  */
@@ -12,8 +12,7 @@ import Layout from "@site/src/theme/GlobalLayout";
 
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 
-// import HomepageSwiper from "./body";
-import HomepageSwiper from "./body_func";
+import HomepageSwiper from "./body";
 import HomepageFeatures from "./features";
 
 import ExecutionEnvironment from "@docusaurus/ExecutionEnvironment";
