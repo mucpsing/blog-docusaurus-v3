@@ -66,6 +66,8 @@
     "postcss": "^8.4.35",
     "react-popper": "^2.3.0",
     "sass-loader": "^16.0.4",
+    "stylus": "^0.64.0",
+    "stylus-loader": "^8.1.1",
     "typescript": "~5.2.2",
     "yaml": "^2.3.4"
   },

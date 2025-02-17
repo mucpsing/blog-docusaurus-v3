@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 
-import BannerAnim from "rc-banner-anim";
+// import BannerAnim from "rc-banner-anim";
 
 import { ANIM_CONFIGS } from "./Swiper/index";
 import { isSupportWebp } from "./Swiper/utils";
@@ -13,6 +13,7 @@ import ImgPreview from "@site/src/components/ImageSwiper/imagePreview";
 import { useGlobalStore, DEFAULT_SUB_COLOR, DEFAULT_MAIN_COLOR } from "@site/src/store";
 
 import CpsImgSwiper from "@site/src/components/ImageSwiper";
+// import { CpsBubbleComponent } from "@site/src/components/BubbleText/index_new";
 
 const HomeImgSwiper: React.FC<ICpsImgSwiperProps> = (props) => {
   const [showInt, setShowInt] = useState(0);
@@ -38,6 +39,7 @@ const HomeImgSwiper: React.FC<ICpsImgSwiperProps> = (props) => {
         }, props.autoSwitch);
       }, 1000);
     }
+
     return () => {
       if (autoSwitchInterID.current) clearInterval(autoSwitchInterID.current);
     };
@@ -137,6 +139,7 @@ const HomeImgSwiper: React.FC<ICpsImgSwiperProps> = (props) => {
     <div
       className={["overflow-hidden relative", "w-full", "flex justify-evenly items-center text-gray-700"].join(" ")}
       style={{ height: "clamp(100px, calc(-60px + 100vh), 1200px)" }}
+      id="ccvb"
     >
       {DEFAULT_SUB_COLOR.map((bgColor, i) => (
         <div
@@ -150,17 +153,24 @@ const HomeImgSwiper: React.FC<ICpsImgSwiperProps> = (props) => {
         ></div>
       ))}
 
-      <div id="homeTitleComment" className="home-title w-[400px]">
+      <div id="homeTitleComment" className="relative home-title w-[600px]">
+        {/* <div id="cps-bubble" className={["w-[600px] h-[200px] bg-amber-400"].join(" ")}></div> */}
+        {/* <Bubble
+          width={600}
+          height={220}
+          bubbleScale={1.5}
+          bubbleCount={isMobile ? 15 : 10}
+          intervalTime={8000}
+          positionElementId="homeTitleComment"
+        ></Bubble> */}
+
         <HomeTitle />
         <div>
           <button onClick={() => switchColor()}> 切换颜色 </button>
-          <button>{}</button>
         </div>
       </div>
 
-      <Bubble width={400} height={200} bubbleScale={1.5} bubbleCount={isMobile ? 20 : 10} positionElementId="postitionElement"></Bubble>
-
-      {/* <CpsImgSwiper
+      <CpsImgSwiper
         mainColor={DEFAULT_MAIN_COLOR}
         subColor={DEFAULT_SUB_COLOR}
         autoSwitch={0}
@@ -170,10 +180,10 @@ const HomeImgSwiper: React.FC<ICpsImgSwiperProps> = (props) => {
           "sm:w-[500px] sm:h-[300px]",
           "md:w-[500px] md:h-[400px]",
           "lg:w-[650px] lg:h-[450px]",
-          "xl:w-[750px] xl:h-[550px]",
+          "xl:w-[850px] xl:h-[550px]",
           "shadow-xl bg-white rounded-md overflow-hidden",
         ].join(" ")}
-      ></CpsImgSwiper> */}
+      ></CpsImgSwiper>
 
       {/* <Items key="items" /> */}
     </div>

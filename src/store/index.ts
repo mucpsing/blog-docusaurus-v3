@@ -1,15 +1,15 @@
 /*
  * @Author: Capsion 373704015@qq.com
  * @Date: 2025-02-11 22:15:29
- * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2025-02-14 16:52:18
+ * @LastEditors: Capsion 373704015@qq.com
+ * @LastEditTime: 2025-02-16 11:50:00
  * @FilePath: \cps-blog-docusaurus-v3\src\components\store\index.ts
  * @Description: 这是全局状态存储
  */
 import { create } from "zustand";
 import isMobile from "is-mobile";
 
-export * from "./screenSizeState";
+// export * from "./screenSizeState";
 
 export const DEFAULT_MAIN_COLOR = ["#FC1E4F", "#FFF43D", "#9FDA7F"];
 export const DEFAULT_SUB_COLOR = ["#FF4058", "#F6B429", "#64D487"];

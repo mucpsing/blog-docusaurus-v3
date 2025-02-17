@@ -1,8 +1,8 @@
 /*
  * @Author: CPS holy.dandelion@139.com
  * @Date: 2023-03-06 23:17:09
- * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2025-02-14 15:31:44
+ * @LastEditors: Capsion 373704015@qq.com
+ * @LastEditTime: 2025-02-17 22:54:41
  * @FilePath: \cps-blog\src\components\HomepageSwiper\rightSide.tsx
  * @Description: 首页标题区域
  */
@@ -18,6 +18,8 @@ import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import Iconfont from "@site/src/components/Iconfont";
 import styles from "./styles.module.css";
 
+import { CpsBubbleComponent } from "@site/src/components/BubbleText/index_new";
+
 function TypedTitle() {
   const { siteConfig } = useDocusaurusContext();
   const el = useRef(null);
@@ -31,6 +33,10 @@ function TypedTitle() {
       loop: true,
     });
 
+    setTimeout(() => {
+      new CpsBubbleComponent({});
+    }, 1000);
+
     return () => typed.destroy();
   }, []);
   return (
@@ -42,12 +48,11 @@ function TypedTitle() {
 
 export default function HomeTitle() {
   const { siteConfig } = useDocusaurusContext();
+
   return (
     <QueueAnim type="left" duration={800} className="text-center text-white">
       {/* 仅作定位使用 */}
-      <h1 id="postitionElement" className="hero__title h-[200px] pointer-events-none" key="title">
-        {/* <strong className="text-green-700">{siteConfig.title}</strong> */}
-      </h1>
+      <div id="CpsBubble.positionElement" className="bg-amber-400 h-[200px] pointer-events-none" key="title"></div>
 
       <p className="my-6 underline decoration-dotted" key="content">
         <a href="docs/【07】常识科普/社会真实/名人名言">这些年我们听到的名人疯言</a>

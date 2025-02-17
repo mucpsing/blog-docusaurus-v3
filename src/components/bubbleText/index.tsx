@@ -1,8 +1,8 @@
 /*
  * @Author: cpasion-office-win10 373704015@qq.com
  * @Date: 2023-03-28 16:25:46
- * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2025-02-14 17:04:01
+ * @LastEditors: Capsion 373704015@qq.com
+ * @LastEditTime: 2025-02-16 22:32:29
  * @FilePath: \cps-blog\src\pages\test\index.tsx
  * @Description: 泡泡文字聚散效果组建，父级元素必须采用绝对定位，最终泡泡扩散的位置会根据最近一个绝对定位的父级来生成
  */
@@ -14,6 +14,8 @@ interface LogoGatherProps {
   image?: string;
   width?: number;
   height?: number;
+  offsetX?: number;
+  offsetY?: number;
   bubbleSize?: number;
   bubbleCount?: number; // 泡泡数量
   bubbleSizeMin?: number; // 泡泡的最小尺寸
@@ -41,20 +43,22 @@ interface LogoGatherState {
 
 declare global {
   interface Window {
-    CPS_ENV: { CPS_INTERVAL_LIST: any[] };
+    CPS_BUBBLE_ENV: { INTERVAL_LIST: any[] };
   }
 }
 export default class LogoGather extends React.Component<LogoGatherProps, LogoGatherState> {
   static defaultProps = {
     image: "/logo/capsion.png",
+    offsetX: 0,
+    offsetY: 0,
     width: 600,
     height: 200,
     bubbleScale: 1,
     bubbleSize: 10,
     bubbleCount: 10,
     bubbleSizeMin: 5,
-    intervalTime: 8000,
-    positionElementId: "",
+    intervalTime: 8000, // 泡泡往复的时间，这里需要重构
+    positionElementId: "", // 用于定位的元素id，组件会根据这个元素来进行绝对定位
     opacityMax: 0.9,
     opacitymin: 0.7,
     autoGather: true,
@@ -94,7 +98,8 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
   }
 
   init = () => {
-    if (!window.CPS_ENV) window.CPS_ENV = { CPS_INTERVAL_LIST: [] };
+    // 创建全局变量，这里因为采用了定时器，有时候无法获取最新的状态
+    if (!window.CPS_BUBBLE_ENV) window.CPS_BUBBLE_ENV = { INTERVAL_LIST: [] };
 
     let isDone: boolean = false;
 
@@ -106,15 +111,25 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
         clearInterval(taskID);
         this.createPointData();
         this.isInit = true;
+        setTimeout(() => {
+          // BUG 如果这里直接调用 this.disperseData() 则会触发找不到元素id
+          this.onMouseLeave({ target: { id: "LogoGather.init" } });
 
-        if (this.props.autoGather) {
-          setTimeout(() => {
-            // BUG 如果这里直接调用 this.disperseData() 则会触发找不到元素id
-            this.onMouseLeave({ target: { id: "LogoGather.init" } });
-          }, 2000);
-        }
+          if (this.props.autoGather) {
+          }
+        }, 2000);
       }
     }, 100);
+
+    document.addEventListener("visibilitychange", () => {
+      var isHidden = document.hidden;
+
+      if (isHidden) {
+        this.IS_CURRT_WEB_PAGE = false;
+      } else {
+        this.IS_CURRT_WEB_PAGE = true;
+      }
+    });
   };
 
   componentDidMount() {
@@ -154,17 +169,23 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
   onMouseEnter = (e) => {
     if (!e || !e.target.id.startsWith("LogoGather")) return;
 
-    this.updateTweenData();
+    this.setState({ isMouseEnter: true }, () => {
+      if (!this.gather) this.updateTweenData();
+    });
   };
 
   onMouseLeave = (e) => {
     if (!e || !e.target.id.startsWith("LogoGather")) return;
 
-    this.updateTweenData();
+    this.setState({ isMouseEnter: false }, () => {
+      if (this.gather) this.updateTweenData();
+    });
   };
 
   setDataToDom(data: Uint8ClampedArray, w: number, h: number) {
     this.pointArray = [];
+    const DEFAULT_DELAY = 12000;
+
     const number = this.props.bubbleCount;
     for (let i = 0; i < w; i += number) {
       for (let j = 0; j < h; j += number) {
@@ -178,8 +199,8 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
       const r = (Math.random() * this.props.bubbleSizeMin + this.props.bubbleSizeMin) * this.props.bubbleScale;
       const opacity = this.props.opacity ? this.props.opacity : Math.random() * this.props.opacitymin + this.props.opacitymin;
 
-      const delay = Math.floor(Math.random() * (this.props.intervalTime / 3));
-      const start = this.props.intervalTime / 2 - delay;
+      const delay = Math.floor(Math.random() * (DEFAULT_DELAY / 3));
+      const start = DEFAULT_DELAY / 2 - delay;
 
       const R = Math.round(Math.random() * 95 + 160);
       const G = Math.round(Math.random() * 95 + 160);
@@ -231,6 +252,9 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
     if (!this.dom || !this.sideBox) return console.warn("bubble: 无法获取dom或者sideBox");
     this.currtState = "gathing";
 
+    const rect = this.dom.getBoundingClientRect();
+    const sideRect = this.sideBox.getBoundingClientRect();
+
     const children = this.state.children.map((item) =>
       React.cloneElement(item, {
         animation: {
@@ -255,6 +279,7 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
 
     const rect = this.dom.getBoundingClientRect();
     const sideRect = this.sideBox.getBoundingClientRect();
+    // const positionRect = this.positionElement.getBoundingClientRect();
 
     const sideTop = sideRect.top - rect.top;
     const sideLeft = sideRect.left - rect.left;
@@ -307,16 +332,16 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
     // 以下代码根据最近一个相对定位的父级元素重新计算泡泡散开时候的位置
     const { top, left, transform } = this.state;
 
-    const refElement = this.positionElement.getBoundingClientRect();
+    const positionElement = this.positionElement.getBoundingClientRect();
     const parent = this.dom.getBoundingClientRect();
 
-    const translateX = this.props.width / 2 - refElement.width / 2;
-    const translateY = this.props.height / 2 - refElement.height / 2;
+    const translateX = this.props.width / 2 - positionElement.width / 2;
+    const translateY = this.props.height / 2 - positionElement.height / 2;
     const newTransform = `translate(-${translateX}px, -${translateY}px)`;
 
-    const newTop = refElement.y - parent.y;
-    const newLeft = refElement.x - parent.x;
-
+    const newTop = positionElement.y - parent.y + this.props.offsetY;
+    console.log("newTop: ", newTop);
+    const newLeft = positionElement.x - parent.x + this.props.offsetX;
     const newState = { top: newTop, left: newLeft, transform: newTransform };
 
     const oldStateString = JSON.stringify({ top, left, transform });
@@ -345,15 +370,23 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
       }
 
       this.gather = !this.gather;
+
+      if (this.props.autoGather) {
+        console.log("触发自动聚合");
+
+        this.cleanInterval();
+
+        window.CPS_BUBBLE_ENV.INTERVAL_LIST.push(setInterval(this.updateTweenData, this.props.intervalTime));
+      }
     } catch (error) {
       console.log("更新数据失败: ", error);
     }
   };
 
   cleanInterval = () => {
-    if (window.CPS_ENV.CPS_INTERVAL_LIST.length > 0) {
-      window.CPS_ENV.CPS_INTERVAL_LIST.forEach((intervalID) => clearInterval(intervalID));
-      window.CPS_ENV.CPS_INTERVAL_LIST = [];
+    if (window.CPS_BUBBLE_ENV.INTERVAL_LIST.length > 0) {
+      window.CPS_BUBBLE_ENV.INTERVAL_LIST.forEach((intervalID) => clearInterval(intervalID));
+      window.CPS_BUBBLE_ENV.INTERVAL_LIST = [];
     }
   };
 
@@ -377,12 +410,23 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
           id="LogoGather.hoverZone"
           ref={(c) => (this.sideBoxComp = c as any)}
         >
-          {this.state.children}
+          {/* {this.state.children} */}
 
-          <div className="translate-y-3">
-            <button onClick={this.gatherData}> 聚合 </button>
-            <button onClick={this.disperseData}> 散开 </button>
-          </div>
+          {process.env.NODE_ENV === "development" ? (
+            <div className="translate-y-3">
+              <div>测试bar</div>
+              <button onClick={this.gatherData}> 聚合 </button>
+              <button onClick={this.disperseData}> 散开 </button>
+              <button
+                onClick={() => {
+                  console.log("暂停");
+                }}
+              >
+                {" "}
+                暂停{" "}
+              </button>
+            </div>
+          ) : null}
         </TweenOne>
       </div>
     );
