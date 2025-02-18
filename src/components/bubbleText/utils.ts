@@ -1,8 +1,8 @@
 /*
  * @Author: Capsion 373704015@qq.com
  * @Date: 2025-02-17 22:18:58
- * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2025-02-18 16:35:27
+ * @LastEditors: capsion_surfacePro7 capsion@surfacePro2.com
+ * @LastEditTime: 2025-02-18 22:28:06
  * @FilePath: \cps-blog-docusaurus-v3\src\components\BubbleText\utils.ts
  * @Description: Bubble组件要用到的一些工具函数
  */
@@ -90,7 +90,6 @@ export type Region = [Point, Point];
 /**
  * @description: 从一个矩形区域内随机取点
  * @param {Region} region
- * @return {*}
  */
 export function getRandomPoint(region: Region): Point {
   const [[startX, startY], [endX, endY]] = region;
@@ -119,7 +118,6 @@ export function getR(min, max) {
  * @description: 在指定的id元素上，创建一个覆盖元素，尺寸和位置保持一致，默认在body中生成
  * @param {*} targetId
  * @param {*} style
- * @return {*}
  */
 export function createCoverElement(targetId, style) {
   // 获取目标元素
