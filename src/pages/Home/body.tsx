@@ -154,8 +154,8 @@ const HomeImgSwiper: React.FC<ICpsImgSwiperProps> = (props) => {
       ))}
 
       <div id="homeTitleComment" className="relative home-title w-[600px]">
-        {/* <div id="cps-bubble" className={["w-[600px] h-[200px] bg-amber-400"].join(" ")}></div> */}
-        {/* <Bubble
+        {/* <div id="cps-bubble" className={["w-[600px] h-[200px] bg-amber-400"].join(" ")}></div>
+        <Bubble
           width={600}
           height={220}
           bubbleScale={1.5}

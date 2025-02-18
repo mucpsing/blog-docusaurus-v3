@@ -1,5 +1,5 @@
 // import "./style.sass";
-import { createCoverElement, getR } from "./utils";
+import { createCoverElement, getRandomColor, getRectangleIntoFour, getR, getRegionPosition, getRandomPoint } from "./utils";
 import { throttle } from "lodash";
 
 export interface BubbleProps {
@@ -59,9 +59,11 @@ export class CpsBubbleComponent {
   private dom: any;
   private positionElement: HTMLElement;
   private observer: MutationObserver;
-  private bubbleWarpElement: HTMLElement; // 用来批量挂载泡泡的容器，不起到任何作用，但是泡泡都在这个容器内部
+  private bubbleRegionElement: HTMLElement; // 用来批量挂载泡泡的容器，不起到任何作用，但是泡泡都在这个容器内部
   private bubbleDisperseRangeElement: HTMLElement;
   private bubbleElementList = []; // 存放所有泡泡div实例
+
+  private bubbleDisperseRange = {};
 
   constructor(props) {
     this.props = { ...this.DEFAULT_PROPS, ...props };
@@ -80,7 +82,7 @@ export class CpsBubbleComponent {
   };
 
   private onTest = () => {
-    console.log("onTest: ", this.bubbleWarpElement);
+    console.log("onTest: ", this.bubbleRegionElement);
 
     this.disperseData();
   };
@@ -126,28 +128,17 @@ export class CpsBubbleComponent {
     bodyElement.appendChild(this.dom);
 
     setTimeout(() => {
+      // 创建泡泡并挂载到body
       this.createPointData();
+
+      // 计算扩散区域
+      const region = this.bubbleDisperseRangeElement.getBoundingClientRect();
+      this.bubbleDisperseRange = getRectangleIntoFour(region);
+      console.log(this.bubbleDisperseRange);
       this.test();
     }, 1000);
 
     return true;
-    // 这里必须使用setInterval防止setTimeout时，dom未完全生成
-    // const taskID = setInterval(() => {
-    //   isDone = this.updatePositions();
-
-    //   if (isDone) {
-    //     clearInterval(taskID);
-    //     this.createPointData();
-    //     this.isInit = true;
-    //     setTimeout(() => {
-    //       // BUG 如果这里直接调用 this.disperseData() 则会触发找不到元素id
-    //       this.onMouseLeave({ target: { id: "LogoGather.init" } });
-
-    //       if (this.props.autoGather) {
-    //       }
-    //     }, 2000);
-    //   }
-    // }, 100);
   };
 
   private onRise = throttle(() => this.updatePositions(), 200);
@@ -194,10 +185,9 @@ export class CpsBubbleComponent {
         }
       }
     }
-    const bubbleStyleList = [];
-    const bubbleWarp = document.createElement("div");
-    Object.assign(bubbleWarp.style, { pointerEvent: "none", position: "absolute", top: 0, left: 0, width: "100vw", height: "0" });
-    // Object.assign(bubbleWarp.style, { zIndex: 6, pointerEvent: "none", position: "absolute", top: 0, left: 0, width: "100vw", height: "0" });
+
+    this.bubbleRegionElement = document.createElement("div");
+    Object.assign(this.bubbleRegionElement.style, { pointerEvent: "none", position: "absolute", top: 0, left: 0, width: "100vw", height: "0" });
 
     const rect = this.dom.getBoundingClientRect();
     this.pointArray.forEach((item, i) => {
@@ -207,102 +197,72 @@ export class CpsBubbleComponent {
       const delay = Math.floor(Math.random() * (DEFAULT_DELAY / 3));
       const start = DEFAULT_DELAY / 2 - delay;
 
-      const R = Math.round(Math.random() * 95 + 160);
-      const G = Math.round(Math.random() * 95 + 160);
-      const B = Math.round(Math.random() * 95 + 160);
-
-      const eachBubbleStyle = {
+      const eachBubbleWarpStyle = {
         position: "absolute",
+        borderRadius: "50%",
         left: `${item.x + rect.left}px`,
         top: `${item.y + rect.top}px`,
+        transition: "all .8s cubic-bezier(0.4, 0, 0.2, 1) 0s",
+      };
+
+      const eachBubbleStyle = {
         width: `${r}px`,
         height: `${r}px`,
         opacity: opacity,
-        backgroundColor: `rgb(${R},${G},${B})`,
+        backgroundColor: getRandomColor(),
         borderRadius: "50%",
         animation: `up-and-down-${(i % 2) + 1} ${start}ms ease-in-out ${delay}ms infinite`,
-        // ease: "easeInOutQuint",
-        // willChange: "left, top",
-        // transitionProperty: "left top",
-        // transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
-        // transitionDuration: "800ms",
+        willChange: "transform",
       };
 
       const eachBubbleElement = document.createElement("div");
       Object.assign(eachBubbleElement.style, eachBubbleStyle);
 
-      this.bubbleElementList.push(eachBubbleElement);
-      bubbleStyleList.push(eachBubbleStyle);
-      bubbleWarp.appendChild(eachBubbleElement);
+      const eachBubbleWarpElement = document.createElement("div");
+      Object.assign(eachBubbleWarpElement.style, eachBubbleWarpStyle);
+
+      eachBubbleWarpElement.appendChild(eachBubbleElement);
+
+      this.bubbleElementList.push(eachBubbleWarpElement);
+      this.bubbleRegionElement.appendChild(eachBubbleWarpElement);
     });
 
-    this.bubbleWarpElement = bubbleWarp;
-
-    document.body.appendChild(bubbleWarp);
+    document.body.appendChild(this.bubbleRegionElement);
   };
 
   disperseData = () => {
     if (!this.bubbleDisperseRangeElement) return console.warn("bubble: 无法获取dom或者positionElement");
 
+    const rect = this.dom.getBoundingClientRect();
     const sideRect = this.bubbleDisperseRangeElement.getBoundingClientRect();
+    console.log("sideRect: ", sideRect);
+
+    const sideTop = sideRect.top - rect.top;
+    const sideLeft = sideRect.left - rect.left;
 
     // 计算样式
-    const newStlyeList = this.bubbleElementList.map(() => ({
-      left: `${getR(sideRect.left, sideRect.width)}px`,
-      top: `${getR(sideRect.top, sideRect.height)}px`,
-    }));
+    const newStlyeList = this.bubbleElementList.map((item) => {
+      const { left, top } = item.getBoundingClientRect();
+      const xyPosition = getRegionPosition([left, top], rect);
+
+      let x, y;
+      if (!this.bubbleDisperseRange[xyPosition]) {
+        x = Math.random() * rect.width - sideLeft - left;
+        y = Math.random() * rect.height - sideTop - top;
+      } else {
+        const coords = getRandomPoint(this.bubbleDisperseRange[xyPosition]);
+        [x, y] = coords;
+      }
+
+      console.log({ xyPosition, x, y });
+      return {
+        transform: `translate(${x}px, ${y}px)`,
+      };
+    });
 
     // 更新样式
-    requestAnimationFrame(() => {
-      this.bubbleElementList.forEach((bubbleElement, i) => {
-        Object.assign(bubbleElement.style, newStlyeList[i]);
-      });
+    this.bubbleElementList.forEach((bubbleElement, i) => {
+      Object.assign(bubbleElement.style, newStlyeList[i]);
     });
   };
-
-  // private updatePositions = (): boolean => {
-  //   // console.log("updatePositions");
-
-  //   // 不需要获取定位信息
-  //   if (!this.props.positionElementId) {
-  //     // console.log("不需要定位");
-  //     return true;
-  //   }
-
-  //   if (!this.positionElement) {
-  //     this.positionElement = document.getElementById(this.props.positionElementId);
-
-  //     if (!this.positionElement) {
-  //       console.log("获取元素失败");
-  //       return false;
-  //     }
-  //   }
-
-  //   if (!this.dom) {
-  //     console.log("父级包裹元素实例读取失败");
-  //     return false;
-  //   }
-
-  //   // 以下代码根据最近一个相对定位的父级元素重新计算泡泡散开时候的位置
-  //   const { top, left, transform } = this.state;
-
-  //   const positionElement = this.positionElement.getBoundingClientRect();
-  //   const parent = this.dom.getBoundingClientRect();
-
-  //   const translateX = this.props.width / 2 - positionElement.width / 2;
-  //   const translateY = this.props.height / 2 - positionElement.height / 2;
-  //   const newTransform = `translate(-${translateX}px, -${translateY}px)`;
-
-  //   const newTop = positionElement.y - parent.y + this.props.offsetY;
-  //   console.log("newTop: ", newTop);
-  //   const newLeft = positionElement.x - parent.x + this.props.offsetX;
-  //   const newState = { top: newTop, left: newLeft, transform: newTransform };
-
-  //   const oldStateString = JSON.stringify({ top, left, transform });
-  //   const newStateString = JSON.stringify(newState);
-
-  //   if (oldStateString != newStateString) this.setState(newState);
-
-  //   return true;
-  // };
 }

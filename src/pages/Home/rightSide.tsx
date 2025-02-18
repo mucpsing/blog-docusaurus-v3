@@ -1,8 +1,8 @@
 /*
  * @Author: CPS holy.dandelion@139.com
  * @Date: 2023-03-06 23:17:09
- * @LastEditors: Capsion 373704015@qq.com
- * @LastEditTime: 2025-02-17 22:54:41
+ * @LastEditors: cpasion-office-win10 373704015@qq.com
+ * @LastEditTime: 2025-02-18 16:44:29
  * @FilePath: \cps-blog\src\components\HomepageSwiper\rightSide.tsx
  * @Description: 首页标题区域
  */
@@ -34,7 +34,7 @@ function TypedTitle() {
     });
 
     setTimeout(() => {
-      new CpsBubbleComponent({});
+      new CpsBubbleComponent({bubbleRangeId:"homeTitleComment"});
     }, 1000);
 
     return () => typed.destroy();
@@ -61,12 +61,17 @@ export default function HomeTitle() {
       <TypedTitle />
 
       <div className={`${styles.buttons} mx-2 mt-4 flex justify-center gap-2`} key="btns">
-        <Link key="b1" className="button button--secondary button--lg" to="/project">
+        {/* <Link key="b1" className="button button--secondary button--lg" to="/project">
           作品案例 💼
         </Link>
-
         <Link key="b2" className="button button--secondary button--lg" to="/https://gitee.com/capsion/resume">
           个人简介 📄
+        </Link> */}
+        <Link key="b1" className="button button--secondary button--lg" to="/project">
+          ******** 💼
+        </Link>
+        <Link key="b2" className="button button--secondary button--lg" to="/https://gitee.com/capsion/resume">
+          ******** 📄
         </Link>
       </div>
 
