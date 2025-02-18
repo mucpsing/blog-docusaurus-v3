@@ -1,8 +1,8 @@
 /*
  * @Author: cpasion-office-win10 373704015@qq.com
  * @Date: 2023-03-28 16:25:46
- * @LastEditors: Capsion 373704015@qq.com
- * @LastEditTime: 2025-02-16 22:32:29
+ * @LastEditors: cpasion-office-win10 373704015@qq.com
+ * @LastEditTime: 2025-02-18 11:30:27
  * @FilePath: \cps-blog\src\pages\test\index.tsx
  * @Description: 泡泡文字聚散效果组建，父级元素必须采用绝对定位，最终泡泡扩散的位置会根据最近一个绝对定位的父级来生成
  */
@@ -296,7 +296,6 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
           opacity: this.props.opacity ? this.props.opacity : Math.random() * this.props.opacitymin + this.props.opacitymin,
           scale: Math.random() * 2.4 + 0.1,
           duration: Math.random() * 500 + 500,
-          ease: "easeInOutQuint",
         },
       });
     });

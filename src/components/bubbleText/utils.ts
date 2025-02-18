@@ -1,11 +1,16 @@
 /*
  * @Author: Capsion 373704015@qq.com
  * @Date: 2025-02-17 22:18:58
- * @LastEditors: Capsion 373704015@qq.com
- * @LastEditTime: 2025-02-17 22:37:44
+ * @LastEditors: cpasion-office-win10 373704015@qq.com
+ * @LastEditTime: 2025-02-18 10:44:24
  * @FilePath: \cps-blog-docusaurus-v3\src\components\BubbleText\utils.ts
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
+
+export function getR(min, max) {
+  return Math.random() * (max - min) + min;
+}
+
 export function createCoverElement(targetId, style) {
   // 获取目标元素
   const targetElement = document.getElementById(targetId);
@@ -26,16 +31,16 @@ export function createCoverElement(targetId, style) {
   Object.assign(
     cover.style,
     {
-      position: "absolute",
+      // position: "absolute",
       left: `${rect.left + scrollX}px`,
       top: `${rect.top + scrollY}px`,
       width: `${rect.width}px`,
       height: `${rect.height}px`,
-      zIndex: "9999",
-      pointerEvents: "none", // 允许穿透点击
-      boxSizing: "border-box",
-      backgroundColor: "rgba(255,0,0,0.3)", // 可视化调试用
-      border: "1px dashed #000", // 可视化调试用
+      // zIndex: "9999",
+      // pointerEvents: "none", // 允许穿透点击
+      // boxSizing: "border-box",
+      // backgroundColor: "rgba(255,0,0,0.3)", // 可视化调试用
+      // border: "1px dashed #000", // 可视化调试用
     },
     style
   );

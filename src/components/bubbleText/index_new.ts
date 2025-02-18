@@ -1,5 +1,5 @@
 // import "./style.sass";
-import { createCoverElement } from "./utils";
+import { createCoverElement, getR } from "./utils";
 import { throttle } from "lodash";
 
 export interface BubbleProps {
@@ -54,10 +54,14 @@ export class CpsBubbleComponent {
   private pointArray = [];
   public INTERVAL_LIST = [];
   private id = "CpsBubble.warp";
+  private bubbleRangeId = "body";
 
   private dom: any;
   private positionElement: HTMLElement;
   private observer: MutationObserver;
+  private bubbleWarpElement: HTMLElement; // 用来批量挂载泡泡的容器，不起到任何作用，但是泡泡都在这个容器内部
+  private bubbleDisperseRangeElement: HTMLElement;
+  private bubbleElementList = []; // 存放所有泡泡div实例
 
   constructor(props) {
     this.props = { ...this.DEFAULT_PROPS, ...props };
@@ -67,6 +71,19 @@ export class CpsBubbleComponent {
   }
 
   private isInit: boolean = false;
+  public test = () => {
+    const testButtonElement = document.createElement("button");
+    testButtonElement.innerText = "Test";
+    testButtonElement.onclick = () => this.onTest();
+    Object.assign({ pointerEvents: "auto", width: "100px", heigh: "60px", backgroundColor: "green" }, testButtonElement.style);
+    this.dom.appendChild(testButtonElement);
+  };
+
+  private onTest = () => {
+    console.log("onTest: ", this.bubbleWarpElement);
+
+    this.disperseData();
+  };
 
   public init = () => {
     console.log("CpsBubbleComponent: init()");
@@ -78,7 +95,7 @@ export class CpsBubbleComponent {
 
     const bodyElement = document.body;
     const rect = this.positionElement.getBoundingClientRect();
-    const bubbleStyle = {
+    const baseStyle = {
       position: "absolute",
       left: `${rect.x}`,
       y: rect.y,
@@ -88,9 +105,15 @@ export class CpsBubbleComponent {
     // 创建元素
     const hasDom = document.getElementById(this.id);
     if (hasDom) return;
-    const dom = createCoverElement(this.props.positionElementId, bubbleStyle);
+    const dom = createCoverElement(this.props.positionElementId, baseStyle);
     this.dom = dom.element;
     this.dom.id = this.id;
+
+    if (this.bubbleRangeId == "body") {
+      this.bubbleDisperseRangeElement = document.body;
+    } else {
+      this.bubbleDisperseRangeElement = document.getElementById(this.bubbleRangeId);
+    }
 
     // 创建 MutationObserver 来监听目标元素的变化
     // 观察目标元素的属性和子节点变化
@@ -104,6 +127,7 @@ export class CpsBubbleComponent {
 
     setTimeout(() => {
       this.createPointData();
+      this.test();
     }, 1000);
 
     return true;
@@ -171,9 +195,9 @@ export class CpsBubbleComponent {
       }
     }
     const bubbleStyleList = [];
-    const bubbleElementList = [];
     const bubbleWarp = document.createElement("div");
-    Object.assign(bubbleWarp.style, { zIndex: 6, pointerEvent: "none", position: "absolute", top: 0, left: 0, width: "100vw", height: "100vh" });
+    Object.assign(bubbleWarp.style, { pointerEvent: "none", position: "absolute", top: 0, left: 0, width: "100vw", height: "0" });
+    // Object.assign(bubbleWarp.style, { zIndex: 6, pointerEvent: "none", position: "absolute", top: 0, left: 0, width: "100vw", height: "0" });
 
     const rect = this.dom.getBoundingClientRect();
     this.pointArray.forEach((item, i) => {
@@ -197,21 +221,43 @@ export class CpsBubbleComponent {
         backgroundColor: `rgb(${R},${G},${B})`,
         borderRadius: "50%",
         animation: `up-and-down-${(i % 2) + 1} ${start}ms ease-in-out ${delay}ms infinite`,
-        // filter: "blur(.5px)",
+        // ease: "easeInOutQuint",
+        // willChange: "left, top",
+        // transitionProperty: "left top",
+        // transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
+        // transitionDuration: "800ms",
       };
 
       const eachBubbleElement = document.createElement("div");
       Object.assign(eachBubbleElement.style, eachBubbleStyle);
 
-      bubbleElementList.push(eachBubbleElement);
+      this.bubbleElementList.push(eachBubbleElement);
       bubbleStyleList.push(eachBubbleStyle);
       bubbleWarp.appendChild(eachBubbleElement);
     });
 
-    console.log("bubbleElementList: ", bubbleElementList);
-    console.log("bubbleStyleList: ", bubbleStyleList);
+    this.bubbleWarpElement = bubbleWarp;
 
     document.body.appendChild(bubbleWarp);
+  };
+
+  disperseData = () => {
+    if (!this.bubbleDisperseRangeElement) return console.warn("bubble: 无法获取dom或者positionElement");
+
+    const sideRect = this.bubbleDisperseRangeElement.getBoundingClientRect();
+
+    // 计算样式
+    const newStlyeList = this.bubbleElementList.map(() => ({
+      left: `${getR(sideRect.left, sideRect.width)}px`,
+      top: `${getR(sideRect.top, sideRect.height)}px`,
+    }));
+
+    // 更新样式
+    requestAnimationFrame(() => {
+      this.bubbleElementList.forEach((bubbleElement, i) => {
+        Object.assign(bubbleElement.style, newStlyeList[i]);
+      });
+    });
   };
 
   // private updatePositions = (): boolean => {
