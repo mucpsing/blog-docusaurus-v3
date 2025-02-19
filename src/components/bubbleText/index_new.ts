@@ -22,7 +22,7 @@ export interface BubbleProps {
 
 export class CpsBubbleComponent {
   private DEFAULT_PROPS: BubbleProps = {
-    positionElementId: "CpsBubble.positionElement", // 用于定位的元素id，组件会根据这个元素来进行绝对定位
+    positionElementId: "CpsBubble.positionElement", // 用于定位的元素id，泡泡文字会在这个元素的范围内生成
     image: "/logo/capsion.png",
     offsetX: 0,
     offsetY: 0,
@@ -43,7 +43,7 @@ export class CpsBubbleComponent {
   private id = "CpsBubble.warp";
   private bubbleRangeId = "body";
 
-  private dom: any;
+  private dom: HTMLElement; // 组成字母的范围参考元素
   private positionElement: HTMLElement;
   private observer: MutationObserver;
   private bubbleRegionElement: HTMLElement; // 用来批量挂载泡泡的容器，不起到任何作用，但是泡泡都在这个容器内部
@@ -51,37 +51,49 @@ export class CpsBubbleComponent {
   private bubbleElementList = []; // 存放所有泡泡div实例
   private isGather = true;
 
-  public DEBUG = false;
+  private _oldWidth = 0;
+  private _oldHeight = 0;
 
   constructor(props) {
     this.props = { ...this.DEFAULT_PROPS, ...props };
-    if (this.DEBUG) console.log("CpsBubbleComponent create");
+    if (this.props.DEBUG) console.log("CpsBubbleComponent create");
 
     this.init();
   }
 
   public test = () => {
+    // 按钮1
+    const baseStyle = { pointerEvents: "auto", width: "100px", heigh: "60px", backgroundColor: "green" };
     const testButtonElement = document.createElement("button");
     testButtonElement.innerText = "切换";
     testButtonElement.onclick = () => this.onTest();
-    Object.assign({ pointerEvents: "auto", width: "100px", heigh: "60px", backgroundColor: "green" }, testButtonElement.style);
+    Object.assign(baseStyle, testButtonElement.style);
     this.dom.appendChild(testButtonElement);
+
+    // 按钮2
+    const testButtonElement2 = document.createElement("button");
+    testButtonElement2.innerText = "distroy";
+    testButtonElement2.onclick = () => {
+      this.destroy();
+
+      // this.init();
+    };
+    Object.assign(baseStyle, testButtonElement2.style);
+    this.dom.appendChild(testButtonElement2);
   };
 
   private onTest = () => {
-    console.log("onTest: ", this.bubbleRegionElement);
+    if (this.props.DEBUG) console.log("onTest: ", this.bubbleRegionElement);
 
-    this.isGather ? this.disperseData() : this.gatherData();
-
-    this.isGather = !this.isGather;
+    this.switch();
   };
 
   public init = () => {
-    if (this.DEBUG) console.log("CpsBubbleComponent: init()");
+    if (this.props.DEBUG) console.log("CpsBubbleComponent: init()");
 
     this.positionElement = document.getElementById(this.props.positionElementId);
     if (!this.positionElement) {
-      console.error("CpsBubbleComponent: init() 未找到元素id");
+      console.error("CpsBubbleComponent: init() 未找到定位元素:positionElement");
       return false;
     }
 
@@ -97,7 +109,7 @@ export class CpsBubbleComponent {
     // 创建元素
     const existingDom = document.getElementById(this.id);
     if (existingDom) {
-      if (this.DEBUG) console.warn("页面已经存在对应id元素");
+      if (this.props.DEBUG) console.warn("页面已经存在对应id元素");
       return;
     }
 
@@ -125,34 +137,56 @@ export class CpsBubbleComponent {
       // 创建泡泡并挂载到body
       this.createPointData();
 
-      // 计算扩散区域
-      const region = this.bubbleDisperseRangeElement.getBoundingClientRect();
-      this.bubbleDisperseRange = utils.getRectangleIntoFour(region);
-
       // 添加DEBUG控制按钮
-      if (this.DEBUG) this.test();
+      if (this.props.DEBUG) this.test();
     }, 1000);
 
     return true;
   };
 
-  private onRise = throttle(() => this.updatePositions(), 200);
+  public switch = () => {
+    this.isGather ? this.disperseData() : this.gatherData();
+
+    this.isGather = !this.isGather;
+  };
+
+  public onRise = throttle(() => this.updatePositions(), 200);
+  public onRiseDisperseData = throttle(() => {
+    this.disperseData();
+  }, 10000);
+
   public updatePositions = () => {
-    if (this.DEBUG) console.log("触发updatePositions");
+    if (this.props.DEBUG) console.log("触发updatePositions");
 
     const rect = this.positionElement.getBoundingClientRect();
     this.dom.style.width = `${rect.width}px`;
     this.dom.style.height = `${rect.height}px`;
     this.dom.style.left = `${rect.left}px`;
     this.dom.style.top = `${rect.top}px`;
+
+    this.onRiseDisperseData();
   };
 
-  public onUnmount = () => {
-    window.removeEventListener("resize", this.updatePositions);
+  public destroy = () => {
+    this.bubbleRegionElement.style.opacity = "0";
+    window.removeEventListener("resize", this.onRise);
+    this.observer.disconnect();
+    this.onRiseDisperseData.cancel();
+
+    setTimeout(() => {
+      if (this.dom) document.body.removeChild(this.dom);
+
+      if (this.bubbleRegionElement) document.body.removeChild(this.bubbleRegionElement);
+    }, 1000);
   };
 
   private createPointData = () => {
-    const { width, height } = this.props;
+    // const { width, height } = this.props;
+    const rect = this.positionElement.getBoundingClientRect();
+
+    const width = parseInt(rect.width);
+    const height = parseInt(rect.height);
+
     let canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, width, height);
@@ -183,7 +217,15 @@ export class CpsBubbleComponent {
     }
 
     this.bubbleRegionElement = document.createElement("div");
-    Object.assign(this.bubbleRegionElement.style, { pointerEvent: "none", position: "absolute", top: 0, left: 0, width: "100vw", height: "0" });
+    Object.assign(this.bubbleRegionElement.style, {
+      transition: "all .8s cubic-bezier(0.4, 0, 0.2, 1) 0s",
+      pointerEvent: "none",
+      position: "absolute",
+      top: 0,
+      left: 0,
+      width: "100vw",
+      height: "0",
+    });
 
     const rect = this.dom.getBoundingClientRect();
     this.pointArray.forEach((item, i) => {
@@ -199,16 +241,19 @@ export class CpsBubbleComponent {
         left: `${item.x + rect.left}px`,
         top: `${item.y + rect.top}px`,
         transition: "all .8s cubic-bezier(0.4, 0, 0.2, 1) 0s",
+        pointerEvents: "none",
+        willChange: "transform",
+        opacity: 1,
       };
 
       const eachBubbleStyle = {
         width: `${r}px`,
         height: `${r}px`,
-        opacity: opacity,
+        opacity,
         backgroundColor: utils.getRandomColor(),
         borderRadius: "50%",
         animation: `up-and-down-${(i % 2) + 1} ${start}ms ease-in-out ${delay}ms infinite`,
-        willChange: "transform",
+        pointerEvents: "none",
       };
 
       const eachBubbleElement = document.createElement("div");
@@ -240,9 +285,7 @@ export class CpsBubbleComponent {
       const offsetX = coords[0] - left;
       const offsetY = coords[1] - top;
 
-      return {
-        transform: `translate(${offsetX}px, ${offsetY}px)`,
-      };
+      return { transform: `translate(${offsetX}px, ${offsetY}px)` };
     });
 
     // 更新样式

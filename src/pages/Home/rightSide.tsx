@@ -2,7 +2,7 @@
  * @Author: CPS holy.dandelion@139.com
  * @Date: 2023-03-06 23:17:09
  * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2025-02-19 11:25:26
+ * @LastEditTime: 2025-02-19 16:46:42
  * @FilePath: \cps-blog\src\components\HomepageSwiper\rightSide.tsx
  * @Description: 首页标题区域
  */
@@ -33,11 +33,16 @@ function TypedTitle() {
       loop: true,
     });
 
+    let Bubble;
     setTimeout(() => {
-      new CpsBubbleComponent({ bubbleRangeId: "homeTitleComment" }).DEBUG = true;
+      Bubble = new CpsBubbleComponent({ bubbleRangeId: "homeTitleComment", DEBUG: true });
     }, 1000);
 
-    return () => typed.destroy();
+    return () => {
+      typed.destroy();
+
+      Bubble.destroy();
+    };
   }, []);
   return (
     <p className="my-2 min-h-[10rem] hero__subtitle">
