@@ -12,8 +12,6 @@ import React, { ReactNode, useEffect } from "react";
 import Layout from "@theme/Layout";
 import { useGlobalStore } from "@site/src/store";
 
-function useIsMobile() {}
-
 const GlobalLayout: React.FC<{ children: ReactNode }> = (props) => {
   // 从 Zustand store 中获取当前窗口的宽度和高度
   const { setSize, setIsMobile, setScreenSize } = useGlobalStore();

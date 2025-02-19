@@ -2,15 +2,15 @@
  * @Author: Capsion 373704015@qq.com
  * @Date: 2025-02-11 22:15:29
  * @LastEditors: Capsion 373704015@qq.com
- * @LastEditTime: 2025-02-19 22:52:36
+ * @LastEditTime: 2025-02-20 00:08:50
  * @FilePath: \cps-blog-docusaurus-v3\src\components\store\index.ts
  * @Description: 这是全局状态存储
  */
 import { create } from "zustand";
 import isMobile from "is-mobile";
 
-export const DEFAULT_MAIN_COLOR = ["#FC1E4F", "#FFF43D", "#9FDA7F"];
-export const DEFAULT_SUB_COLOR = ["#FF4058", "#F6B429", "#64D487"];
+export const DEFAULT_MAIN_COLOR = ["#FC1E4F", "#FFF43D", "#9FDA7F", "#4A90E2", "#FF9F00", "#9B4DCA"];
+export const DEFAULT_SUB_COLOR = ["#FF4058", "#F6B429", "#64D487", "#1D72B8", "#FF7F32", "#8E44AD"];
 
 // document.addEventListener("visibilitychange", () => {
 //   var isHidden = document.hidden;
@@ -27,7 +27,7 @@ export const DEFAULT_SUB_COLOR = ["#FF4058", "#F6B429", "#64D487"];
 export interface GlobalStore {
   colorIndex: number;
   setColorIndex: (newColorIndex: number) => void;
-  switchColor: (newIndex?: number) => void;
+  // switchColor: (newIndex?: number) => void;
 
   width: number;
   height: number;
@@ -63,12 +63,12 @@ export const useGlobalStore = create<GlobalStore>((set) => ({
   // 全局背景颜色索引
   colorIndex: 0,
   setColorIndex: (newColorIndex: number) => set(() => ({ colorIndex: newColorIndex })),
-  switchColor: (newIndex: number | null = null) =>
-    set((state) => {
-      if (newIndex == null || !DEFAULT_MAIN_COLOR[newIndex]) newIndex = state.colorIndex + 1;
+  // switchColor: (newIndex: number | null = null) =>
+  //   set((state) => {
+  //     if (newIndex == null || !DEFAULT_MAIN_COLOR[newIndex]) newIndex = state.colorIndex + 1;
 
-      return { colorIndex: DEFAULT_MAIN_COLOR[newIndex] ? newIndex : 0 };
-    }),
+  //     return { colorIndex: newIndex };
+  //   }),
 
   // 屏幕状态
   screenSize: "sm", // 默认值

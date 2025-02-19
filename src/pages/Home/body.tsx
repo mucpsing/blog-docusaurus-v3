@@ -20,7 +20,7 @@ const HomeImgSwiper: React.FC<ICpsImgSwiperProps> = (props) => {
   const [delay, setDelay] = useState(0);
   const [oneEnter, setOneEnter] = useState(false);
   const [webp, setWebp] = useState(props.useWebp ? isSupportWebp() : false);
-  const { colorIndex, isMobile, switchColor } = useGlobalStore();
+  const { colorIndex, isMobile, setColorIndex } = useGlobalStore();
 
   const bannerImg = useRef<any>(null);
   const bannerText = useRef<any>(null);
@@ -106,36 +106,42 @@ const HomeImgSwiper: React.FC<ICpsImgSwiperProps> = (props) => {
     }
   };
 
-  const Items = () => {
-    return (
-      <div className="absolute w-full h-10 bottom-0 z-[1] flex items-center justify-center gap-4">
-        {DATA.map((item, index) => {
-          const { mainColor } = item;
-          const key = index.toString();
-          return (
-            <div
-              key={key}
-              onClick={() => switchPage(index)}
-              style={{ background: mainColor }}
-              className={["border-2 border-solid border-white", "w-5 h-5 rounded-full cursor-pointer", "hover:w-10 transition-all duration-300"].join(
-                " "
-              )}
-            ></div>
-          );
-        })}
-      </div>
-    );
-  };
+  // const Items = () => {
+  //   return (
+  //     <div className="absolute w-full h-10 bottom-0 z-[1] flex items-center justify-center gap-4">
+  //       {DATA.map((item, index) => {
+  //         const { mainColor } = item;
+  //         const key = index.toString();
+  //         return (
+  //           <div
+  //             key={key}
+  //             onClick={() => switchPage(index)}
+  //             style={{ background: mainColor }}
+  //             className={["border-2 border-solid border-white", "w-5 h-5 rounded-full cursor-pointer", "hover:w-10 transition-all duration-300"].join(
+  //               " "
+  //             )}
+  //           ></div>
+  //         );
+  //       })}
+  //     </div>
+  //   );
+  // };
 
   const onNext = () => {
-    const newIndex = colorIndex + 1;
-    switchColor(newIndex);
+    let newIndex = colorIndex + 1;
+    if (newIndex >= DEFAULT_SUB_COLOR.length) {
+      newIndex = 0;
+    }
+    setColorIndex(newIndex);
     return newIndex;
   };
 
   const onPrev = () => {
-    const newIndex = colorIndex - 1;
-    switchColor(newIndex);
+    let newIndex = colorIndex - 1;
+    if (newIndex < 0) {
+      newIndex = DEFAULT_SUB_COLOR.length - 1;
+    }
+    setColorIndex(newIndex);
     return newIndex;
   };
 
@@ -167,9 +173,10 @@ const HomeImgSwiper: React.FC<ICpsImgSwiperProps> = (props) => {
 
       <div id="homeTitleComment" className="relative home-title w-[600px]">
         <HomeTitle />
-        <div>
-          <button onClick={() => switchColor()}> 切换颜色 </button>
-        </div>
+        {/* 
+        <button onClick={() => switchColor()}>test</button>
+        <button onClick={() => onNext()}>onNext</button>
+        <button onClick={() => onPrev()}>onPrev</button> */}
       </div>
 
       <CpsImgSwiper
