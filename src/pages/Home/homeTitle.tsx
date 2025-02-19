@@ -1,15 +1,14 @@
 /*
  * @Author: CPS holy.dandelion@139.com
  * @Date: 2023-03-06 23:17:09
- * @LastEditors: capsion_surfacePro7 capsion@surfacePro2.com
- * @LastEditTime: 2025-02-19 21:30:15
+ * @LastEditors: Capsion 373704015@qq.com
+ * @LastEditTime: 2025-02-19 22:45:26
  * @FilePath: \cps-blog\src\components\HomepageSwiper\rightSide.tsx
  * @Description: 首页标题区域
  */
 
 import React, { useEffect, useRef } from "react";
 import Typed from "typed.js";
-import _ from "lodash";
 
 import Link from "@docusaurus/Link";
 import QueueAnim from "rc-queue-anim";
@@ -17,15 +16,17 @@ import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 
 import Iconfont from "@site/src/components/Iconfont";
 import styles from "./styles.module.css";
+import { shuffle } from "lodash";
 
 import { CpsBubbleComponent } from "@site/src/components/BubbleText/index_new";
 
 function TypedTitle() {
   const { siteConfig } = useDocusaurusContext();
+
   const el = useRef(null);
   useEffect(() => {
     const typed = new Typed(el.current, {
-      strings: _.shuffle(siteConfig.tagline.split(",")),
+      strings: shuffle(siteConfig.tagline.split(",")),
       startDelay: 1000,
       typeSpeed: 120,
       backSpeed: 120,
@@ -35,8 +36,8 @@ function TypedTitle() {
 
     let Bubble;
     setTimeout(() => {
-      Bubble = new CpsBubbleComponent({ bubbleRangeId: "homeTitleComment", DEBUG: true });
-    }, 1000);
+      Bubble = new CpsBubbleComponent({ bubbleRangeId: "homeTitleComment", DEBUG: true, bubbleScale: 1.2 });
+    }, 100);
 
     return () => {
       typed.destroy();
@@ -52,8 +53,6 @@ function TypedTitle() {
 }
 
 export default function HomeTitle() {
-  const { siteConfig } = useDocusaurusContext();
-
   return (
     <QueueAnim type="left" duration={800} className="text-center text-white">
       {/* 仅作定位使用 */}
@@ -66,17 +65,11 @@ export default function HomeTitle() {
       <TypedTitle />
 
       <div className={`${styles.buttons} mx-2 mt-4 flex justify-center gap-2`} key="btns">
-        {/* <Link key="b1" className="button button--secondary button--lg" to="/project">
+        <Link key="b1" className="button button--secondary button--lg" to="/project">
           作品案例 💼
         </Link>
         <Link key="b2" className="button button--secondary button--lg" to="/https://gitee.com/capsion/resume">
           个人简介 📄
-        </Link> */}
-        <Link key="b1" className="button button--secondary button--lg" to="/project">
-          ******** 💼
-        </Link>
-        <Link key="b2" className="button button--secondary button--lg" to="/https://gitee.com/capsion/resume">
-          ******** 📄
         </Link>
       </div>
 

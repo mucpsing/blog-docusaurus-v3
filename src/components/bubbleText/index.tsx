@@ -1,8 +1,8 @@
 /*
  * @Author: cpasion-office-win10 373704015@qq.com
  * @Date: 2023-03-28 16:25:46
- * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2025-02-18 15:15:36
+ * @LastEditors: Capsion 373704015@qq.com
+ * @LastEditTime: 2025-02-19 22:10:10
  * @FilePath: \cps-blog\src\pages\test\index.tsx
  * @Description: 泡泡文字聚散效果组建，父级元素必须采用绝对定位，最终泡泡扩散的位置会根据最近一个绝对定位的父级来生成
  */
@@ -59,8 +59,8 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
     bubbleSizeMin: 5,
     intervalTime: 8000, // 泡泡往复的时间，这里需要重构
     positionElementId: "", // 用于定位的元素id，组件会根据这个元素来进行绝对定位
-    opacityMax: 0.9,
-    opacitymin: 0.7,
+    opacityMax: 0.8,
+    opacitymin: 0.6,
     autoGather: true,
   };
 
@@ -194,6 +194,7 @@ export default class LogoGather extends React.Component<LogoGatherProps, LogoGat
         }
       }
     }
+
     const children = [];
     this.pointArray.forEach((item, i) => {
       const r = (Math.random() * this.props.bubbleSizeMin + this.props.bubbleSizeMin) * this.props.bubbleScale;

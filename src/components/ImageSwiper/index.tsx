@@ -2,7 +2,7 @@
  * @Author: cpasion-office-win10 373704015@qq.com
  * @Date: 2023-04-21 09:15:12
  * @LastEditors: Capsion 373704015@qq.com
- * @LastEditTime: 2025-02-13 23:06:38
+ * @LastEditTime: 2025-02-19 22:51:05
  * @FilePath: \cps-blog\src\components\CpsImgSwiper\index.tsx
  * @Description: 这是一个图片轮播组件，支持横屏和竖屏排版，目前仅支持网页端浏览器，没做移动适配
  */
@@ -33,6 +33,8 @@ export interface ICpsImgSwiperProps {
   mainColor?: string[];
   subColor?: string[];
   page?: number;
+  onNext?: () => number;
+  onPrev?: () => number;
 }
 
 export interface ICpsImgSwiperState {
@@ -161,6 +163,8 @@ export default class CpsImgSwiper extends React.Component<ICpsImgSwiperProps, IC
     mainColorIndex: 0,
     subColorIndex: 0,
     page: 0,
+    onNext: () => {},
+    onPrev: () => {},
   };
 
   constructor(props: ICpsImgSwiperProps) {
@@ -219,6 +223,8 @@ export default class CpsImgSwiper extends React.Component<ICpsImgSwiperProps, IC
     this.setState({ showInt, subColorIndex, mainColorIndex });
     this.bannerImg.prev();
     this.bannerText.prev();
+
+    this.props.onPrev();
   };
 
   // 向右翻页的控制函数
@@ -237,6 +243,7 @@ export default class CpsImgSwiper extends React.Component<ICpsImgSwiperProps, IC
     this.setState({ showInt, subColorIndex, mainColorIndex });
     this.bannerImg.next();
     this.bannerText.next();
+    this.props.onNext();
   };
 
   switchPage = (page: number) => {
@@ -287,6 +294,7 @@ export default class CpsImgSwiper extends React.Component<ICpsImgSwiperProps, IC
       data: this.props.data,
       bgColor: this.props.subColor[this.state.subColorIndex],
     });
+    
     return (
       <div className={["bg-white rounded-md overflow-hidden relative", "flex justify-center items-center", this.props.classNames].join(" ")}>
         {/* 图片展示 */}

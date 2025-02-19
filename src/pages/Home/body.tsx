@@ -7,7 +7,7 @@ import { isSupportWebp } from "./Swiper/utils";
 import dataArray, { type ICpsImgSwiperDataItem } from "./Swiper/data";
 import type { ICpsImgSwiperProps } from "./Swiper/index";
 
-import HomeTitle from "./rightSide";
+import HomeTitle from "./homeTitle";
 import Bubble from "@site/src/components/BubbleText";
 import ImgPreview from "@site/src/components/ImageSwiper/imagePreview";
 import { useGlobalStore, DEFAULT_SUB_COLOR, DEFAULT_MAIN_COLOR } from "@site/src/store";
@@ -127,6 +127,18 @@ const HomeImgSwiper: React.FC<ICpsImgSwiperProps> = (props) => {
     );
   };
 
+  const onNext = () => {
+    const newIndex = colorIndex + 1;
+    switchColor(newIndex);
+    return newIndex;
+  };
+
+  const onPrev = () => {
+    const newIndex = colorIndex - 1;
+    switchColor(newIndex);
+    return newIndex;
+  };
+
   const ImgShow = (target: ICpsImgSwiperDataItem) => {
     return (
       <div className="w-full mask">
@@ -138,7 +150,7 @@ const HomeImgSwiper: React.FC<ICpsImgSwiperProps> = (props) => {
   return (
     <div
       className={["overflow-hidden relative", "w-full", "flex justify-evenly items-center text-gray-700"].join(" ")}
-      style={{ height: "clamp(100px, calc(-60px + 100vh), 1200px)" }}
+      style={{ height: "clamp(100px, calc(-60px + 80vh), 1200px)" }}
       id="ccvb"
     >
       {DEFAULT_SUB_COLOR.map((bgColor, i) => (
@@ -148,22 +160,12 @@ const HomeImgSwiper: React.FC<ICpsImgSwiperProps> = (props) => {
           style={{
             background: bgColor,
             opacity: DEFAULT_SUB_COLOR[colorIndex] === bgColor ? 1 : 0,
-            transition: "opacity .6s",
+            transition: "opacity 1.4s",
           }}
         ></div>
       ))}
 
       <div id="homeTitleComment" className="relative home-title w-[600px]">
-        {/* <div id="cps-bubble" className={["w-[600px] h-[200px] bg-amber-400"].join(" ")}></div>
-        <Bubble
-          width={600}
-          height={220}
-          bubbleScale={1.5}
-          bubbleCount={isMobile ? 15 : 10}
-          intervalTime={8000}
-          positionElementId="homeTitleComment"
-        ></Bubble> */}
-
         <HomeTitle />
         <div>
           <button onClick={() => switchColor()}> 切换颜色 </button>
@@ -174,6 +176,8 @@ const HomeImgSwiper: React.FC<ICpsImgSwiperProps> = (props) => {
         mainColor={DEFAULT_MAIN_COLOR}
         subColor={DEFAULT_SUB_COLOR}
         autoSwitch={0}
+        onNext={onNext}
+        onPrev={onPrev}
         classNames={[
           "relative",
           "min-w-[300px] min-h-[250px]",

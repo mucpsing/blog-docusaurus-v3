@@ -72,7 +72,7 @@ export class CpsBubbleComponent {
 
     // 按钮2
     const testButtonElement2 = document.createElement("button");
-    testButtonElement2.innerText = "distroy";
+    testButtonElement2.innerText = "destroy";
     testButtonElement2.onclick = () => {
       this.destroy();
 
@@ -172,12 +172,12 @@ export class CpsBubbleComponent {
     window.removeEventListener("resize", this.onRise);
     this.observer.disconnect();
     this.onRiseDisperseData.cancel();
+    if (this.dom) document.body.removeChild(this.dom);
+    if (this.bubbleRegionElement) document.body.removeChild(this.bubbleRegionElement);
 
     setTimeout(() => {
-      if (this.dom) document.body.removeChild(this.dom);
-
-      if (this.bubbleRegionElement) document.body.removeChild(this.bubbleRegionElement);
-    }, 1000);
+      if (this.props.DEBUG) console.log("destroy::");
+    }, 100);
   };
 
   private createPointData = () => {
@@ -296,6 +296,7 @@ export class CpsBubbleComponent {
     requestAnimationFrame(() => {
       this.bubbleElementList.forEach((bubbleElement, i) => {
         Object.assign(bubbleElement.style, newStlyeList[i]);
+        this.isGather = false;
       });
     });
   };
@@ -304,8 +305,9 @@ export class CpsBubbleComponent {
     requestAnimationFrame(() => {
       this.bubbleElementList.forEach((bubbleElement, i) => {
         Object.assign(bubbleElement.style, {
-          transform: `translate(0, 0)`,
+          transform: `translate(${0 + this.props.offsetX},${0 + this.props.offsetY})`,
         });
+        this.isGather = true;
       });
     });
   };
