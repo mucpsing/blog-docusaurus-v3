@@ -1,8 +1,8 @@
 /*
  * @Author: CPS holy.dandelion@139.com
  * @Date: 2023-03-06 23:17:09
- * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2025-02-19 16:46:42
+ * @LastEditors: capsion_surfacePro7 capsion@surfacePro2.com
+ * @LastEditTime: 2025-02-19 21:30:15
  * @FilePath: \cps-blog\src\components\HomepageSwiper\rightSide.tsx
  * @Description: 首页标题区域
  */
@@ -57,7 +57,7 @@ export default function HomeTitle() {
   return (
     <QueueAnim type="left" duration={800} className="text-center text-white">
       {/* 仅作定位使用 */}
-      <div id="CpsBubble.positionElement" className="bg-amber-400 h-[200px] pointer-events-none" key="title"></div>
+      <div id="CpsBubble.positionElement" className="h-[200px] pointer-events-none" key="title"></div>
 
       <p className="my-6 underline decoration-dotted" key="content">
         <a href="docs/【07】常识科普/社会真实/名人名言">这些年我们听到的名人疯言</a>

@@ -40,7 +40,7 @@ export class CpsBubbleComponent {
   private props: BubbleProps = {};
   private pointArray = [];
   public INTERVAL_LIST = [];
-  private id = "CpsBubble.warp";
+  private id = "CpsBubble";
   private bubbleRangeId = "body";
 
   private dom: HTMLElement; // 组成字母的范围参考元素
@@ -156,13 +156,13 @@ export class CpsBubbleComponent {
   }, 10000);
 
   public updatePositions = () => {
-    if (this.props.DEBUG) console.log("触发updatePositions");
+    if (this.props.DEBUG) console.log("触发  updatePositions");
 
     const rect = this.positionElement.getBoundingClientRect();
     this.dom.style.width = `${rect.width}px`;
     this.dom.style.height = `${rect.height}px`;
-    this.dom.style.left = `${rect.left}px`;
-    this.dom.style.top = `${rect.top}px`;
+    this.dom.style.left = `${rect.left + this.props.offsetX}px`;
+    this.dom.style.top = `${rect.top + this.props.offsetY}px`;
 
     this.onRiseDisperseData();
   };
@@ -217,14 +217,17 @@ export class CpsBubbleComponent {
     }
 
     this.bubbleRegionElement = document.createElement("div");
+    this.bubbleRegionElement.id = "CpsBubble.bubbleRegionElement";
+    const transition = "all .8s cubic-bezier(0.4, 0, 0.2, 1) 0s";
     Object.assign(this.bubbleRegionElement.style, {
-      transition: "all .8s cubic-bezier(0.4, 0, 0.2, 1) 0s",
-      pointerEvent: "none",
       position: "absolute",
+      transition,
+      pointerEvent: "none",
       top: 0,
       left: 0,
       width: "100vw",
       height: "0",
+      opacity: 0,
     });
 
     const rect = this.dom.getBoundingClientRect();
@@ -238,9 +241,9 @@ export class CpsBubbleComponent {
       const eachBubbleWarpStyle = {
         position: "absolute",
         borderRadius: "50%",
-        left: `${item.x + rect.left}px`,
-        top: `${item.y + rect.top}px`,
-        transition: "all .8s cubic-bezier(0.4, 0, 0.2, 1) 0s",
+        left: `${item.x + rect.left + this.props.offsetX}px`,
+        top: `${item.y + rect.top + this.props.offsetY}px`,
+        transition,
         pointerEvents: "none",
         willChange: "transform",
         opacity: 1,
@@ -269,6 +272,7 @@ export class CpsBubbleComponent {
     });
 
     document.body.appendChild(this.bubbleRegionElement);
+    setTimeout(() => (this.bubbleRegionElement.style.opacity = "1"));
   };
 
   disperseData = () => {
