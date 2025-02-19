@@ -8,7 +8,7 @@ import dataArray, { type ICpsImgSwiperDataItem } from "./Swiper/data";
 import type { ICpsImgSwiperProps } from "./Swiper/index";
 
 import HomeTitle from "./homeTitle";
-import Bubble from "@site/src/components/BubbleText";
+// import Bubble from "@site/src/components/BubbleText";
 import ImgPreview from "@site/src/components/ImageSwiper/imagePreview";
 import { useGlobalStore, DEFAULT_SUB_COLOR, DEFAULT_MAIN_COLOR } from "@site/src/store";
 

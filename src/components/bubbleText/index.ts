@@ -2,6 +2,7 @@ import * as utils from "./utils";
 import { throttle } from "lodash";
 
 export interface BubbleProps {
+  DEBUG?: boolean;
   image?: string;
   width?: number;
   height?: number;
@@ -16,12 +17,13 @@ export interface BubbleProps {
   opacity?: number;
   opacityMax?: number;
   opacitymin?: number;
-  autoGather?: boolean;
-  DEBUG?: boolean;
+  autoSwitch?: boolean;
+  bubbleRangeId?: string;
 }
 
 export class CpsBubbleComponent {
   private DEFAULT_PROPS: BubbleProps = {
+    DEBUG: false,
     positionElementId: "CpsBubble.positionElement", // 用于定位的元素id，泡泡文字会在这个元素的范围内生成
     image: "/logo/capsion.png",
     offsetX: 0,
@@ -35,13 +37,13 @@ export class CpsBubbleComponent {
     intervalTime: 8000, // 泡泡往复的时间，这里需要重构
     opacityMax: 0.9,
     opacitymin: 0.7,
-    autoGather: true,
+    autoSwitch: true,
+    bubbleRangeId: "body",
   };
   private props: BubbleProps = {};
   private pointArray = [];
   public INTERVAL_LIST = [];
   private id = "CpsBubble";
-  private bubbleRangeId = "body";
 
   private dom: HTMLElement; // 组成字母的范围参考元素
   private positionElement: HTMLElement;
@@ -83,7 +85,7 @@ export class CpsBubbleComponent {
   };
 
   private onTest = () => {
-    if (this.props.DEBUG) console.log("onTest: ", this.bubbleRegionElement);
+    if (this.props.DEBUG) console.log("onTest: ");
 
     this.switch();
   };
@@ -116,10 +118,11 @@ export class CpsBubbleComponent {
     this.dom = utils.createCoverElement(this.props.positionElementId, baseStyle).element;
     this.dom.id = this.id;
 
-    if (this.bubbleRangeId == "body") {
+    console.log("this.bubbleRangeId: ", this.props.bubbleRangeId);
+    if (this.props.bubbleRangeId == "body") {
       this.bubbleDisperseRangeElement = document.body;
     } else {
-      this.bubbleDisperseRangeElement = document.getElementById(this.bubbleRangeId);
+      this.bubbleDisperseRangeElement = document.getElementById(this.props.bubbleRangeId);
     }
 
     // 创建 MutationObserver 来监听目标元素的变化
@@ -285,7 +288,13 @@ export class CpsBubbleComponent {
     const newStlyeList = this.bubbleElementList.map((item) => {
       const { left, top } = item.getBoundingClientRect();
 
-      const coords = utils.getRandomPointByDOMRect(sideRect);
+      let coords = utils.getRandomPointByDOMRect(sideRect);
+      while (
+        coords[0] > sideRect.width + sideRect.left + this.props.bubbleSizeMin ||
+        coords[1] > sideRect.height + sideRect.top + this.props.bubbleScale
+      ) {
+        coords = utils.getRandomPointByDOMRect(sideRect);
+      }
       const offsetX = coords[0] - left;
       const offsetY = coords[1] - top;
 

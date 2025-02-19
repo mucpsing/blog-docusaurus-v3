@@ -1,8 +1,8 @@
 /*
  * @Author: CPS holy.dandelion@139.com
  * @Date: 2023-02-07 19:55:02
- * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2025-02-14 14:48:52
+ * @LastEditors: Capsion 373704015@qq.com
+ * @LastEditTime: 2025-02-19 23:04:27
  * @FilePath: \cps-blog\src\pages\index.tsx
  * @Description: 首页
  */
@@ -36,7 +36,7 @@ export default function Home(): JSX.Element {
         <link rel="stylesheet" href="/css/globalcss.css" />
       </Head>
 
-      <div className="relative flex flex-col">
+      <div id="homepage.swiper" className="relative flex flex-col">
         <HomepageSwiper />
       </div>
 
