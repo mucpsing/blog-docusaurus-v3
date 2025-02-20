@@ -2,13 +2,12 @@
  * @Author: cpasion-office-win10 373704015@qq.com
  * @Date: 2025-02-10 14:58:40
  * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2025-02-10 15:00:28
+ * @LastEditTime: 2025-02-20 15:16:07
  * @FilePath: \cps-blog-docusaurus-v3\src\components\FallingItemsList.ts
  * @Description: 这是一个随机网格下落的动态效果生成组件
  * @comeform: https://github.com/chokcoco/iCSS/issues/235
  * @example: <ul id="yourElementId"></ul>
  */
-import "./style.css";
 
 function randomNum(max: number, min: number = 0, u: number = 1): number {
   return (min + Math.floor(Math.random() * (max + 1))) * u;

@@ -1,8 +1,8 @@
 /*
  * @Author: CPS holy.dandelion@139.com
  * @Date: 2023-03-06 23:17:09
- * @LastEditors: Capsion 373704015@qq.com
- * @LastEditTime: 2025-02-20 12:15:18
+ * @LastEditors: cpasion-office-win10 373704015@qq.com
+ * @LastEditTime: 2025-02-20 15:20:16
  * @FilePath: \cps-blog\src\components\HomepageSwiper\rightSide.tsx
  * @Description: 首页标题区域
  */
@@ -19,6 +19,7 @@ import styles from "./styles.module.css";
 import { shuffle } from "lodash";
 
 import { CpsBubbleComponent } from "@site/src/components/BubbleText/index";
+import ExecutionEnvironment from "@docusaurus/ExecutionEnvironment";
 
 function TypedTitle() {
   const { siteConfig } = useDocusaurusContext();
@@ -36,12 +37,14 @@ function TypedTitle() {
 
     let Bubble;
     setTimeout(() => {
-      Bubble = new CpsBubbleComponent({
-        bubbleRangeId: "homepage.swiper",
-        DEBUG: false,
-        bubbleScale: 1.2,
-        image: `${siteConfig.baseUrl}logo/capsion.png`,
-      });
+      if (ExecutionEnvironment.canUseDOM) {
+        Bubble = new CpsBubbleComponent({
+          bubbleRangeId: "homepage.swiper",
+          DEBUG: false,
+          bubbleScale: 1.2,
+          image: `${siteConfig.baseUrl}logo/capsion.png`,
+        });
+      }
     }, 100);
 
     return () => {
