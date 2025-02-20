@@ -8,6 +8,7 @@ import * as scripts from "./src/scripts";
 // import { addHeaderTag } from "./src/scripts/customPlugs";
 
 import { extractTagline } from "./src/scripts/taglineList";
+// import Link from "@docusaurus/Link";
 // import customPlugin from "./src/plugins/fixHostToCDN";
 
 /* 【首页】名人名言 */
@@ -94,8 +95,7 @@ const config: Config = {
         //     'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
         // },
         theme: {
-          // customCss: ["./src/css/custom.css"],
-          customCss: ["./src/css/custom.css", "./src/components/BubbleText/bubble.css"],
+          customCss: ["./src/css/custom.css"],
         },
       } satisfies Preset.Options,
     ],

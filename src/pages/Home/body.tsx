@@ -1,8 +1,8 @@
 /*
  * @Author: cpasion-office-win10 373704015@qq.com
  * @Date: 2025-02-20 09:21:04
- * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2025-02-20 10:40:45
+ * @LastEditors: Capsion 373704015@qq.com
+ * @LastEditTime: 2025-02-20 12:10:14
  * @FilePath: \cps-blog-docusaurus-v3\src\pages\Home\body.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -11,7 +11,6 @@ import HomeTitle from "./homeTitle";
 
 import CpsImgSwiper from "@site/src/components/ImageSwiper";
 import { useGlobalStore, DEFAULT_SUB_COLOR, DEFAULT_MAIN_COLOR } from "@site/src/store";
-import styles from "@site/src/components/BubbleText/bubble.module.css";
 
 const HomeImgSwiper: React.FC = () => {
   const { colorIndex, isMobile, setColorIndex } = useGlobalStore();
@@ -44,7 +43,7 @@ const HomeImgSwiper: React.FC = () => {
 
   return (
     <div
-      className={["overflow-hidden relative", "w-full", "flex justify-evenly items-center text-gray-700", styles.inClude].join(" ")}
+      className={["overflow-hidden relative", "w-full", "flex justify-evenly items-center text-gray-700"].join(" ")}
       style={{ height: "clamp(100px, calc(-60px + 80vh), 1200px)" }}
       id="ccvb"
     >

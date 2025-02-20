@@ -1,8 +1,8 @@
 /*
  * @Author: CPS holy.dandelion@139.com
  * @Date: 2023-02-07 19:55:02
- * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2025-02-20 10:49:03
+ * @LastEditors: Capsion 373704015@qq.com
+ * @LastEditTime: 2025-02-20 12:45:44
  * @FilePath: \cps-blog\src\pages\index.tsx
  * @Description: 首页
  */
@@ -40,7 +40,6 @@ export default function Home(): JSX.Element {
 
       <div id="homepage.swiper" className="relative flex flex-col">
         <HomepageSwiper />
-        <button>siteConfig.baseUrl</button>
       </div>
 
       <div>
