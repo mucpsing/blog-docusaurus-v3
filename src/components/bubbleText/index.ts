@@ -118,7 +118,6 @@ export class CpsBubbleComponent {
     this.dom = utils.createCoverElement(this.props.positionElementId, baseStyle).element;
     this.dom.id = this.id;
 
-    console.log("this.bubbleRangeId: ", this.props.bubbleRangeId);
     if (this.props.bubbleRangeId == "body") {
       this.bubbleDisperseRangeElement = document.body;
     } else {

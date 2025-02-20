@@ -6,6 +6,8 @@
  */
 
 import React, { useState, useMemo, useEffect, useRef } from "react";
+import Head from "@docusaurus/Head";
+import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 
 import Layout from "@theme/Layout";
 import clsx from "clsx";
@@ -25,9 +27,6 @@ import * as utils from "@site/src/utils";
 import { DEFAULT_MAIN_COLOR, DEFAULT_SUB_COLOR } from "@site/src/store";
 
 import styles from "./styles.module.css";
-import "@site/src/components/FallingItemsList/style.css";
-
-// import stylesS from "./style.module.sass";
 
 const TITLE = "🌟作品&项目💼";
 const DESCRIPTION = "以下展示的项目均由本人独立开发，商业产品类型的项目均已取得甲方同意方才展示或开源。";
@@ -306,8 +305,14 @@ function ProjectHeader({ title }: { title: string }) {
 }
 
 function Showcase(): JSX.Element {
+  const { siteConfig } = useDocusaurusContext();
+
   return (
     <Layout title={TITLE} description={DESCRIPTION}>
+      <Head>
+        {/* 修复css不加载的问题 */}
+        <link rel="stylesheet" href={`${siteConfig.baseUrl}css/FallingItemsList.css`} />
+      </Head>
       {/* <header className="flex justify-center" style={{ margin: "clamp(0.5rem, 2.5rem, 3vh) 0" }}> */}
       <header className={["flex justify-center", "sm:mt-2 md:mt-4 lg:mt-8 xl:mt-10"].join(" ")}>
         <CpsImgSwiper

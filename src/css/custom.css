@@ -10,6 +10,8 @@
 
 /* 必须引入，否则部分居中等样式会异常 */
 @import "rc-banner-anim/assets/index.css";
+/* @import "@site/src/components/BubbleText/bubble.css"; */
+/* @import "@site/src/components/FallingItemsList/style.css"; */
 
 /* You can override the default Infima variables here. */
 /* :root {

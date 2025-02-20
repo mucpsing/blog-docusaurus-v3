@@ -2,7 +2,7 @@
  * @Author: CPS holy.dandelion@139.com
  * @Date: 2023-02-07 19:55:02
  * @LastEditors: Capsion 373704015@qq.com
- * @LastEditTime: 2025-02-20 12:45:44
+ * @LastEditTime: 2025-02-20 13:04:01
  * @FilePath: \cps-blog\src\pages\index.tsx
  * @Description: 首页
  */
@@ -35,7 +35,7 @@ export default function Home(): JSX.Element {
     <Layout title={siteConfig.title} description="Description will go into a meta tag in <head />">
       <Head>
         {/* 修复css不加载的问题 */}
-        <link rel="stylesheet" href={`${siteConfig.baseUrl}css/globalcss.css`} />
+        <link rel="stylesheet" href={`${siteConfig.baseUrl}css/bubble.css`} />
       </Head>
 
       <div id="homepage.swiper" className="relative flex flex-col">
