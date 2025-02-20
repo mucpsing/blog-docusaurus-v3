@@ -1,131 +1,20 @@
-import React, { useState, useEffect, useRef } from "react";
-
-// import BannerAnim from "rc-banner-anim";
-
-import { ANIM_CONFIGS } from "./Swiper/index";
-import { isSupportWebp } from "./Swiper/utils";
-import dataArray, { type ICpsImgSwiperDataItem } from "./Swiper/data";
-import type { ICpsImgSwiperProps } from "./Swiper/index";
-
+/*
+ * @Author: cpasion-office-win10 373704015@qq.com
+ * @Date: 2025-02-20 09:21:04
+ * @LastEditors: cpasion-office-win10 373704015@qq.com
+ * @LastEditTime: 2025-02-20 10:40:45
+ * @FilePath: \cps-blog-docusaurus-v3\src\pages\Home\body.tsx
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
+import React from "react";
 import HomeTitle from "./homeTitle";
-// import Bubble from "@site/src/components/BubbleText";
-import ImgPreview from "@site/src/components/ImageSwiper/imagePreview";
-import { useGlobalStore, DEFAULT_SUB_COLOR, DEFAULT_MAIN_COLOR } from "@site/src/store";
 
 import CpsImgSwiper from "@site/src/components/ImageSwiper";
-// import { CpsBubbleComponent } from "@site/src/components/BubbleText/index_new";
+import { useGlobalStore, DEFAULT_SUB_COLOR, DEFAULT_MAIN_COLOR } from "@site/src/store";
+import styles from "@site/src/components/BubbleText/bubble.module.css";
 
-const HomeImgSwiper: React.FC<ICpsImgSwiperProps> = (props) => {
-  const [showInt, setShowInt] = useState(0);
-  const [delay, setDelay] = useState(0);
-  const [oneEnter, setOneEnter] = useState(false);
-  const [webp, setWebp] = useState(props.useWebp ? isSupportWebp() : false);
+const HomeImgSwiper: React.FC = () => {
   const { colorIndex, isMobile, setColorIndex } = useGlobalStore();
-
-  const bannerImg = useRef<any>(null);
-  const bannerText = useRef<any>(null);
-
-  const autoSwitchInterID = useRef<any>(null);
-
-  const currtAnim = useRef<any>(ANIM_CONFIGS.right);
-  const DATA = dataArray;
-
-  useEffect(() => {
-    if (props.autoSwitch > 0) {
-      setTimeout(() => {
-        onRight("autoSwitch");
-        autoSwitchInterID.current = setInterval(() => {
-          onRight("autoSwitch");
-        }, props.autoSwitch);
-      }, 1000);
-    }
-
-    return () => {
-      if (autoSwitchInterID.current) clearInterval(autoSwitchInterID.current);
-    };
-  }, [props.autoSwitch]);
-
-  const onChange = () => {
-    if (!oneEnter) {
-      setDelay(300);
-      setOneEnter(true);
-    }
-  };
-
-  const onLeft = (e?) => {
-    if (typeof e !== "string" && autoSwitchInterID.current) {
-      clearInterval(autoSwitchInterID.current);
-      autoSwitchInterID.current = null;
-    }
-
-    let currentInt = showInt;
-
-    currtAnim.current = ANIM_CONFIGS.left;
-
-    if (currentInt <= 0) {
-      currentInt = dataArray.length - 1;
-    } else {
-      currentInt -= 1;
-    }
-
-    setShowInt(currentInt);
-    bannerImg.current.prev();
-    bannerText.current.prev();
-  };
-
-  const onRight = (e?) => {
-    if (typeof e !== "string" && autoSwitchInterID.current) {
-      clearInterval(autoSwitchInterID.current);
-      autoSwitchInterID.current = null;
-    }
-
-    let currentInt = showInt;
-
-    currtAnim.current = ANIM_CONFIGS.right;
-
-    if (currentInt >= dataArray.length - 1) {
-      currentInt = 0;
-    } else {
-      currentInt += 1;
-    }
-
-    setShowInt(currentInt);
-    bannerImg.current.next();
-    bannerText.current.next();
-  };
-
-  const switchPage = (index: number) => {
-    const currentPage = showInt;
-
-    if (currentPage === index) {
-      return;
-    } else if (currentPage < index) {
-      onRight();
-    } else {
-      onLeft();
-    }
-  };
-
-  // const Items = () => {
-  //   return (
-  //     <div className="absolute w-full h-10 bottom-0 z-[1] flex items-center justify-center gap-4">
-  //       {DATA.map((item, index) => {
-  //         const { mainColor } = item;
-  //         const key = index.toString();
-  //         return (
-  //           <div
-  //             key={key}
-  //             onClick={() => switchPage(index)}
-  //             style={{ background: mainColor }}
-  //             className={["border-2 border-solid border-white", "w-5 h-5 rounded-full cursor-pointer", "hover:w-10 transition-all duration-300"].join(
-  //               " "
-  //             )}
-  //           ></div>
-  //         );
-  //       })}
-  //     </div>
-  //   );
-  // };
 
   const onNext = () => {
     let newIndex = colorIndex + 1;
@@ -145,17 +34,17 @@ const HomeImgSwiper: React.FC<ICpsImgSwiperProps> = (props) => {
     return newIndex;
   };
 
-  const ImgShow = (target: ICpsImgSwiperDataItem) => {
-    return (
-      <div className="w-full mask">
-        <img src={target.gif} alt="" />
-      </div>
-    );
-  };
+  // const ImgShow = (target: ICpsImgSwiperDataItem) => {
+  //   return (
+  //     <div className="w-full mask">
+  //       <img src={target.gif} alt="" />
+  //     </div>
+  //   );
+  // };
 
   return (
     <div
-      className={["overflow-hidden relative", "w-full", "flex justify-evenly items-center text-gray-700"].join(" ")}
+      className={["overflow-hidden relative", "w-full", "flex justify-evenly items-center text-gray-700", styles.inClude].join(" ")}
       style={{ height: "clamp(100px, calc(-60px + 80vh), 1200px)" }}
       id="ccvb"
     >
@@ -173,10 +62,6 @@ const HomeImgSwiper: React.FC<ICpsImgSwiperProps> = (props) => {
 
       <div id="homeTitleComment" className="relative home-title w-[600px]">
         <HomeTitle />
-        {/* 
-        <button onClick={() => switchColor()}>test</button>
-        <button onClick={() => onNext()}>onNext</button>
-        <button onClick={() => onPrev()}>onPrev</button> */}
       </div>
 
       <CpsImgSwiper

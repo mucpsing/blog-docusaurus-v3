@@ -95,7 +95,7 @@ const config: Config = {
         // },
         theme: {
           // customCss: ["./src/css/custom.css"],
-          customCss: ["./src/css/custom.css", "./src/components/BubbleText/style.css"],
+          customCss: ["./src/css/custom.css", "./src/components/BubbleText/bubble.css"],
         },
       } satisfies Preset.Options,
     ],

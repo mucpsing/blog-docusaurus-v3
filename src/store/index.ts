@@ -1,8 +1,8 @@
 /*
  * @Author: Capsion 373704015@qq.com
  * @Date: 2025-02-11 22:15:29
- * @LastEditors: Capsion 373704015@qq.com
- * @LastEditTime: 2025-02-20 00:08:50
+ * @LastEditors: cpasion-office-win10 373704015@qq.com
+ * @LastEditTime: 2025-02-20 09:41:15
  * @FilePath: \cps-blog-docusaurus-v3\src\components\store\index.ts
  * @Description: 这是全局状态存储
  */
@@ -63,12 +63,6 @@ export const useGlobalStore = create<GlobalStore>((set) => ({
   // 全局背景颜色索引
   colorIndex: 0,
   setColorIndex: (newColorIndex: number) => set(() => ({ colorIndex: newColorIndex })),
-  // switchColor: (newIndex: number | null = null) =>
-  //   set((state) => {
-  //     if (newIndex == null || !DEFAULT_MAIN_COLOR[newIndex]) newIndex = state.colorIndex + 1;
-
-  //     return { colorIndex: newIndex };
-  //   }),
 
   // 屏幕状态
   screenSize: "sm", // 默认值
