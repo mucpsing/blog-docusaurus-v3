@@ -1,8 +1,8 @@
 /*
  * @Author: cpasion-office-win10 373704015@qq.com
  * @Date: 2023-04-07 08:49:40
- * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2025-02-20 10:41:07
+ * @LastEditors: Capsion 373704015@qq.com
+ * @LastEditTime: 2025-02-21 21:36:19
  * @FilePath: \cps-blog\src\components\bubbleText\bubble.css
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -14,9 +14,7 @@
     0 0 90px #fff;
 }
 
-.inClude {
-  padding: 0;
-}
+
 
 @keyframes up-and-down-1 {
   0%,

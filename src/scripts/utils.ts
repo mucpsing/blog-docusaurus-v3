@@ -1,8 +1,8 @@
 /*
  * @Author: CPS holy.dandelion@139.com
  * @Date: 2023-03-25 16:10:31
- * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2024-09-20 09:05:03
+ * @LastEditors: Capsion 373704015@qq.com
+ * @LastEditTime: 2025-02-21 21:35:14
  * @filepath: \cps-blog\scripts\utils.ts
  * @Description: 一些会被重复调用的工具函数
  */
@@ -191,6 +191,36 @@ export async function createProjectDataByFolder(filepathList: string[], prefixUr
 
     await fsp.writeFile(outputPath, outputData);
   }
+}
+
+/**
+ * @description: 更新静态资源到static目录
+ * @param {string} cssDirList
+ * @return {*}
+ */
+export async function copyCssToStatic(cssDirList: string[]) {
+  const staticPath = path.resolve("./static");
+  let count = 0;
+
+  cssDirList.forEach(async (cssdir) => {
+    console.log("开始复制css文件: ", cssdir);
+    const cssPath = await fs.readdirSync(cssdir);
+    for (let index = 0; index < cssPath.length; index++) {
+      const cssFile = cssPath[index];
+      const cssFilePath = path.join(cssdir, cssFile);
+      const cssFileStat = await fsp.stat(cssFilePath);
+      if (cssFileStat.isFile() && cssFile.endsWith(".css")) {
+        const cssFileContent = await fsp.readFile(cssFilePath, { encoding: "utf8" });
+        const cssFilePathInStatic = path.join(staticPath, "css", cssFile);
+
+        console.log("开始复制css文件: ", cssFilePathInStatic);
+        await fsp.writeFile(cssFilePathInStatic, cssFileContent);
+        count += 1;
+      }
+    }
+
+    return count;
+  });
 }
 
 /* 文件夹试调 */

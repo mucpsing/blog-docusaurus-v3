@@ -186,8 +186,8 @@ export class CpsBubbleComponent {
     // const { width, height } = this.props;
     const rect = this.positionElement.getBoundingClientRect();
 
-    const width = parseInt(rect.width);
-    const height = parseInt(rect.height);
+    const width = Math.trunc(rect.width);
+    const height = Math.trunc(rect.height);
 
     let canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");

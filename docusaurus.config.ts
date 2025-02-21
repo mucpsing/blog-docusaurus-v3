@@ -11,6 +11,8 @@ import { extractTagline } from "./src/scripts/taglineList";
 // import Link from "@docusaurus/Link";
 // import customPlugin from "./src/plugins/fixHostToCDN";
 
+scripts.copyCssToStatic([path.resolve("./src/components/FallingItemsList"), path.resolve("./src/components/BubbleText")]);
+
 /* 【首页】名人名言 */
 const taglineList = extractTagline(path.resolve("./docs/【07】常识科普/社会真实/名人名言.md"));
 

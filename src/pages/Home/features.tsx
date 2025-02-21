@@ -1,8 +1,8 @@
 /*
  * @Author: Capsion 373704015@qq.com
  * @Date: 2025-02-13 22:17:47
- * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2025-02-21 14:47:18
+ * @LastEditors: Capsion 373704015@qq.com
+ * @LastEditTime: 2025-02-21 22:06:55
  * @FilePath: \cps-blog-docusaurus-v3\src\pages\Home\features.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -18,17 +18,25 @@ type FeatureItem = {
 
 const FeatureList: FeatureItem[] = [
   {
-    title: "前端开发",
+    title: "前端技能",
     Svg: require("@site/static/img/undraw_docusaurus_mountain.svg").default,
-    description: <>擅长使用Vue系技术栈进行web开发，略懂UI设计，能独立构建中小型web项目~</>,
+    description: (
+      <>
+        能独立完成前端项目，也能配合后端使用常见框架开发<code>Vue</code>、<code>Rect</code>、<code>TS+CSS</code>、<code>TailwillCSS</code>、
+        <code>Uniapp</code>；<br />
+        <a href="https://linux.vbird.org/linux_basic/">前端项目展示</a>
+      </>
+    ),
   },
   {
-    title: "后端开发",
+    title: "后端技能",
     Svg: require("@site/static/img/undraw_docusaurus_tree.svg").default,
     description: (
       <>
-        擅长使用<code>python</code>和<code>lua</code>
-        进行后端开发，数据分析，AI模型训练，深度学习等均有涉及，最近在研究AI模特换装~
+        掌握的语言：<code>Python</code>、<code>Java</code>、<code>Lua</code>、<code>Go</code>； 常用的框架：<code>Fastapi</code>、
+        <code>Spring全家桶</code>能独或配合前端完成项目开发
+        <br />
+        <a href="https://linux.vbird.org/linux_basic/">后端项目展示</a>
       </>
     ),
   },
@@ -37,8 +45,9 @@ const FeatureList: FeatureItem[] = [
     Svg: require("@site/static/img/Operations Engineer.svg").default,
     description: (
       <>
-        熟读<a href="http://cn.linux.vbird.org/linux_server/0110network_basic.php">《鸟哥的linux私房菜-基础篇》</a>、
-        <a href="https://linux.vbird.org/linux_basic/">《鸟哥的linux私房菜-服务器篇》</a>一名合格的运维菜鸟。
+        熟读<a href="http://cn.linux.vbird.org/linux_server/0110network_basic.php">《鸟哥的linux私房菜-基础篇、服务器》</a>、
+        <a href="https://linux.vbird.org/linux_basic/">《鸟哥的linux私房菜-服务器篇》</a>一名合格的运维菜鸡。 <br />
+        <a href="https://linux.vbird.org/linux_basic/">完整项目展示</a>
       </>
     ),
   },
