@@ -69,13 +69,13 @@ const config: Config = {
   ],
 
   // 插入<scripts>标签，
-  scripts: [
-    // 修复本地host的开发图片跳转问题
-    {
-      src: "/scripts/beforeWindowLoad.js", // 插入图片修复脚本
-      async: false,
-    },
-  ],
+  // scripts: [
+  //   // 修复本地host的开发图片跳转问题
+  //   {
+  //     src: "/scripts/beforeWindowLoad.js", // 插入图片修复脚本
+  //     async: false,
+  //   },
+  // ],
 
   presets: [
     [
@@ -236,11 +236,11 @@ if (process.env.PAGE_TYPE && process.env.PAGE_TYPE == "github") {
     projectName: "blog-docusaurus-v3", // Usually your repo name.
     organizationName: "mucpsing", // Usually your GitHub org/user name.
     deploymentBranch: "pages",
-    scripts: [
-      {
-        src: "/blog-docusaurus-v3/scripts/beforeWindowLoad.js", // 插入图片修复脚本
-      },
-    ],
+    // scripts: [
+    //   {
+    //     src: "/blog-docusaurus-v3/scripts/beforeWindowLoad.js", // 插入图片修复脚本
+    //   },
+    // ],
   };
 
   Object.assign(config, githubConfig);

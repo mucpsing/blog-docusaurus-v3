@@ -1,8 +1,8 @@
 /*
  * @Author: Capsion 373704015@qq.com
  * @Date: 2025-02-13 22:17:47
- * @LastEditors: Capsion 373704015@qq.com
- * @LastEditTime: 2025-02-13 22:17:56
+ * @LastEditors: cpasion-office-win10 373704015@qq.com
+ * @LastEditTime: 2025-02-21 14:47:18
  * @FilePath: \cps-blog-docusaurus-v3\src\pages\Home\features.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -18,12 +18,12 @@ type FeatureItem = {
 
 const FeatureList: FeatureItem[] = [
   {
-    title: "前端技能",
+    title: "前端开发",
     Svg: require("@site/static/img/undraw_docusaurus_mountain.svg").default,
     description: <>擅长使用Vue系技术栈进行web开发，略懂UI设计，能独立构建中小型web项目~</>,
   },
   {
-    title: "后端技能",
+    title: "后端开发",
     Svg: require("@site/static/img/undraw_docusaurus_tree.svg").default,
     description: (
       <>
@@ -34,7 +34,7 @@ const FeatureList: FeatureItem[] = [
   },
   {
     title: "网络运维",
-    Svg: require("@site/static/img/undraw_docusaurus_react.svg").default,
+    Svg: require("@site/static/img/Operations Engineer.svg").default,
     description: (
       <>
         熟读<a href="http://cn.linux.vbird.org/linux_server/0110network_basic.php">《鸟哥的linux私房菜-基础篇》</a>、
