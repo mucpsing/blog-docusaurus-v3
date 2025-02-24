@@ -97,7 +97,7 @@ const config: Config = {
         //     'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
         // },
         theme: {
-          customCss: ["./src/css/custom.css"],
+          customCss: ["./src/css/custom.css", "./src/components/BubbleText/bubble.css", "./src/components/FallingItemsList/FallingItemsList.css"],
         },
       } satisfies Preset.Options,
     ],
