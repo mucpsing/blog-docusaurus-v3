@@ -5,19 +5,21 @@ import process from "node:process";
 
 import * as path from "path";
 import * as scripts from "./src/scripts";
-// import { addHeaderTag } from "./src/scripts/customPlugs";
 
 import { extractTagline } from "./src/scripts/taglineList";
-// import Link from "@docusaurus/Link";
-// import customPlugin from "./src/plugins/fixHostToCDN";
+import pluginCdnReplacer from "./src/plugins/fixImageUrlToCDN";
 
+const DOCS_PATH = "./docs";
+// const DOCS_PATH = "W:/CPS/MyProject/cps/cps-blog/docs";
+
+// 因为css引入异常，这里将一些引入异常的css文件复制到static中，然后通过页面文件添加link的ref来解决
 scripts.copyCssToStatic([path.resolve("./src/components/FallingItemsList"), path.resolve("./src/components/BubbleText")]);
 
 /* 【首页】名人名言 */
 const taglineList = extractTagline(path.resolve("./docs/【07】常识科普/社会真实/名人名言.md"));
 
 /* 排除的文件夹 */
-const excludeDirList = ["【18】副业开发", ".obsidian", "gg", ".trash"];
+const excludeDirList = ["【18】副业开发", ".obsidian", "gg", ".trash", "【00】安卓开发", "临时", "【10】work"];
 
 const config: Config = {
   title: "Capsion | 个人博客 | 编程资料整理",
@@ -49,7 +51,21 @@ const config: Config = {
     locales: ["en"],
   },
 
-  plugins: ["@docusaurus/plugin-ideal-image", "docusaurus-plugin-sass"],
+  plugins: [
+    "@docusaurus/plugin-ideal-image",
+    "docusaurus-plugin-sass",
+    // [
+    //   pluginCdnReplacer,
+    //   {
+    //     replacements: [
+    //       {
+    //         search: "http://localhost:45462/image/",
+    //         replace: "/static/img/",
+    //       },
+    //     ],
+    //   },
+    // ],
+  ],
 
   // 开启mermaid（思维导图）支持
   markdown: { mermaid: true },
@@ -70,24 +86,13 @@ const config: Config = {
     ],
   ],
 
-  // 插入<scripts>标签，
-  // scripts: [
-  //   // 修复本地host的开发图片跳转问题
-  //   {
-  //     src: "/scripts/beforeWindowLoad.js", // 插入图片修复脚本
-  //     async: false,
-  //   },
-  // ],
-
   presets: [
     [
-      "classic",
+      "@docusaurus/preset-classic",
       {
         docs: {
-          sidebarPath: "./sidebars.ts",
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl: "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/",
+          path: DOCS_PATH,
+          exclude: excludeDirList,
         },
         // blog: {
         //   showReadingTime: true,
@@ -113,10 +118,10 @@ const config: Config = {
         { to: "/", label: "🏠 首页", position: "left" },
 
         {
-          label: "📔 笔记",
+          label: "📔 学习笔记",
           type: "dropdown",
           position: "left",
-          items: scripts.createNavItemByDir({ targetPath: path.resolve("./docs"), excludeDirList }),
+          items: scripts.createNavItemByDir({ targetPath: DOCS_PATH, excludeDirList }),
         },
 
         { type: "search", position: "left" },
@@ -238,11 +243,6 @@ if (process.env.PAGE_TYPE && process.env.PAGE_TYPE == "github") {
     projectName: "blog-docusaurus-v3", // Usually your repo name.
     organizationName: "mucpsing", // Usually your GitHub org/user name.
     deploymentBranch: "pages",
-    // scripts: [
-    //   {
-    //     src: "/blog-docusaurus-v3/scripts/beforeWindowLoad.js", // 插入图片修复脚本
-    //   },
-    // ],
   };
 
   Object.assign(config, githubConfig);

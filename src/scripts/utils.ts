@@ -2,7 +2,7 @@
  * @Author: CPS holy.dandelion@139.com
  * @Date: 2023-03-25 16:10:31
  * @LastEditors: Capsion 373704015@qq.com
- * @LastEditTime: 2025-02-21 21:35:14
+ * @LastEditTime: 2025-02-25 23:25:47
  * @filepath: \cps-blog\scripts\utils.ts
  * @Description: 一些会被重复调用的工具函数
  */
@@ -38,7 +38,7 @@ export interface NavItemParams {
 }
 
 /**
- * @description: 根据指定的文件夹生成菜单：学习笔记 【子菜单】
+ * @description: 根据指定的文件夹生成指定的菜单格式
  * @param {string} targetPath 指定的文件夹
  * @param {string[]} excludeDirList 需要排除的文件夹
  * @param {boolean} inDeep 是否递归读取，如果递归，则列出所有md文件，否则仅列出顶层的目录
@@ -198,29 +198,93 @@ export async function createProjectDataByFolder(filepathList: string[], prefixUr
  * @param {string} cssDirList
  * @return {*}
  */
-export async function copyCssToStatic(cssDirList: string[]) {
+export async function copyCssToStatic(cssDirList: string[]): Promise<number> {
   const staticPath = path.resolve("./static");
+  const cssTargetDir = path.join(staticPath, "css");
   let count = 0;
 
-  cssDirList.forEach(async (cssdir) => {
-    console.log("开始复制css文件: ", cssdir);
-    const cssPath = await fs.readdirSync(cssdir);
-    for (let index = 0; index < cssPath.length; index++) {
-      const cssFile = cssPath[index];
-      const cssFilePath = path.join(cssdir, cssFile);
-      const cssFileStat = await fsp.stat(cssFilePath);
-      if (cssFileStat.isFile() && cssFile.endsWith(".css")) {
-        const cssFileContent = await fsp.readFile(cssFilePath, { encoding: "utf8" });
-        const cssFilePathInStatic = path.join(staticPath, "css", cssFile);
+  // 确保目标目录存在
+  await fsp.mkdir(cssTargetDir, { recursive: true });
 
-        console.log("开始复制css文件: ", cssFilePathInStatic);
-        await fsp.writeFile(cssFilePathInStatic, cssFileContent);
-        count += 1;
-      }
+  // 使用 for...of 替代 forEach
+  for (const cssDir of cssDirList) {
+    try {
+      // console.log(`开始处理目录: ${cssDir}`);
+      const cssFiles = await fs.promises.readdir(cssDir);
+
+      // 并行处理文件复制
+      await Promise.all(
+        cssFiles.map(async (cssFile) => {
+          const cssFilePath = path.join(cssDir, cssFile);
+          const cssFileStat = await fsp.stat(cssFilePath);
+
+          if (cssFileStat.isFile() && cssFile.endsWith(".css")) {
+            const targetPath = path.join(cssTargetDir, path.basename(cssFile));
+            const cssContent = await fsp.readFile(cssFilePath, "utf8");
+
+            await fsp.writeFile(targetPath, cssContent);
+            count++;
+            console.log(`已复制: ${targetPath}`);
+          }
+        })
+      );
+    } catch (error) {
+      console.error(`处理目录 ${cssDir} 时出错:`, error);
+      throw error; // 根据需求决定是否终止流程
+    }
+  }
+
+  return count;
+}
+
+/**
+ * @description: 遍历目录，以该目录的内容来生成新的index.md，确保sidebar的正确
+ * @param {string} targetDir
+ */
+export async function createIndexMdFileToFolder(targetDir: string) {
+  const resList = await fsp.readdir(targetDir);
+
+  // 生成目录列表项内容
+  const generateDirItems = async (fullPath: string) => {
+    const subFolderFileList = await fsp.readdir(fullPath);
+    const dirItems: string[] = [];
+
+    for (const file of subFolderFileList) {
+      const filePath = path.join(fullPath, file);
+      const stat = await fsp.stat(filePath);
+      if (stat.isDirectory()) dirItems.push(`- ${file}`);
     }
 
-    return count;
-  });
+    return dirItems;
+  };
+
+  // 生成完整文件内容
+  const generateFileContent = (title: string, dirItems: string[]) => [`# ${title}`, " ", "## 文章列表", ...dirItems].join("\n");
+
+  for (const rootDirFile of resList) {
+    const fullPath = path.join(targetDir, rootDirFile);
+    if (!(await fsp.stat(fullPath)).isDirectory()) continue;
+
+    const indexFilePath = path.join(fullPath, "index.md");
+    const dirItems = await generateDirItems(fullPath);
+    if (dirItems.length === 0) continue;
+
+    const newContent = generateFileContent(rootDirFile, dirItems);
+    let hasIndexMd = false;
+    let contentChanged = false;
+    let oldData = null; // 默认值
+
+    try {
+      oldData = await fsp.readFile(indexFilePath, "utf-8");
+      hasIndexMd = true;
+      contentChanged = oldData !== newContent;
+    } catch (error) {
+      hasIndexMd = false;
+      contentChanged = true; // 文件不存在时需要新建
+    }
+
+    if (contentChanged) await fsp.writeFile(indexFilePath, newContent);
+  }
 }
 
 /* 文件夹试调 */

@@ -137,34 +137,7 @@ export class CpsBubbleComponent {
     this.observer.observe(this.positionElement, { attributes: true, childList: true, subtree: true });
 
     // 监听窗口大小变化，确保新元素尺寸同步更新
-    // window.addEventListener("resize", this.onRise);
-    // 初始化 ResizeObserver
-    this.domResizeObserver = new ResizeObserver((entries) => {
-      entries.forEach((entry) => {
-        const width = entry.contentRect.width;
-        const height = entry.contentRect.height;
-        // console.log(`Width: ${width}px, Height: ${height}px`);
-
-        // this.onRise();
-        this.updatePositions();
-      });
-    });
-    // 开始观察元素
-    this.domResizeObserver.observe(this.positionElement);
-
-    // 监听位置变化
-    this.domPositionMutationObserver = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        // 观察 style 属性的变化
-        if (mutation.type === "attributes" && mutation.attributeName === "style") {
-          // const transform = element.style.transform;
-
-          // this.onRise();
-          this.updatePositions();
-        }
-      });
-    });
-    this.domPositionMutationObserver.observe(this.positionElement, { attributes: true, attributeFilter: ["style"] });
+    window.addEventListener("resize", this.onRise);
 
     // 默认将背景挂载到body上
     document.body.appendChild(this.dom);
@@ -213,9 +186,8 @@ export class CpsBubbleComponent {
   public destroy = () => {
     this.bubbleRegionElement.style.opacity = "0";
 
-    this.domResizeObserver.disconnect();
-    // window.removeEventListener("resize", this.onRise);
-    this.observer.disconnect();
+    window.removeEventListener("resize", this.onRise);
+
     this.onResizeDisperseData.cancel();
     if (this.dom) document.body.removeChild(this.dom);
     if (this.bubbleRegionElement) document.body.removeChild(this.bubbleRegionElement);
@@ -226,11 +198,7 @@ export class CpsBubbleComponent {
   };
 
   private createPointData = () => {
-    // const { width, height } = this.props;
     const rect = this.positionElement.getBoundingClientRect();
-    // this.previousRect = rect;
-    this.prevWidth = rect.width;
-    this.prevHeight = rect.height;
 
     const width = Math.trunc(rect.width);
     const height = Math.trunc(rect.height);
