@@ -69,6 +69,7 @@
     "stylus": "^0.64.0",
     "stylus-loader": "^8.1.1",
     "typescript": "~5.2.2",
+    "unist-util-visit": "^5.0.0",
     "yaml": "^2.7.0"
   },
   "browserslist": {

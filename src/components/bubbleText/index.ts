@@ -1,5 +1,5 @@
 import * as utils from "./utils";
-import { throttle } from "lodash";
+import { throttle, debounce } from "lodash";
 
 export interface BubbleProps {
   DEBUG?: boolean;
@@ -19,6 +19,7 @@ export interface BubbleProps {
   opacitymin?: number;
   autoSwitch?: boolean;
   bubbleRangeId?: string;
+  hoverGather?: boolean;
 }
 
 export class CpsBubbleComponent {
@@ -39,6 +40,7 @@ export class CpsBubbleComponent {
     opacitymin: 0.7,
     autoSwitch: true,
     bubbleRangeId: "body",
+    hoverGather: true,
   };
   private props: BubbleProps = {};
   private pointArray = [];
@@ -50,11 +52,10 @@ export class CpsBubbleComponent {
   private observer: MutationObserver;
   private bubbleRegionElement: HTMLElement; // 用来批量挂载泡泡的容器，不起到任何作用，但是泡泡都在这个容器内部
   private bubbleDisperseRangeElement: HTMLElement;
-  private bubbleElementList = []; // 存放所有泡泡div实例
+  private bubbleElementList: HTMLDivElement[] = []; // 存放所有泡泡div实例
   private isGather = true;
 
-  private _oldWidth = 0;
-  private _oldHeight = 0;
+  private resizeGatherIntervalID: NodeJS.Timeout;
 
   constructor(props) {
     this.props = { ...this.DEFAULT_PROPS, ...props };
@@ -117,6 +118,11 @@ export class CpsBubbleComponent {
 
     this.dom = utils.createCoverElement(this.props.positionElementId, baseStyle).element;
     this.dom.id = this.id;
+    if (this.props.hoverGather) {
+      this.dom.className = "bubbleWarp";
+      this.dom.onmouseenter = this.gatherData;
+      this.dom.onmouseleave = this.disperseData;
+    }
 
     if (this.props.bubbleRangeId == "body") {
       this.bubbleDisperseRangeElement = document.body;
@@ -153,12 +159,16 @@ export class CpsBubbleComponent {
   };
 
   public onRise = throttle(() => this.updatePositions(), 200);
-  public onRiseDisperseData = throttle(() => {
+  public onResizeDisperseData = throttle(() => {
     this.disperseData();
   }, 10000);
 
   public updatePositions = () => {
     if (this.props.DEBUG) console.log("触发  updatePositions");
+    if (this.resizeGatherIntervalID) clearTimeout(this.resizeGatherIntervalID);
+
+    // 进行扩散
+    if (this.isGather) this.disperseData();
 
     const rect = this.positionElement.getBoundingClientRect();
     this.dom.style.width = `${rect.width}px`;
@@ -166,14 +176,17 @@ export class CpsBubbleComponent {
     this.dom.style.left = `${rect.left + this.props.offsetX}px`;
     this.dom.style.top = `${rect.top + this.props.offsetY}px`;
 
-    this.onRiseDisperseData();
+    // 进行收集
+    this.resizeGatherIntervalID = setTimeout(() => {
+      this.gatherData();
+    }, 2000);
   };
 
   public destroy = () => {
     this.bubbleRegionElement.style.opacity = "0";
     window.removeEventListener("resize", this.onRise);
     this.observer.disconnect();
-    this.onRiseDisperseData.cancel();
+    this.onResizeDisperseData.cancel();
     if (this.dom) document.body.removeChild(this.dom);
     if (this.bubbleRegionElement) document.body.removeChild(this.bubbleRegionElement);
 
@@ -183,7 +196,6 @@ export class CpsBubbleComponent {
   };
 
   private createPointData = () => {
-    // const { width, height } = this.props;
     const rect = this.positionElement.getBoundingClientRect();
 
     const width = Math.trunc(rect.width);
@@ -233,6 +245,9 @@ export class CpsBubbleComponent {
     });
 
     const rect = this.dom.getBoundingClientRect();
+    const offsetX = rect.left + this.props.offsetX;
+    const offsetY = rect.top + this.props.offsetY;
+
     this.pointArray.forEach((item, i) => {
       const r = (Math.random() * this.props.bubbleSizeMin + this.props.bubbleSizeMin) * this.props.bubbleScale;
       const opacity = this.props.opacity ? this.props.opacity : Math.random() * this.props.opacitymin + this.props.opacitymin;
@@ -243,8 +258,8 @@ export class CpsBubbleComponent {
       const eachBubbleWarpStyle = {
         position: "absolute",
         borderRadius: "50%",
-        left: `${item.x + rect.left + this.props.offsetX}px`,
-        top: `${item.y + rect.top + this.props.offsetY}px`,
+        left: `${item.x + offsetX}px`,
+        top: `${item.y + offsetY}px`,
         transition,
         pointerEvents: "none",
         willChange: "transform",
@@ -311,10 +326,25 @@ export class CpsBubbleComponent {
 
   gatherData = () => {
     requestAnimationFrame(() => {
+      const rect = this.positionElement.getBoundingClientRect();
+
       this.bubbleElementList.forEach((bubbleElement, i) => {
-        Object.assign(bubbleElement.style, {
+        const newStyle: any = {
           transform: `translate(${0 + this.props.offsetX},${0 + this.props.offsetY})`,
-        });
+        };
+
+        const oldTop = this.pointArray[i].x;
+        const newTop = this.pointArray[i].x + rect.left + this.props.offsetX;
+        const oldLeft = this.pointArray[i].y;
+        const newLeft = this.pointArray[i].y + rect.top + this.props.offsetY;
+        const isPositionChanged = oldTop != newTop || oldLeft != newLeft;
+
+        if (isPositionChanged) {
+          newStyle.left = `${this.pointArray[i].x + rect.left + this.props.offsetX}px`;
+          newStyle.top = `${this.pointArray[i].y + rect.top + this.props.offsetY}px`;
+        }
+
+        Object.assign(bubbleElement.style, newStyle);
         this.isGather = true;
       });
     });

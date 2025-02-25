@@ -1,8 +1,8 @@
 /*
  * @Author: CPS holy.dandelion@139.com
  * @Date: 2023-03-06 23:17:09
- * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2025-02-20 15:20:16
+ * @LastEditors: Capsion 373704015@qq.com
+ * @LastEditTime: 2025-02-24 22:21:06
  * @FilePath: \cps-blog\src\components\HomepageSwiper\rightSide.tsx
  * @Description: 首页标题区域
  */
@@ -40,7 +40,7 @@ function TypedTitle() {
       if (ExecutionEnvironment.canUseDOM) {
         Bubble = new CpsBubbleComponent({
           bubbleRangeId: "homepage.swiper",
-          DEBUG: false,
+          DEBUG: process.env.NODE_ENV === "development",
           bubbleScale: 1.2,
           image: `${siteConfig.baseUrl}logo/capsion.png`,
         });

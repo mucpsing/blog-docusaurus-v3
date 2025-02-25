@@ -5,19 +5,24 @@ import process from "node:process";
 
 import * as path from "path";
 import * as scripts from "./src/scripts";
-// import { addHeaderTag } from "./src/scripts/customPlugs";
+import { visit } from "unist-util-visit";
 
 import { extractTagline } from "./src/scripts/taglineList";
-// import Link from "@docusaurus/Link";
-// import customPlugin from "./src/plugins/fixHostToCDN";
 
+const DOCS_PATH = "./docs";
+// const DOCS_PATH = "W:/CPS/MyProject/cps/cps-blog/docs";
+
+// 修复docs第一层文件夹没有index.md的话，点击后页面错误的问题
+// scripts.createIndexMdFileToFolder(DOCS_PATH)
+
+// 因为css引入异常，这里将一些引入异常的css文件复制到static中，然后通过页面文件添加link的ref来解决
 scripts.copyCssToStatic([path.resolve("./src/components/FallingItemsList"), path.resolve("./src/components/BubbleText")]);
 
 /* 【首页】名人名言 */
 const taglineList = extractTagline(path.resolve("./docs/【07】常识科普/社会真实/名人名言.md"));
 
 /* 排除的文件夹 */
-const excludeDirList = ["【18】副业开发", ".obsidian", "gg", ".trash"];
+const excludeDirList = ["【18】副业开发", ".obsidian", "gg", ".trash", "【00】安卓开发", "临时", "【10】work"];
 
 const config: Config = {
   title: "Capsion | 个人博客 | 编程资料整理",
@@ -70,24 +75,30 @@ const config: Config = {
     ],
   ],
 
-  // 插入<scripts>标签，
-  // scripts: [
-  //   // 修复本地host的开发图片跳转问题
-  //   {
-  //     src: "/scripts/beforeWindowLoad.js", // 插入图片修复脚本
-  //     async: false,
-  //   },
-  // ],
-
   presets: [
     [
       "classic",
       {
         docs: {
-          sidebarPath: "./sidebars.ts",
+          path: DOCS_PATH,
+          exclude: excludeDirList,
+          // sidebarPath: "./sidebars.ts",
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl: "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/",
+          // editUrl: "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/",
+          remarkPlugins: [
+            (tree) => {
+              visit(tree, "image", (node) => {
+                console.log("remarkPlugins");
+
+                if (node.url) {
+                  console.log(node.url);
+                  // 假设你要将图片路径的 `assets/` 替换成 `/static/img/`
+                  node.url = node.url.replace("http://localhost:45462/", "/static/img/");
+                }
+              });
+            },
+          ],
         },
         // blog: {
         //   showReadingTime: true,
@@ -97,7 +108,7 @@ const config: Config = {
         //     'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
         // },
         theme: {
-          customCss: ["./src/css/custom.css"],
+          customCss: ["./src/css/custom.css", "./src/components/BubbleText/bubble.css", "./src/components/FallingItemsList/FallingItemsList.css"],
         },
       } satisfies Preset.Options,
     ],
@@ -116,7 +127,7 @@ const config: Config = {
           label: "📔 笔记",
           type: "dropdown",
           position: "left",
-          items: scripts.createNavItemByDir({ targetPath: path.resolve("./docs"), excludeDirList }),
+          items: scripts.createNavItemByDir({ targetPath: DOCS_PATH, excludeDirList }),
         },
 
         { type: "search", position: "left" },
