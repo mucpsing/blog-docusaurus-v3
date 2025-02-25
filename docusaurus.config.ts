@@ -85,6 +85,14 @@ const config: Config = {
       },
     ],
   ],
+  // 插入<scripts>标签，
+  scripts: [
+    // 修复本地host的开发图片跳转问题
+    {
+      src: "/scripts/replaceImaUrlToCDN.js", // 插入图片修复脚本
+      async: false,
+    },
+  ],
 
   presets: [
     [
