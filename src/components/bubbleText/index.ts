@@ -2,7 +2,7 @@
  * @Author: Capsion 373704015@qq.com
  * @Date: 2025-02-25 20:47:35
  * @LastEditors: Capsion 373704015@qq.com
- * @LastEditTime: 2025-02-27 00:27:30
+ * @LastEditTime: 2025-02-27 00:39:09
  * @FilePath: \cps-blog-docusaurus-v3\src\components\BubbleText\index.ts
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -311,18 +311,59 @@ export class CpsBubbleComponent {
     // });
   };
 
+  private createPointArray = (data: Uint8ClampedArray, w: number, h: number) => {
+    const newPointArray = [];
+    const totalPoints = 250; // 获取指定的总点数
+    // const totalPoints = this.props.bubbleCount; // 获取指定的总点数
+    const totalPixels = w * h; // 图像的总像素数
+
+    // 计算每个点所占的像素比例
+    const step = Math.floor(totalPixels / totalPoints);
+
+    // 循环遍历图像数据，根据步长采样点
+    let pointCount = 0;
+    for (let i = 0; i < w; i++) {
+      for (let j = 0; j < h; j++) {
+        // 获取当前像素的透明度值
+        const alpha = data[(i + j * w) * 4 + 3];
+
+        // 如果透明度大于 150，认为是可见像素
+        if (alpha > 150) {
+          pointCount++;
+          if (pointCount % step === 0) {
+            newPointArray.push({ x: i, y: j });
+          }
+        }
+
+        // 如果已经找到了足够多的点，停止
+        if (newPointArray.length >= totalPoints) {
+          break;
+        }
+      }
+      // 如果已经找到了足够多的点，停止
+      if (newPointArray.length >= totalPoints) {
+        break;
+      }
+    }
+
+    // 返回最终的点数组
+    return newPointArray;
+  };
+
   private createBubble = (data: Uint8ClampedArray, w: number, h: number) => {
     if (this.props.DEBUG) console.log("触发  createBubble");
     const DEFAULT_DELAY = 12000;
+    this.pointArray = this.createPointArray(data, w, h);
+    console.log(this.pointArray.length);
+    // const number = this.props.bubbleCount;
+    // for (let i = 0; i < w; i += number) {
+    //   for (let j = 0; j < h; j += number) {
+    //     if (data[(i + j * w) * 4 + 3] > 150) {
+    //       this.pointArray.push({ x: i, y: j });
+    //     }
+    //   }
+    // }
 
-    const number = this.props.bubbleCount;
-    for (let i = 0; i < w; i += number) {
-      for (let j = 0; j < h; j += number) {
-        if (data[(i + j * w) * 4 + 3] > 150) {
-          this.pointArray.push({ x: i, y: j });
-        }
-      }
-    }
     this.bubbleRegionElement = document.createElement("div");
     this.bubbleRegionElement.id = "CpsBubble.bubbleRegionElement";
     const transition = "all .8s cubic-bezier(0.4, 0, 0.2, 1) 0s";
@@ -421,29 +462,29 @@ export class CpsBubbleComponent {
     requestAnimationFrame(() => {
       const rect = this.positionElement.getBoundingClientRect();
 
-      if (this.isSizeChange) {
-        if (this.DEBUG) console.log("gatherData: ", this.isSizeChange);
-        this.createPointData(rect.width, rect.height);
-      } else {
-        this.bubbleElementList.forEach((bubbleElement, i) => {
-          const newStyle: any = {
-            transform: `translate(${0 + this.props.offsetX},${0 + this.props.offsetY})`,
-          };
+      // if (this.isSizeChange) {
+      //   if (this.DEBUG) console.log("gatherData: ", this.isSizeChange);
+      //   this.createPointData(rect.width, rect.height);
+      // } else {
+      this.bubbleElementList.forEach((bubbleElement, i) => {
+        const newStyle: any = {
+          transform: `translate(${0 + this.props.offsetX},${0 + this.props.offsetY})`,
+        };
 
-          const oldTop = this.pointArray[i].x;
-          const newTop = this.pointArray[i].x + rect.left + this.props.offsetX;
-          const oldLeft = this.pointArray[i].y;
-          const newLeft = this.pointArray[i].y + rect.top + this.props.offsetY;
-          const isPositionChanged = oldTop != newTop || oldLeft != newLeft;
+        const oldTop = this.pointArray[i].x;
+        const newTop = this.pointArray[i].x + rect.left + this.props.offsetX;
+        const oldLeft = this.pointArray[i].y;
+        const newLeft = this.pointArray[i].y + rect.top + this.props.offsetY;
+        const isPositionChanged = oldTop != newTop || oldLeft != newLeft;
 
-          if (isPositionChanged) {
-            newStyle.left = `${this.pointArray[i].x + rect.left + this.props.offsetX}px`;
-            newStyle.top = `${this.pointArray[i].y + rect.top + this.props.offsetY}px`;
-          }
+        if (isPositionChanged) {
+          newStyle.left = `${this.pointArray[i].x + rect.left + this.props.offsetX}px`;
+          newStyle.top = `${this.pointArray[i].y + rect.top + this.props.offsetY}px`;
+        }
 
-          Object.assign(bubbleElement.style, newStyle);
-        });
-      }
+        Object.assign(bubbleElement.style, newStyle);
+      });
+      // }
 
       this.isGather = true;
     });
