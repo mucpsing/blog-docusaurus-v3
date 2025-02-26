@@ -1,8 +1,8 @@
 /*
  * @Author: CPS holy.dandelion@139.com
  * @Date: 2023-03-25 16:10:31
- * @LastEditors: Capsion 373704015@qq.com
- * @LastEditTime: 2025-02-25 23:25:47
+ * @LastEditors: cpasion-office-win10 373704015@qq.com
+ * @LastEditTime: 2025-02-26 17:46:57
  * @filepath: \cps-blog\scripts\utils.ts
  * @Description: 一些会被重复调用的工具函数
  */
@@ -38,13 +38,34 @@ export interface NavItemParams {
 }
 
 /**
- * @description: 根据指定的文件夹生成指定的菜单格式
+ * @description: 因为根目录没有index.md的话会报错，所以需要创建index.md
+ * @param {string} folderPath
+ * @param {string} mdName
+ * @return {*}
+ */
+function createIndexMdFileByFolder(folderPath: string, mdName: string) {
+  let fileList = fs.readdirSync(folderPath);
+  const indexMd = path.join(folderPath, mdName);
+  const title = ["---", `title: 文章列表`, "---"];
+  const data = [];
+
+  for (let each of fileList) {
+    if ([mdName, "index.md"].includes(each)) continue;
+    const tar = path.join(folderPath, each);
+    if (fs.statSync(tar).isDirectory()) data.push(`- ## ${each}`);
+  }
+
+  if (data.length > 0) fs.writeFileSync(indexMd, [...title, ...data].join("\n"));
+}
+
+/**
+ * @description: 手动生成文档的目录
  * @param {string} targetPath 指定的文件夹
  * @param {string[]} excludeDirList 需要排除的文件夹
- * @param {boolean} inDeep 是否递归读取，如果递归，则列出所有md文件，否则仅列出顶层的目录
  * @param {string} prefixUrl url的前缀，如果使用inDeep，这个是必须的
  */
-export function createNavItemByDir({ targetPath, excludeDirList = null, inDeep = false, prefixUrl = "" }: NavItemParams) {
+export function createNavItemByDir({ targetPath, excludeDirList = null, prefixUrl = "" }: NavItemParams) {
+  console.log("DEV: createNavItemByDir()", targetPath);
   if (!excludeDirList) excludeDirList = Array();
 
   let resList = fs.readdirSync(targetPath);
@@ -54,52 +75,23 @@ export function createNavItemByDir({ targetPath, excludeDirList = null, inDeep =
   resList.forEach((rootDirFile) => {
     let fullPath = path.join(targetPath, rootDirFile);
     let stat = fs.statSync(fullPath);
+    const routeName = "index";
 
     // 存在与排除列表，不进行添加
-    if ((excludeDirList as string[]).includes(rootDirFile)) return;
+    if ((excludeDirList as string[]).includes(rootDirFile)) return console.log("createNavItemByDir() 存在与排除列表，不进行添加");
 
-    // inDeep空值是否展开目录，目前仅支持2层读取，不想处理太多递归问题
-    if (!inDeep) {
-      if (stat.isDirectory()) {
-        navbarItemList.push({
-          to: prefixUrl ? `${prefixUrl}/${rootDirFile}` : `${dirname}/${rootDirFile}`,
-          label: rootDirFile,
-          filepath: fullPath,
-        });
-      }
-    } else {
-      if (stat.isDirectory()) {
-        let fileSubList = fs.readdirSync(fullPath);
+    if (stat.isDirectory()) {
+      navbarItemList.push({
+        to: prefixUrl ? `${prefixUrl}/${rootDirFile}/${routeName}` : `${dirname}/${rootDirFile}`,
+        label: rootDirFile,
+        filepath: path.join(targetPath, rootDirFile),
+      });
 
-        // 该目录存在index.md的话，仅将index.md暴露出来
-        if (fileSubList.includes("index.md")) {
-          navbarItemList.push({
-            to: prefixUrl ? `${prefixUrl}/${rootDirFile}` : `${rootDirFile}`,
-            label: `${rootDirFile}`,
-            filepath: path.join(fullPath, "index.md"),
-          });
-        } else {
-          // 不存在index.md 将生成 【目录名】+ 文件名 的方式进行暴露
-          fileSubList.forEach((eachSubFile) => {
-            let fullSubPath = path.join(fullPath, eachSubFile);
-
-            if ((excludeDirList as string[]).includes(eachSubFile)) return;
-
-            if (fs.statSync(fullSubPath).isFile() && eachSubFile.endsWith(".md")) {
-              const basename = eachSubFile.split(".")[0];
-
-              navbarItemList.push({
-                to: prefixUrl ? `${prefixUrl}/${rootDirFile}/${basename}` : `${rootDirFile}/${basename}`,
-                label: `【${rootDirFile}】${basename}`,
-                filepath: fullSubPath,
-              });
-            }
-          });
-        }
-      }
+      createIndexMdFileByFolder(fullPath, `${routeName}.md`);
     }
   });
 
+  console.log(navbarItemList);
   return navbarItemList;
 }
 

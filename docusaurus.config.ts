@@ -7,9 +7,9 @@ import * as path from "path";
 import * as scripts from "./src/scripts";
 
 import { extractTagline } from "./src/scripts/taglineList";
-import pluginCdnReplacer from "./src/plugins/fixImageUrlToCDN";
+// import pluginCdnReplacer from "./src/plugins/fixImageUrlToCDN";
 
-const DOCS_PATH = "./docs";
+const DOCS_PATH = path.resolve("./docs");
 // const DOCS_PATH = "W:/CPS/MyProject/cps/cps-blog/docs";
 
 // 因为css引入异常，这里将一些引入异常的css文件复制到static中，然后通过页面文件添加link的ref来解决
@@ -19,241 +19,250 @@ scripts.copyCssToStatic([path.resolve("./src/components/FallingItemsList"), path
 const taglineList = extractTagline(path.resolve("./docs/【07】常识科普/社会真实/名人名言.md"));
 
 /* 排除的文件夹 */
-const excludeDirList = ["【18】副业开发", ".obsidian", "gg", ".trash", "【00】安卓开发", "临时", "【10】work"];
+const excludeDirList = ["【18】副业开发", ".obsidian", "gg", ".trash", "【00】安卓开发", "临时", "【10】work", "svg"];
 
-const config: Config = {
-  title: "Capsion | 个人博客 | 编程资料整理",
-  tagline: taglineList.join(","),
-  favicon: "img/favicon.ico",
+export default async function createConfigAsync() {
+  const config: Config = {
+    title: "Capsion | 个人博客 | 编程资料整理",
+    tagline: taglineList.join(","),
+    favicon: "img/favicon.ico",
 
-  // Set the production url of your site here
-  url: "https://www.capsion.top",
-  // Set the /<baseUrl>/ pathname under which your site is served
-  // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: "/",
+    // Set the production url of your site here
+    url: "https://www.capsion.top",
+    // Set the /<baseUrl>/ pathname under which your site is served
+    // For GitHub pages deployment, it is often '/<projectName>/'
+    baseUrl: "/",
 
-  // GitHub pages deployment config.
-  // If you aren't using GitHub pages, you don't need these.
-  projectName: "capsion-blog", // Usually your repo name.
-  organizationName: "capsion-blog", // Usually your GitHub org/user name.
-  // deploymentBranch: "pages",
-  // trailingSlash: false,
+    // GitHub pages deployment config.
+    // If you aren't using GitHub pages, you don't need these.
+    projectName: "capsion-blog", // Usually your repo name.
+    organizationName: "capsion-blog", // Usually your GitHub org/user name.
+    // deploymentBranch: "pages",
+    // trailingSlash: false,
 
-  // onBrokenLinks: "throw",
-  onBrokenLinks: "warn",
-  onBrokenMarkdownLinks: "warn",
+    // onBrokenLinks: "throw",
+    onBrokenLinks: "warn",
+    onBrokenMarkdownLinks: "warn",
 
-  // Even if you don't use internationalization, you can use this field to set
-  // useful metadata like html lang. For example, if your site is Chinese, you
-  // may want to replace "en" with "zh-Hans".
-  i18n: {
-    defaultLocale: "en",
-    locales: ["en"],
-  },
+    // Even if you don't use internationalization, you can use this field to set
+    // useful metadata like html lang. For example, if your site is Chinese, you
+    // may want to replace "en" with "zh-Hans".
+    i18n: {
+      defaultLocale: "en",
+      locales: ["en"],
+    },
 
-  plugins: [
-    "@docusaurus/plugin-ideal-image",
-    "docusaurus-plugin-sass",
-    // [
-    //   pluginCdnReplacer,
-    //   {
-    //     replacements: [
-    //       {
-    //         search: "http://localhost:45462/image/",
-    //         replace: "/static/img/",
-    //       },
-    //     ],
-    //   },
-    // ],
-  ],
+    plugins: [
+      "@docusaurus/plugin-ideal-image",
+      "docusaurus-plugin-sass",
+      // [
+      //   pluginCdnReplacer,
+      //   {
+      //     replacements: [
+      //       {
+      //         search: "http://localhost:45462/image/",
+      //         replace: "/static/img/",
+      //       },
+      //     ],
+      //   },
+      // ],
+    ],
 
-  // 开启mermaid（思维导图）支持
-  markdown: { mermaid: true },
-  themes: [
-    "@docusaurus/theme-mermaid",
-    [
-      "@easyops-cn/docusaurus-search-local",
+    // 开启mermaid（思维导图）支持
+    markdown: { mermaid: true },
+    themes: [
+      "@docusaurus/theme-mermaid",
+      [
+        "@easyops-cn/docusaurus-search-local",
+        {
+          // `hashed` is recommended as long-term-cache of index file is possible.
+          hashed: true,
+
+          // For Docs using Chinese, it is recomended to set:
+          language: ["en", "zh"],
+
+          // If you're using `noIndex: true`, set `forceIgnoreNoIndex` to enable local index:
+          // forceIgnoreNoIndex: true,
+        },
+      ],
+    ],
+    // 插入<scripts>标签，
+    scripts: [
+      // 修复本地host的开发图片跳转问题
       {
-        // `hashed` is recommended as long-term-cache of index file is possible.
-        hashed: true,
-
-        // For Docs using Chinese, it is recomended to set:
-        language: ["en", "zh"],
-
-        // If you're using `noIndex: true`, set `forceIgnoreNoIndex` to enable local index:
-        // forceIgnoreNoIndex: true,
+        src: "/scripts/replaceImaUrlToCDN.js", // 插入图片修复脚本
+        async: false,
       },
     ],
-  ],
-  // 插入<scripts>标签，
-  scripts: [
-    // 修复本地host的开发图片跳转问题
-    {
-      src: "/scripts/replaceImaUrlToCDN.js", // 插入图片修复脚本
-      async: false,
-    },
-  ],
 
-  presets: [
-    [
-      "@docusaurus/preset-classic",
-      {
-        docs: {
-          path: DOCS_PATH,
-          exclude: excludeDirList,
-        },
-        // blog: {
-        //   showReadingTime: true,
-        //   // Please change this to your repo.
-        //   // Remove this to remove the "edit this page" links.
-        //   editUrl:
-        //     'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
-        // },
-        theme: {
-          customCss: ["./src/css/custom.css", "./src/components/BubbleText/bubble.css", "./src/components/FallingItemsList/FallingItemsList.css"],
-        },
-      } satisfies Preset.Options,
+    presets: [
+      [
+        "@docusaurus/preset-classic",
+        {
+          docs: {
+            path: DOCS_PATH,
+            exclude: excludeDirList,
+          },
+          // blog: {
+          //   showReadingTime: true,
+          //   // Please change this to your repo.
+          //   // Remove this to remove the "edit this page" links.
+          //   editUrl:
+          //     'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+          // },
+          theme: {
+            customCss: ["./src/css/custom.css", "./src/components/BubbleText/bubble.css", "./src/components/FallingItemsList/FallingItemsList.css"],
+          },
+        } satisfies Preset.Options,
+      ],
     ],
-  ],
 
-  themeConfig: {
-    // Replace with your project's social card
-    image: "img/docusaurus-social-card.jpg",
-    navbar: {
-      title: "🍌 Capsion Lab 🍌",
-      logo: { alt: "My Site Logo", src: "img/logo.svg" },
-      items: [
-        { to: "/", label: "🏠 首页", position: "left" },
-
-        {
-          label: "📔 学习笔记",
-          type: "dropdown",
-          position: "left",
-          items: scripts.createNavItemByDir({ targetPath: DOCS_PATH, excludeDirList }),
+    themeConfig: {
+      docs: {
+        sidebar: {
+          hideable: true,
+          autoCollapseCategories: true,
         },
+      },
+      // Replace with your project's social card
+      image: "img/docusaurus-social-card.jpg",
+      navbar: {
+        title: "🍌 Capsion Lab 🍌",
+        logo: { alt: "My Site Logo", src: "img/logo.svg" },
+        items: [
+          { to: "/", label: "🏠 首页", position: "left" },
 
-        { type: "search", position: "left" },
+          {
+            label: "📔 学习笔记",
+            type: "dropdown",
+            position: "left",
+            items: scripts.createNavItemByDir({ targetPath: DOCS_PATH, excludeDirList }),
+          },
 
-        // {
-        //   type: "dropdown",
-        //   label: "🧪 我的实验",
-        //   position: "left",
-        //   items: [
-        //     {
-        //       to: "/sample/jiuhao",
-        //       label: "🛵 真智能自电",
-        //     },
-        //     {
-        //       to: "/sample/ai",
-        //       label: "🤖 AI模特换装",
-        //     },
-        //   ],
-        // },
+          { type: "search", position: "left" },
 
-        {
-          label: "💼 作品案例",
-          position: "right",
-          to: "/project",
-        },
+          // {
+          //   type: "dropdown",
+          //   label: "🧪 我的实验",
+          //   position: "left",
+          //   items: [
+          //     {
+          //       to: "/sample/jiuhao",
+          //       label: "🛵 真智能自电",
+          //     },
+          //     {
+          //       to: "/sample/ai",
+          //       label: "🤖 AI模特换装",
+          //     },
+          //   ],
+          // },
 
-        {
-          type: "dropdown",
-          label: "🤸 联系我",
-          position: "right",
-          items: [
-            {
-              type: "html",
-              className: "dropdown-archived-versions",
-              value: "<b>我的代码</b>",
-            },
-            {
-              href: "https://gitee.com/capsion/capsion",
-              label: "Gitee",
-            },
-            {
-              href: "https://github.com/mucpsing/mucpsing",
-              label: "GitHub",
-            },
+          {
+            label: "💼 作品案例",
+            position: "right",
+            to: "/project",
+          },
 
-            {
-              type: "html",
-              value: '<hr class="dropdown-separator">',
-            },
-            // {
-            //   type: "html",
-            //   className: "dropdown-archived-versions",
-            //   value: "<b>个人信息</b>",
-            // },
-            {
-              href: "https://gitee.com/capsion/resume",
-              label: "📃 个人简历",
-            },
-          ],
-        },
-      ],
-    },
-    footer: {
-      style: "dark",
-      links: [
-        {
-          title: "NoteBooks",
-          items: [
-            {
-              label: "Blog",
-              to: "/docs",
-            },
-          ],
-        },
-        {
-          title: "Community",
-          items: [
-            {
-              label: "Stack Overflow",
-              href: "https://stackoverflow.com/questions/tagged/docusaurus",
-            },
-            {
-              label: "Discord",
-              href: "https://discordapp.com/invite/docusaurus",
-            },
-            {
-              label: "Twitter",
-              href: "https://twitter.com/docusaurus",
-            },
-          ],
-        },
-        {
-          title: "More",
-          items: [
-            {
-              label: "Gitee",
-              href: "https://gitee.com/capsion/capsion",
-            },
-            {
-              label: "GitHub",
-              href: "https://github.com/mucpsing/mucpsing",
-            },
-          ],
-        },
-      ],
-      copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
-    },
-    prism: {
-      theme: prismThemes.github,
-      darkTheme: prismThemes.dracula,
-    },
-  } satisfies Preset.ThemeConfig,
-};
+          {
+            type: "dropdown",
+            label: "🤸 联系我",
+            position: "right",
+            items: [
+              {
+                type: "html",
+                className: "dropdown-archived-versions",
+                value: "<b>我的代码</b>",
+              },
+              {
+                href: "https://gitee.com/capsion/capsion",
+                label: "Gitee",
+              },
+              {
+                href: "https://github.com/mucpsing/mucpsing",
+                label: "GitHub",
+              },
 
-if (process.env.PAGE_TYPE && process.env.PAGE_TYPE == "github") {
-  const githubConfig = {
-    url: "https://mucpsing.github.io",
-    baseUrl: "/blog-docusaurus-v3/",
-    projectName: "blog-docusaurus-v3", // Usually your repo name.
-    organizationName: "mucpsing", // Usually your GitHub org/user name.
-    deploymentBranch: "pages",
+              {
+                type: "html",
+                value: '<hr class="dropdown-separator">',
+              },
+              // {
+              //   type: "html",
+              //   className: "dropdown-archived-versions",
+              //   value: "<b>个人信息</b>",
+              // },
+              {
+                href: "https://gitee.com/capsion/resume",
+                label: "📃 个人简历",
+              },
+            ],
+          },
+        ],
+      },
+      footer: {
+        style: "dark",
+        links: [
+          {
+            title: "NoteBooks",
+            items: [
+              {
+                label: "Blog",
+                to: "/docs",
+              },
+            ],
+          },
+          {
+            title: "Community",
+            items: [
+              {
+                label: "Stack Overflow",
+                href: "https://stackoverflow.com/questions/tagged/docusaurus",
+              },
+              {
+                label: "Discord",
+                href: "https://discordapp.com/invite/docusaurus",
+              },
+              {
+                label: "Twitter",
+                href: "https://twitter.com/docusaurus",
+              },
+            ],
+          },
+          {
+            title: "More",
+            items: [
+              {
+                label: "Gitee",
+                href: "https://gitee.com/capsion/capsion",
+              },
+              {
+                label: "GitHub",
+                href: "https://github.com/mucpsing/mucpsing",
+              },
+            ],
+          },
+        ],
+        copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+      },
+      prism: {
+        theme: prismThemes.github,
+        darkTheme: prismThemes.dracula,
+      },
+    } satisfies Preset.ThemeConfig,
   };
 
-  Object.assign(config, githubConfig);
-}
+  if (process.env.PAGE_TYPE && process.env.PAGE_TYPE == "github") {
+    const githubConfig = {
+      url: "https://mucpsing.github.io",
+      baseUrl: "/blog-docusaurus-v3/",
+      projectName: "blog-docusaurus-v3", // Usually your repo name.
+      organizationName: "mucpsing", // Usually your GitHub org/user name.
+      deploymentBranch: "pages",
+    };
 
-export default config;
+    Object.assign(config, githubConfig);
+  }
+
+  return config;
+}
+// export default config;
