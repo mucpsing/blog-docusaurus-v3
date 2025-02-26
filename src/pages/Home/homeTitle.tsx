@@ -35,7 +35,7 @@ function TypedTitle() {
       loop: true,
     });
 
-    let Bubble;
+    let Bubble: CpsBubbleComponent;
     setTimeout(() => {
       if (ExecutionEnvironment.canUseDOM) {
         Bubble = new CpsBubbleComponent({

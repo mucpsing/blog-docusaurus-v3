@@ -1,3 +1,11 @@
+/*
+ * @Author: Capsion 373704015@qq.com
+ * @Date: 2025-02-25 20:47:35
+ * @LastEditors: Capsion 373704015@qq.com
+ * @LastEditTime: 2025-02-27 00:27:30
+ * @FilePath: \cps-blog-docusaurus-v3\src\components\BubbleText\index.ts
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
 import * as utils from "./utils";
 import { throttle, debounce } from "lodash";
 
@@ -24,7 +32,7 @@ export interface BubbleProps {
 
 export class CpsBubbleComponent {
   private DEFAULT_PROPS: BubbleProps = {
-    DEBUG: false,
+    DEBUG: process.env.NODE_ENV === "development", // 是否开启调试模式
     positionElementId: "CpsBubble.positionElement", // 用于定位的元素id，泡泡文字会在这个元素的范围内生成
     image: "/logo/capsion.png",
     offsetX: 0,
@@ -46,10 +54,12 @@ export class CpsBubbleComponent {
   private pointArray = [];
   public INTERVAL_LIST = [];
   private id = "CpsBubble";
+  private DEBUG = process.env.NODE_ENV === "development";
 
   private dom: HTMLElement; // 组成字母的范围参考元素
   private positionElement: HTMLElement;
-  private observer: MutationObserver;
+  private observer: MutationObserver; // 监听元素变化，可以修复首次加载时，位置元素会变化的问题
+  private observerSize: ResizeObserver;
   private bubbleRegionElement: HTMLElement; // 用来批量挂载泡泡的容器，不起到任何作用，但是泡泡都在这个容器内部
   private bubbleDisperseRangeElement: HTMLElement;
   private bubbleElementList: HTMLDivElement[] = []; // 存放所有泡泡div实例
@@ -57,6 +67,13 @@ export class CpsBubbleComponent {
 
   private resizeGatherIntervalID: NodeJS.Timeout;
   private domResizeObserver: ResizeObserver;
+
+  private _oldWidth = 0;
+  private _oldHeight = 0;
+
+  private positionElObserverList = [];
+  private imgElement = new Image();
+  private isSizeChange = false;
 
   constructor(props) {
     this.props = { ...this.DEFAULT_PROPS, ...props };
@@ -93,6 +110,7 @@ export class CpsBubbleComponent {
   };
 
   public init = () => {
+    this.DEBUG = this.props.DEBUG;
     if (this.props.DEBUG) console.log("CpsBubbleComponent: init()");
 
     this.positionElement = document.getElementById(this.props.positionElementId);
@@ -133,8 +151,22 @@ export class CpsBubbleComponent {
 
     // 创建 MutationObserver 来监听目标元素的变化
     // 观察目标元素的属性和子节点变化
-    this.observer = new MutationObserver(this.onRise);
+    this.observer = new MutationObserver(() => {
+      if (this.props.DEBUG) console.log("MutationObserver:: this.positionElement 发生变化");
+      this.isSizeChange = true;
+      this.onRise();
+    });
     this.observer.observe(this.positionElement, { attributes: true, childList: true, subtree: true });
+
+    // 创建观察器实例
+    this.observerSize = new ResizeObserver((entries) => {
+      entries.forEach((entry) => {
+        const { width, height } = entry.contentRect;
+        console.log(`positionElement元素新尺寸：${width}px x ${height}px`);
+        // 根据尺寸变化调整布局或触发其他逻辑
+      });
+    });
+    this.observerSize.observe(this.positionElement);
 
     // 监听窗口大小变化，确保新元素尺寸同步更新
     window.addEventListener("resize", this.onRise);
@@ -144,7 +176,8 @@ export class CpsBubbleComponent {
 
     setTimeout(() => {
       // 创建泡泡并挂载到body
-      this.createPointData();
+      // this.createPointData();
+      this.createPointData(this.props.width, this.props.height);
 
       // 添加DEBUG控制按钮
       if (this.props.DEBUG) this.test();
@@ -159,16 +192,19 @@ export class CpsBubbleComponent {
     this.isGather = !this.isGather;
   };
 
-  public onRise = throttle(() => this.updatePositions(), 200);
-  public onResizeDisperseData = throttle(() => {
-    this.disperseData();
-  }, 10000);
+  public onRise = throttle(() => this.updatePositions(), 500);
+  // private onResizeDisperseData = throttle(() => {
+  //   this.disperseData();
+  // }, 10000);
 
+  /**
+   * @description: 更新整个组件的位置，组件位置与传入的props.positionElementId 绑定
+   */
   public updatePositions = () => {
     if (this.props.DEBUG) console.log("触发  updatePositions");
     if (this.resizeGatherIntervalID) clearTimeout(this.resizeGatherIntervalID);
 
-    // 进行扩散
+    // 进行扩散，然后重新计算元素位置
     if (this.isGather) this.disperseData();
 
     const rect = this.positionElement.getBoundingClientRect();
@@ -177,50 +213,106 @@ export class CpsBubbleComponent {
     this.dom.style.left = `${rect.left + this.props.offsetX}px`;
     this.dom.style.top = `${rect.top + this.props.offsetY}px`;
 
-    // 进行收集
+    // 进行聚合，在聚合中会根据实际元素是否改变而重新计算泡泡位置
     this.resizeGatherIntervalID = setTimeout(() => {
       this.gatherData();
     }, 2000);
   };
 
-  public destroy = () => {
-    this.bubbleRegionElement.style.opacity = "0";
+  // private createPointData = () => {
+  //   const rect = this.positionElement.getBoundingClientRect();
 
-    window.removeEventListener("resize", this.onRise);
+  //   const width = Math.trunc(rect.width);
+  //   const height = Math.trunc(rect.height);
 
-    this.onResizeDisperseData.cancel();
-    if (this.dom) document.body.removeChild(this.dom);
-    if (this.bubbleRegionElement) document.body.removeChild(this.bubbleRegionElement);
+  //   let canvas = document.createElement("canvas");
+  //   const ctx = canvas.getContext("2d");
+  //   ctx.clearRect(0, 0, width, height);
+  //   canvas.width = width;
+  //   canvas.height = height;
+  //   const img = new Image();
+  //   img.onload = () => {
+  //     ctx.drawImage(img, 0, 0, img.width, img.height, 0, 0, width, height);
+  //     const data = ctx.getImageData(0, 0, width, height).data;
+  //     this.createBubble(data, width, height);
+  //     canvas.remove();
+  //   };
+  //   img.crossOrigin = "anonymous";
+  //   img.src = this.props.image;
+  // };
 
-    setTimeout(() => {
-      if (this.props.DEBUG) console.log("destroy::");
-    }, 100);
-  };
-
-  private createPointData = () => {
-    const rect = this.positionElement.getBoundingClientRect();
-
-    const width = Math.trunc(rect.width);
-    const height = Math.trunc(rect.height);
+  private createPointData = async (width: number, height: number) => {
+    if (this.props.DEBUG) console.log("触发  updateBubblePosition");
+    width = Math.trunc(width);
+    height = Math.trunc(height);
 
     let canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, width, height);
     canvas.width = width;
     canvas.height = height;
+
     const img = new Image();
-    img.onload = () => {
-      ctx.drawImage(img, 0, 0, img.width, img.height, 0, 0, width, height);
-      const data = ctx.getImageData(0, 0, width, height).data;
-      this.createBubble(data, width, height);
-      canvas.remove();
-    };
     img.crossOrigin = "anonymous";
     img.src = this.props.image;
+
+    // 使用 Promise 封装图片加载过程
+    const data = await this.loadImage(img, width, height, ctx);
+    if (this.pointArray.length > 0) {
+      this.updatePointData(data, width, height);
+    } else {
+      this.createBubble(data, width, height);
+    }
+    canvas.remove();
+  };
+
+  private loadImage = (img: HTMLImageElement, width: number, height: number, ctx: CanvasRenderingContext2D) => {
+    return new Promise<Uint8ClampedArray>((resolve, reject) => {
+      img.onload = () => {
+        try {
+          // 图片加载完成后，绘制到 canvas 上并获取 image data
+          ctx.drawImage(img, 0, 0, img.width, img.height, 0, 0, width, height);
+          const data = ctx.getImageData(0, 0, width, height).data;
+          resolve(data);
+        } catch (error) {
+          reject("Error loading image data");
+        }
+      };
+
+      img.onerror = (error) => {
+        reject("Error loading image");
+      };
+    });
+  };
+
+  private updatePointData = (data: Uint8ClampedArray, w: number, h: number) => {
+    const newPointArray = [];
+    const number = this.props.bubbleCount;
+    for (let i = 0; i < w; i += number) {
+      for (let j = 0; j < h; j += number) {
+        if (data[(i + j * w) * 4 + 3] > 150) {
+          newPointArray.push({ x: i, y: j });
+        }
+      }
+    }
+
+    console.log("新: 新点数: " + newPointArray.length + " 旧点数: " + this.pointArray.length);
+
+    // const rect = this.dom.getBoundingClientRect();
+    // const offsetX = rect.left + this.props.offsetX;
+    // const offsetY = rect.top + this.props.offsetY;
+
+    // this.pointArray.forEach((item, i) => {
+    //   const bubbleElement = this.bubbleElementList[i];
+    //   Object.assign(bubbleElement.style, {
+    //     left: `${item.x + offsetX}px`,
+    //     top: `${item.y + offsetY}px`,
+    //   });
+    // });
   };
 
   private createBubble = (data: Uint8ClampedArray, w: number, h: number) => {
-    this.pointArray = [];
+    if (this.props.DEBUG) console.log("触发  createBubble");
     const DEFAULT_DELAY = 12000;
 
     const number = this.props.bubbleCount;
@@ -231,7 +323,6 @@ export class CpsBubbleComponent {
         }
       }
     }
-
     this.bubbleRegionElement = document.createElement("div");
     this.bubbleRegionElement.id = "CpsBubble.bubbleRegionElement";
     const transition = "all .8s cubic-bezier(0.4, 0, 0.2, 1) 0s";
@@ -294,7 +385,7 @@ export class CpsBubbleComponent {
     setTimeout(() => (this.bubbleRegionElement.style.opacity = "1"));
   };
 
-  disperseData = () => {
+  public disperseData = () => {
     if (!this.bubbleDisperseRangeElement) return console.warn("bubble: 无法获取dom或者positionElement");
 
     // 获取泡泡的扩散范围
@@ -326,29 +417,55 @@ export class CpsBubbleComponent {
     });
   };
 
-  gatherData = () => {
+  public gatherData = () => {
     requestAnimationFrame(() => {
       const rect = this.positionElement.getBoundingClientRect();
 
-      this.bubbleElementList.forEach((bubbleElement, i) => {
-        const newStyle: any = {
-          transform: `translate(${0 + this.props.offsetX},${0 + this.props.offsetY})`,
-        };
+      if (this.isSizeChange) {
+        if (this.DEBUG) console.log("gatherData: ", this.isSizeChange);
+        this.createPointData(rect.width, rect.height);
+      } else {
+        this.bubbleElementList.forEach((bubbleElement, i) => {
+          const newStyle: any = {
+            transform: `translate(${0 + this.props.offsetX},${0 + this.props.offsetY})`,
+          };
 
-        const oldTop = this.pointArray[i].x;
-        const newTop = this.pointArray[i].x + rect.left + this.props.offsetX;
-        const oldLeft = this.pointArray[i].y;
-        const newLeft = this.pointArray[i].y + rect.top + this.props.offsetY;
-        const isPositionChanged = oldTop != newTop || oldLeft != newLeft;
+          const oldTop = this.pointArray[i].x;
+          const newTop = this.pointArray[i].x + rect.left + this.props.offsetX;
+          const oldLeft = this.pointArray[i].y;
+          const newLeft = this.pointArray[i].y + rect.top + this.props.offsetY;
+          const isPositionChanged = oldTop != newTop || oldLeft != newLeft;
 
-        if (isPositionChanged) {
-          newStyle.left = `${this.pointArray[i].x + rect.left + this.props.offsetX}px`;
-          newStyle.top = `${this.pointArray[i].y + rect.top + this.props.offsetY}px`;
-        }
+          if (isPositionChanged) {
+            newStyle.left = `${this.pointArray[i].x + rect.left + this.props.offsetX}px`;
+            newStyle.top = `${this.pointArray[i].y + rect.top + this.props.offsetY}px`;
+          }
 
-        Object.assign(bubbleElement.style, newStyle);
-        this.isGather = true;
-      });
+          Object.assign(bubbleElement.style, newStyle);
+        });
+      }
+
+      this.isGather = true;
     });
+  };
+
+  public destroy = () => {
+    try {
+      if (this.bubbleRegionElement.style) this.bubbleRegionElement.style.opacity = "0";
+
+      window.removeEventListener("resize", this.onRise);
+      if (this.observer) this.observer.disconnect();
+      if (this.observerSize) this.observerSize.disconnect();
+
+      // this.onResizeDisperseData.cancel();
+      if (this.dom) document.body.removeChild(this.dom);
+      if (this.bubbleRegionElement) document.body.removeChild(this.bubbleRegionElement);
+
+      setTimeout(() => {
+        if (this.props.DEBUG) console.log("destroy::");
+      }, 100);
+    } catch (err) {
+      console.log("destroy::err", err);
+    }
   };
 }
