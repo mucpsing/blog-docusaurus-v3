@@ -171,7 +171,7 @@ export class CpsBubbleComponent {
     this.isGather = !this.isGather;
   };
 
-  public onRise = throttle(() => this.updatePositions(), 500);
+  public onRise = throttle(() => this.updatePositions(), 200);
 
   /**
    * @description: 更新整个组件的位置，组件位置与传入的props.positionElementId 绑定
@@ -192,7 +192,7 @@ export class CpsBubbleComponent {
     // 进行聚合，在聚合中会根据实际元素是否改变而重新计算泡泡位置
     this.resizeGatherIntervalID = setTimeout(() => {
       this.gatherData();
-    }, 1200);
+    }, 1000);
   };
 
   private createPointData = async (width: number, height: number) => {
