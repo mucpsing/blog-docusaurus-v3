@@ -2,7 +2,7 @@
  * @Author: cpasion-office-win10 373704015@qq.com
  * @Date: 2025-02-20 09:21:04
  * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2025-02-20 15:04:03
+ * @LastEditTime: 2025-02-27 10:58:12
  * @FilePath: \cps-blog-docusaurus-v3\src\pages\Home\body.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -11,10 +11,8 @@ import HomeTitle from "./homeTitle";
 
 import CpsImgSwiper from "@site/src/components/ImageSwiper";
 import { DEFAULT_SUB_COLOR, DEFAULT_MAIN_COLOR } from "@site/src/store";
-// import { useGlobalStore, DEFAULT_SUB_COLOR, DEFAULT_MAIN_COLOR } from "@site/src/store";
 
 const HomeImgSwiper: React.FC = () => {
-  // const { colorIndex, isMobile, setColorIndex } = useGlobalStore();
   const [colorIndex, setColorIndex] = useState(0);
 
   const onNext = () => {

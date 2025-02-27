@@ -104,7 +104,7 @@
 }
 
 .home-swiper-icon-default {
-  @apply hover:text-sky-500 hover:translate-y-5 cursor-pointer transition-all;
+  @apply transition-all cursor-pointer hover:text-sky-500 hover:translate-y-5;
 }
 
 input {
@@ -118,4 +118,8 @@ input {
   to {
     transform: rotate(360deg); /* 最终角度 */
   }
+}
+
+body {
+  overflow-x: hidden;
 }

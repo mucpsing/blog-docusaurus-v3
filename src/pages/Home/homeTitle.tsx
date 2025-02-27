@@ -1,8 +1,8 @@
 /*
  * @Author: CPS holy.dandelion@139.com
  * @Date: 2023-03-06 23:17:09
- * @LastEditors: Capsion 373704015@qq.com
- * @LastEditTime: 2025-02-24 22:21:06
+ * @LastEditors: cpasion-office-win10 373704015@qq.com
+ * @LastEditTime: 2025-02-27 10:55:56
  * @FilePath: \cps-blog\src\components\HomepageSwiper\rightSide.tsx
  * @Description: 首页标题区域
  */
@@ -45,7 +45,7 @@ function TypedTitle() {
           image: `${siteConfig.baseUrl}logo/capsion.png`,
         });
       }
-    }, 100);
+    }, 800);
 
     return () => {
       typed.destroy();
