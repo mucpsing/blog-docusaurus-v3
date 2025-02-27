@@ -1,8 +1,8 @@
 /*
  * @Author: cpasion-office-win10 373704015@qq.com
  * @Date: 2025-02-20 09:21:04
- * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2025-02-27 15:14:21
+ * @LastEditors: Capsion 373704015@qq.com
+ * @LastEditTime: 2025-02-27 18:57:22
  * @FilePath: \cps-blog-docusaurus-v3\src\pages\Home\body.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -12,8 +12,14 @@ import HomeTitle from "./homeTitle";
 import CpsImgSwiper from "@site/src/components/ImageSwiper";
 import { DEFAULT_SUB_COLOR, DEFAULT_MAIN_COLOR } from "@site/src/store";
 
-const HomeImgSwiper: React.FC = () => {
-  const [colorIndex, setColorIndex] = useState(0);
+interface ChildProps {
+  colorIndex: number;
+  setColorIndex: React.Dispatch<React.SetStateAction<number>>;
+}
+
+const HomeImgSwiper = ({ colorIndex, setColorIndex }: ChildProps) => {
+  // const HomeImgSwiper: React.FC = ({ colorIndex, setColorIndex }) => {
+  // const [colorIndex, setColorIndex] = useState(0);
   const [isHorizontal, setIsHorizontal] = useState<boolean>(window.innerWidth > window.innerHeight);
 
   useEffect(() => {
@@ -60,9 +66,12 @@ const HomeImgSwiper: React.FC = () => {
 
   return (
     <div
-      className={["overflow-hidden relative", "w-full", "flex justify-evenly items-center text-gray-700", isHorizontal ? "" : "flex-col pb-5"].join(
-        " "
-      )}
+      className={[
+        "overflow-hidden relative",
+        "w-full",
+        "flex justify-evenly items-center text-gray-700",
+        isHorizontal ? "" : "flex-col pb-5 gap-y-10",
+      ].join(" ")}
       style={{ height: isHorizontal ? "clamp(100px, calc(-60px + 80vh), 1200px)" : "" }}
       id="ccvb"
     >
@@ -78,7 +87,7 @@ const HomeImgSwiper: React.FC = () => {
         ></div>
       ))}
 
-      <div id="homeTitleComment" className="relative home-title w-[600px]">
+      <div id="homeTitleComment" className={["relative home-title w-[600px]"].join(" ")}>
         <HomeTitle />
       </div>
 
@@ -92,7 +101,7 @@ const HomeImgSwiper: React.FC = () => {
           "relative",
           isHorizontal
             ? "min-w-[300px] min-h-[250px] sm:w-[500px] sm:h-[300px] md:w-[500px] md:h-[400px] lg:w-[650px] lg:h-[450px] xl:w-[850px] xl:h-[550px]"
-            : "w-[550px] h-[350px] sm:w-[550px] sm:h-[350px] md:w-[650px] md:h-[450px] lg:w-[750px] lg:h-[650px] xl:w-[850px] xl:h-[650px]",
+            : "w-[400px] h-[250px] sm:w-[550px] sm:h-[350px] md:w-[650px] md:h-[450px] lg:w-[750px] lg:h-[650px] xl:w-[950px] xl:h-[650px]",
           "shadow-xl bg-white rounded-md overflow-hidden",
         ].join(" ")}
       ></CpsImgSwiper>

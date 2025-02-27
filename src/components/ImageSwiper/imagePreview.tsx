@@ -10,8 +10,6 @@ export interface ImagePreviewState {
   show?: boolean;
 }
 
-// const IMG_CACHE = [];
-// const SHOW_HREF = ["http://localhost:3000/", "https://capsion.top/"];
 let SHOW: boolean = false;
 
 class ImagePreview extends React.Component<ImagePreviewProps, ImagePreviewState> {

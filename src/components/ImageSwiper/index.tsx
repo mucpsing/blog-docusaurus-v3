@@ -2,11 +2,11 @@
  * @Author: cpasion-office-win10 373704015@qq.com
  * @Date: 2023-04-21 09:15:12
  * @LastEditors: Capsion 373704015@qq.com
- * @LastEditTime: 2025-02-19 22:51:05
+ * @LastEditTime: 2025-02-27 21:49:42
  * @FilePath: \cps-blog\src\components\CpsImgSwiper\index.tsx
  * @Description: 这是一个图片轮播组件，支持横屏和竖屏排版，目前仅支持网页端浏览器，没做移动适配
  */
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 import BannerAnim, { Element } from "rc-banner-anim";
 import QueueAnim from "rc-queue-anim";
@@ -33,8 +33,8 @@ export interface ICpsImgSwiperProps {
   mainColor?: string[];
   subColor?: string[];
   page?: number;
-  onNext?: () => number;
-  onPrev?: () => number;
+  onNext?: () => void;
+  onPrev?: () => void;
 }
 
 export interface ICpsImgSwiperState {
@@ -62,6 +62,36 @@ export const ANIM_CONFIGS = {
   ],
 };
 
+// 新增异步图片加载组件
+const AsyncImage = ({
+  preview,
+  gif,
+  onClick,
+  className,
+}: {
+  className: string;
+  preview: string;
+  gif?: string;
+  // webp: boolean;
+  onClick: (e?: any) => any;
+}) => {
+  const [src, setSrc] = useState(preview);
+
+  useEffect(() => {
+    // if (!gif) return;
+
+    // 处理webp转换
+    const targetGif = gif ? gif : preview;
+
+    // 预加载GIF
+    const img = new Image();
+    img.src = targetGif;
+    img.onload = () => setSrc(targetGif);
+  }, [gif]);
+
+  return <img src={src} className={className} alt="" onClick={onClick} crossOrigin="anonymous" />;
+};
+
 /**
  * @description: 【图片展示】组件
  */
@@ -74,14 +104,6 @@ function createImgComponent(props: {
   bgColor: string;
 }) {
   return props.data.map((item, i) => {
-    let preview = item.gif ? item.gif : item.preview;
-    let logo = item.logo;
-
-    if (props.webp) {
-      preview = imgUrl2Webp(item.preview);
-      logo = imgUrl2Webp(item.logo);
-    }
-
     return (
       <Element key={i} leaveChildHide>
         <QueueAnim
@@ -99,13 +121,22 @@ function createImgComponent(props: {
           ></div>
 
           {/* 小图片 */}
-          <div className={["absolute", props.alignmentMode == "vertical" ? "w-4/5 top-[10%]" : "w-[10%] top-4 right-4"].join(" ")} key="pic">
-            <img src={logo} width="100%" height="100%" alt="" loading="lazy" crossOrigin="anonymous" />
+          <div
+            id="small-img"
+            className={["absolute", props.alignmentMode == "vertical" ? "w-4/5 top-[10%]" : "w-[10%] top-4 right-4"].join(" ")}
+            key="pic"
+          >
+            <img src={item.logo} width="100%" height="100%" alt="" loading="lazy" crossOrigin="anonymous" />
           </div>
 
           {/* 主图片 */}
-          <div className={[props.alignmentMode == "vertical" ? "bottom-[15%] w-4/5" : "w-4/5", "absolute cursor-pointer"].join(" ")} key="map">
-            <img src={preview} className="object-fill w-full h-full" alt="" onClick={(e) => this.showImg(item)} crossOrigin="anonymous" />
+          <div
+            id="big-img"
+            className={[props.alignmentMode == "vertical" ? "bottom-[15%] w-4/5" : "w-4/5", "absolute cursor-pointer"].join(" ")}
+            key="map"
+          >
+            {/* <img src={preview} className="object-fill w-full h-full" alt="" onClick={(e) => this.showImg(item)} crossOrigin="anonymous" /> */}
+            <AsyncImage preview={item.preview} gif={item.gif} className={"object-fill w-full h-full"} onClick={(e) => ImgPreview(item)} />
           </div>
         </QueueAnim>
       </Element>
@@ -294,7 +325,7 @@ export default class CpsImgSwiper extends React.Component<ICpsImgSwiperProps, IC
       data: this.props.data,
       bgColor: this.props.subColor[this.state.subColorIndex],
     });
-    
+
     return (
       <div className={["bg-white rounded-md overflow-hidden relative", "flex justify-center items-center", this.props.classNames].join(" ")}>
         {/* 图片展示 */}
