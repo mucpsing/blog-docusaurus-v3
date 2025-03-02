@@ -3,14 +3,31 @@ import type { Config } from "@docusaurus/types";
 import type * as Preset from "@docusaurus/preset-classic";
 import process from "node:process";
 
+import os from "node:os";
+
 import * as path from "path";
 import * as scripts from "./src/scripts";
 
 import { extractTagline } from "./src/scripts/taglineList";
 // import pluginCdnReplacer from "./src/plugins/fixImageUrlToCDN";
 
-const DOCS_PATH = path.resolve("./docs");
-// const DOCS_PATH = "W:/CPS/MyProject/cps/cps-blog/docs";
+let DOCS_PATH = path.resolve("./docs");
+if (process.env.BUILD_TEST !== "true") {
+  switch (os.hostname()) {
+    case "HOME_WIN11_LTSC":
+      DOCS_PATH = "D:/CPS/MyProject/Projects_Personal/cps-blog/docs";
+      break;
+
+    case "DESKTOP-S9VGC7V":
+      DOCS_PATH = "W:/CPS/MyProject/cps/cps-blog/docs";
+      break;
+  }
+}
+
+console.log("当前DOCS_PATH: ", DOCS_PATH);
+
+// 项目根目录
+const ROOT_PATH = path.resolve("./");
 
 // 因为css引入异常，这里将一些引入异常的css文件复制到static中，然后通过页面文件添加link的ref来解决
 scripts.copyCssToStatic([path.resolve("./src/components/FallingItemsList"), path.resolve("./src/components/BubbleText")]);
