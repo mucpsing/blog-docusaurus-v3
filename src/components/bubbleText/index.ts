@@ -181,7 +181,8 @@ export class CpsBubbleComponent {
     if (this.resizeGatherIntervalID) clearTimeout(this.resizeGatherIntervalID);
 
     // 进行扩散，然后重新计算元素位置
-    if (this.isGather) this.disperseData();
+    // if (this.isGather) this.disperseData();
+    if (!this.isGather) this.gatherData();
 
     const rect = this.positionElement.getBoundingClientRect();
     this.dom.style.width = `${rect.width}px`;
@@ -191,7 +192,8 @@ export class CpsBubbleComponent {
 
     // 进行聚合，在聚合中会根据实际元素是否改变而重新计算泡泡位置
     this.resizeGatherIntervalID = setTimeout(() => {
-      this.gatherData();
+      // this.gatherData();
+      this.disperseData();
     }, 1000);
   };
 
@@ -312,6 +314,19 @@ export class CpsBubbleComponent {
 
     document.body.appendChild(this.bubbleRegionElement);
     setTimeout(() => (this.bubbleRegionElement.style.opacity = "1"));
+  };
+
+  public gatherCenter = () => {
+    const newStyle: any = {
+      transform: `translate(0,0)`,
+      opacity: 0,
+    };
+
+    requestAnimationFrame(() => {
+      this.bubbleElementList.forEach((bubbleElement, i) => {
+        Object.assign(bubbleElement.style, newStyle);
+      });
+    });
   };
 
   public gatherData = () => {
