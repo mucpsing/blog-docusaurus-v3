@@ -2,7 +2,7 @@
  * @Author: cpasion-office-win10 373704015@qq.com
  * @Date: 2025-02-20 09:21:04
  * @LastEditors: Capsion 373704015@qq.com
- * @LastEditTime: 2025-02-27 18:57:22
+ * @LastEditTime: 2025-03-03 20:16:33
  * @FilePath: \cps-blog-docusaurus-v3\src\pages\Home\body.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -101,7 +101,7 @@ const HomeImgSwiper = ({ colorIndex, setColorIndex }: ChildProps) => {
           "relative",
           isHorizontal
             ? "min-w-[300px] min-h-[250px] sm:w-[500px] sm:h-[300px] md:w-[500px] md:h-[400px] lg:w-[650px] lg:h-[450px] xl:w-[850px] xl:h-[550px]"
-            : "w-[400px] h-[250px] sm:w-[550px] sm:h-[350px] md:w-[650px] md:h-[450px] lg:w-[750px] lg:h-[650px] xl:w-[950px] xl:h-[650px]",
+            : "w-[400px] h-[250px] sm:w-[550px] sm:h-[350px] md:w-[650px] md:h-[450px] lg:w-[850px] lg:h-[550px] xl:w-[950px] xl:h-[650px]",
           "shadow-xl bg-white rounded-md overflow-hidden",
         ].join(" ")}
       ></CpsImgSwiper>
