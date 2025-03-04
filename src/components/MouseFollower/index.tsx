@@ -35,8 +35,8 @@ const ColorTransitionCircle = ({ offsetX = 0, offsetY = 0, radius = 30, colors =
     <div
       ref={wrapperRef}
       className={[
-        "absolute flex items-center justify-center pointer-events-none",
-        "transition delay-400 duration-1000 ease-in-out",
+        "absolute flex items-center justify-center",
+        "transition delay-[300ms] duration-[1200ms] ease-in-out",
         "w-[60px] h-[60px] overflow-hidden rounded-full",
       ].join(" ")}
       style={{
@@ -57,12 +57,21 @@ const ColorTransitionCircle = ({ offsetX = 0, offsetY = 0, radius = 30, colors =
 
       {/* 鼠标跟随的圆形div */}
       <div
-        className="absolute bg-red-300 rounded-full"
+        className={["absolute bg-red-300 rounded-full cursor-pointer hover:bg-slate-200", "transition-all", "flex flex-col gap-[10px]"].join(" ")}
         style={{
           width: radius * 2,
           height: radius * 2,
         }}
-      />
+      >
+        <div id="__eyes" className={["flex flex-row", "w-full h-full"].join(" ")}>
+          <div id="__left" className={["w-1/3 h-2/5 bg-white"].join(" ")}></div>
+          <div id="__right" className={[""].join(" ")}></div>
+        </div>
+
+        <div id="__mouth" className={["flex flex-row", "w-full h-full"].join(" ")}>
+          <div className={["w-2/3 h-2/5 bg-white"].join(" ")}></div>
+        </div>
+      </div>
     </div>
   );
 };
