@@ -2,7 +2,7 @@
  * @Author: CPS holy.dandelion@139.com
  * @Date: 2023-02-07 19:55:02
  * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2025-03-04 08:50:17
+ * @LastEditTime: 2025-03-11 14:33:43
  * @FilePath: \cps-blog\src\pages\index.tsx
  * @Description: 首页
  */
@@ -16,6 +16,7 @@ import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import HomepageSwiper from "./body";
 import HomepageFeatures from "./features";
 import Skill from "./Skill";
+import ProjectSwper from "./ProjectSwper";
 
 export default function Home(): JSX.Element {
   const { siteConfig } = useDocusaurusContext();
@@ -35,6 +36,11 @@ export default function Home(): JSX.Element {
       <div id="ccvbbbb" className={["w-[100vw] bg-slate-400 h-[550px]"].join(" ")}>
         <Skill colorIndex={colorIndex} />
       </div>
+
+      <div>
+        <ProjectSwper />
+      </div>
+
       <div>
         <HomepageFeatures />
       </div>
