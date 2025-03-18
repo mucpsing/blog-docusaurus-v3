@@ -1,8 +1,8 @@
 /*
  * @Author: Capsion 373704015@qq.com
  * @Date: 2025-03-11 20:21:13
- * @LastEditors: Capsion 373704015@qq.com
- * @LastEditTime: 2025-03-14 08:31:49
+ * @LastEditors: cpasion-office-win10 373704015@qq.com
+ * @LastEditTime: 2025-03-18 15:58:38
  * @FilePath: \cps-blog-docusaurus-v3\src\pages\Home\ProjectSwper.tsx
  * @Description: 这是参考https://superpower.com/中相同功能的组件实现的
  * @demo https://codepen.io/ramzibach-the-styleful/pen/LYoYejb 无限滚动参考
@@ -15,13 +15,8 @@ interface SwiperRowProps {
   offset: number;
 }
 
-const IconRow: React.FC = () => {
-  return <div></div>;
-};
 // 单独封装一行
 const SwiperRow: React.FC<SwiperRowProps> = ({ colors, offset }) => {
-  useEffect(() => {});
-
   const comTransCss = ["transition-all duration-500 custom-ease-smooth"].join(" ");
 
   return (
@@ -37,7 +32,6 @@ const SwiperRow: React.FC<SwiperRowProps> = ({ colors, offset }) => {
               "hover:flex-[3] hover:py-4",
               "flex flex-1 relative items-center justify-center",
             ].join(" ")}
-            // style={{ border: `2px solid ${color}` }}
           >
             <div
               className={[
@@ -47,9 +41,6 @@ const SwiperRow: React.FC<SwiperRowProps> = ({ colors, offset }) => {
                 "xl:max-w-[330px]",
                 "lg:max-w-[300px]",
                 "md:max-w-[200px]",
-                // "xl:max-w-[330px] group-hover:xl:max-h-[220px]",
-                // "lg:max-w-[300px] group-hover:lg:max-h-[190px]",
-                // "md:max-w-[200px] group-hover:md:max-h-[160px]",
               ].join(" ")}
               style={{ backgroundColor: color }}
             ></div>

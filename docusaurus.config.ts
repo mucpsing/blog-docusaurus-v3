@@ -36,7 +36,7 @@ scripts.copyCssToStatic([path.resolve("./src/components/FallingItemsList"), path
 const taglineList = extractTagline(path.resolve("./docs/【07】常识科普/社会真实/名人名言.md"));
 
 /* 排除的文件夹 */
-const excludeDirList = ["【18】副业开发", ".obsidian", "gg", ".trash", "【00】安卓开发", "临时", "【10】work", "svg"];
+const excludeDirList = ["【18】副业开发", ".obsidian", "gg", ".trash", "【00】安卓开发", "临时", "【10】work", "svg", "资源收集"];
 
 export default async function createConfigAsync() {
   const config: Config = {

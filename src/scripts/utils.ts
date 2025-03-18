@@ -2,7 +2,7 @@
  * @Author: CPS holy.dandelion@139.com
  * @Date: 2023-03-25 16:10:31
  * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2025-02-26 17:46:57
+ * @LastEditTime: 2025-03-18 15:39:52
  * @filepath: \cps-blog\scripts\utils.ts
  * @Description: 一些会被重复调用的工具函数
  */
@@ -46,7 +46,8 @@ export interface NavItemParams {
 function createIndexMdFileByFolder(folderPath: string, mdName: string) {
   let fileList = fs.readdirSync(folderPath);
   const indexMd = path.join(folderPath, mdName);
-  const title = ["---", `title: 文章列表`, "---"];
+  const basename = path.basename(folderPath);
+  const title = ["---", `title: ${basename}`, "---", "# 文章列表"];
   const data = [];
 
   for (let each of fileList) {
@@ -59,7 +60,7 @@ function createIndexMdFileByFolder(folderPath: string, mdName: string) {
 }
 
 /**
- * @description: 手动生成文档的目录
+ * @description: 手动生成文档的目录，生成根目录下的index.md文件
  * @param {string} targetPath 指定的文件夹
  * @param {string[]} excludeDirList 需要排除的文件夹
  * @param {string} prefixUrl url的前缀，如果使用inDeep，这个是必须的
