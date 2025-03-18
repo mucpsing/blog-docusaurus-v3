@@ -12,7 +12,7 @@ import { extractTagline } from "./src/scripts/taglineList";
 // import pluginCdnReplacer from "./src/plugins/fixImageUrlToCDN";
 
 let DOCS_PATH = path.resolve("./docs");
-if (process.env.BUILD_TEST && process.env.BUILD_TEST !== "true") {
+if (process.env.BUILD_TEST && process.env.BUILD_TEST == "true") {
   switch (os.hostname()) {
     case "HOME_WIN11_LTSC":
       DOCS_PATH = "D:/CPS/MyProject/Projects_Personal/cps-blog/docs";

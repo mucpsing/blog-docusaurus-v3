@@ -2,7 +2,7 @@
  * @Author: cpasion-office-win10 373704015@qq.com
  * @Date: 2025-02-20 09:21:04
  * @LastEditors: Capsion 373704015@qq.com
- * @LastEditTime: 2025-03-03 20:16:33
+ * @LastEditTime: 2025-03-18 10:45:41
  * @FilePath: \cps-blog-docusaurus-v3\src\pages\Home\body.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -18,9 +18,7 @@ interface ChildProps {
 }
 
 const HomeImgSwiper = ({ colorIndex, setColorIndex }: ChildProps) => {
-  // const HomeImgSwiper: React.FC = ({ colorIndex, setColorIndex }) => {
-  // const [colorIndex, setColorIndex] = useState(0);
-  const [isHorizontal, setIsHorizontal] = useState<boolean>(window.innerWidth > window.innerHeight);
+  const [isHorizontal, setIsHorizontal] = useState<boolean>(true);
 
   useEffect(() => {
     const handleResize = () => {
@@ -31,6 +29,8 @@ const HomeImgSwiper = ({ colorIndex, setColorIndex }: ChildProps) => {
 
     // 监听屏幕大小变化
     window.addEventListener("resize", handleResize);
+
+    setIsHorizontal(window.innerWidth > window.innerHeight);
 
     // 在组件卸载时清理事件监听器
     return () => {
