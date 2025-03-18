@@ -1,8 +1,8 @@
 /*
  * @Author: Capsion 373704015@qq.com
  * @Date: 2025-03-11 20:21:13
- * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2025-03-18 16:41:29
+ * @LastEditors: Capsion 373704015@qq.com
+ * @LastEditTime: 2025-03-18 22:42:49
  * @FilePath: \cps-blog-docusaurus-v3\src\pages\Home\ProjectSwper.tsx
  * @Description: 这是参考https://superpower.com/中相同功能的组件实现的
  * @demo https://codepen.io/ramzibach-the-styleful/pen/LYoYejb 无限滚动参考
@@ -12,45 +12,54 @@ import { COLOR_LIST } from "@site/src/store";
 
 import SvgLogoAntDesign from "@site/static/logo/AntDesign.svg";
 import SvgLogoTDesign from "@site/static/logo/TDesign.svg";
+import SvgLogoElement from "@site/static/logo/element-logo.svg";
+import SvgLogoElementPlus from "@site/static/logo/element-plus-logo.svg";
+
+import SvgLogoHeadless from "@site/static/logo/headless.svg";
+import SvgLogoPython from "@site/static/logo/icons8-python.svg";
+import SvgLogoNodejs from "@site/static/logo/nodejs.svg";
+import SvgLogoReactjs from "@site/static/logo/reactjs.svg";
+
+import SvgLogoTailwindCSS from "@site/static/logo/tailwindCSS-logo.svg";
+import SvgLogoVue from "@site/static/logo/vue.svg";
+import SvgLogoNust from "@site/static/logo/nust.svg";
+import SvgLogoNest from "@site/static/logo/nest.svg";
+import SvgLogoElectron from "@site/static/logo/electron2.svg";
+
+import SvgLogoECharts from "@site/static/logo/ECharts-01.svg";
 
 interface SwiperRowProps {
   colors: string[];
   offset: number;
 }
-// const LogoIconRow: React.FC = () => {
-//   return (
-//     <div className={["w-full"].join(" ")}>
-//       <img src="" alt="" />
-//       <SvgLogoAntDesign className="w-auto h-full"></SvgLogoAntDesign>
-//       <SvgLogoTDesign className="w-auto h-full"></SvgLogoTDesign>
-//     </div>
-//   );
-// };
 
 const LogoIconRow: React.FC = () => {
-  // 可配置参数
-  const logoHeight = 60; // 单位 px
-  const logoMaxWidth = 120; // 防止过宽
+  const maxWidth = 120;
+  const height = 60;
 
   return (
     <div className="flex flex-wrap items-center justify-center gap-8 p-4">
-      <SvgLogoAntDesign
-        className="w-auto"
-        style={{
-          height: logoHeight,
-          maxWidth: logoMaxWidth,
-        }}
-      />
-      <SvgLogoTDesign
-        className="w-auto"
-        style={{
-          height: logoHeight,
-          maxWidth: logoMaxWidth,
-        }}
-      />
+      <SvgLogoAntDesign className="w-auto" style={{ height, maxWidth }} />
+      <SvgLogoTDesign className="w-auto" style={{ height, maxWidth }} />
+      <SvgLogoElement className="w-auto" style={{ height, maxWidth }} />
+      <SvgLogoElementPlus className="w-auto" style={{ height, maxWidth }} />
+
+      <SvgLogoHeadless className="w-auto" style={{ height, maxWidth }} />
+      <SvgLogoPython className="w-auto" style={{ height, maxWidth }} />
+      <SvgLogoNodejs className="w-auto" style={{ height, maxWidth }} />
+      <SvgLogoReactjs className="w-auto" style={{ height, maxWidth }} />
+      <SvgLogoTailwindCSS className="w-auto" style={{ height, maxWidth }} />
+
+      <SvgLogoVue className="w-auto" style={{ height, maxWidth }} />
+      <SvgLogoNust className="w-auto" style={{ height, maxWidth }} />
+      <SvgLogoNest className="w-auto" style={{ height, maxWidth }} />
+      <SvgLogoElectron className="w-auto" style={{ height, maxWidth }} />
+
+      <SvgLogoECharts className="w-auto" style={{ height, maxWidth }} />
     </div>
   );
 };
+
 // 单独封装一行
 const SwiperRow: React.FC<SwiperRowProps> = ({ colors, offset }) => {
   const comTransCss = ["transition-all duration-500 custom-ease-smooth"].join(" ");
