@@ -2,7 +2,7 @@
  * @Author: Capsion 373704015@qq.com
  * @Date: 2025-03-11 20:21:13
  * @LastEditors: Capsion 373704015@qq.com
- * @LastEditTime: 2025-03-19 08:48:25
+ * @LastEditTime: 2025-03-19 21:44:24
  * @FilePath: \cps-blog-docusaurus-v3\src\pages\Home\ProjectSwper.tsx
  * @Description: 这是参考https://superpower.com/中相同功能的组件实现的
  * @demo https://codepen.io/ramzibach-the-styleful/pen/LYoYejb 无限滚动参考
@@ -27,6 +27,7 @@ import SvgLogoNest from "@site/static/logo/nest.svg";
 import SvgLogoElectron from "@site/static/logo/electron3.svg";
 
 import SvgLogoECharts from "@site/static/logo/ECharts-01.svg";
+import SvgLogoFastAPI from "@site/static/logo/FastAPI.svg";
 
 interface SwiperRowProps {
   colors: string[];
@@ -38,7 +39,7 @@ const LogoIconRow: React.FC = () => {
   const height = 60;
 
   return (
-    <div className="flex flex-wrap items-center justify-center gap-8 p-4">
+    <div className="inline-flex items-center justify-center gap-8 p-4 flex-nowrap">
       <SvgLogoAntDesign className="w-auto" style={{ height, maxWidth }} />
       <SvgLogoTDesign className="w-auto" style={{ height, maxWidth }} />
       <SvgLogoElement className="w-auto" style={{ height, maxWidth }} />
@@ -56,6 +57,7 @@ const LogoIconRow: React.FC = () => {
       <SvgLogoElectron className="w-auto" style={{ height, maxWidth }} />
 
       <SvgLogoECharts className="w-auto" style={{ height, maxWidth }} />
+      <SvgLogoFastAPI className="w-auto" style={{ height, maxWidth }} />
     </div>
   );
 };
@@ -84,7 +86,7 @@ const SwiperRow: React.FC<SwiperRowProps> = ({ colors, offset }) => {
                 "box-border w-full h-full rounded-3xl",
                 "z-10",
                 "xl:max-w-[330px]",
-                "lg:max-w-[300px]",
+                "lg:max-w-[220px]",
                 "md:max-w-[200px]",
               ].join(" ")}
               style={{ backgroundColor: color }}
@@ -149,7 +151,7 @@ const ProjectSwper = () => {
 
   return (
     <>
-      <div className="h-[120px]">
+      <div className="flex items-center max-w-[1550px] w-screen h-[120px] mx-auto overflow-x-hidden">
         <LogoIconRow></LogoIconRow>
       </div>
 
@@ -157,14 +159,18 @@ const ProjectSwper = () => {
         ref={containerRef}
         className={[
           "w-screen max-w-[1550px] box-border",
-          "xl:h-[400px] lg:h-[360px] md:h-[260px] sm:h-[200px]",
-          "mx-auto my-8 flex flex-col gap-[14px] px-8",
+          "xl:h-[400px] lg:h-[300px] md:h-[260px] sm:h-[200px]",
+          "mx-auto flex flex-col gap-[14px] px-8",
         ].join(" ")}
       >
         {/* 第一行 */}
         <SwiperRow colors={COLOR_LIST.slice(0, halfCount)} offset={0} />
         {/* 第二行 */}
         <SwiperRow colors={COLOR_LIST.slice(halfCount)} offset={halfCount} />
+      </div>
+
+      <div className="flex items-center max-w-[1550px] w-screen h-[120px] mx-auto overflow-x-hidden justify-end">
+        <LogoIconRow></LogoIconRow>
       </div>
     </>
   );
