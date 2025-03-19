@@ -2,7 +2,7 @@
  * @Author: Capsion 373704015@qq.com
  * @Date: 2025-03-11 20:21:13
  * @LastEditors: Capsion 373704015@qq.com
- * @LastEditTime: 2025-03-18 22:42:49
+ * @LastEditTime: 2025-03-19 08:48:25
  * @FilePath: \cps-blog-docusaurus-v3\src\pages\Home\ProjectSwper.tsx
  * @Description: 这是参考https://superpower.com/中相同功能的组件实现的
  * @demo https://codepen.io/ramzibach-the-styleful/pen/LYoYejb 无限滚动参考
@@ -24,7 +24,7 @@ import SvgLogoTailwindCSS from "@site/static/logo/tailwindCSS-logo.svg";
 import SvgLogoVue from "@site/static/logo/vue.svg";
 import SvgLogoNust from "@site/static/logo/nust.svg";
 import SvgLogoNest from "@site/static/logo/nest.svg";
-import SvgLogoElectron from "@site/static/logo/electron2.svg";
+import SvgLogoElectron from "@site/static/logo/electron3.svg";
 
 import SvgLogoECharts from "@site/static/logo/ECharts-01.svg";
 
