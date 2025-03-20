@@ -17,6 +17,9 @@ importers:
       '@docusaurus/plugin-ideal-image':
         specifier: ^3.7.0
         version: 3.7.0(@mdx-js/react@3.1.0(@types/react@18.3.18)(react@18.3.1))(acorn@8.14.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.2.2)
+      '@docusaurus/plugin-svgr':
+        specifier: ^3.7.0
+        version: 3.7.0(@mdx-js/react@3.1.0(@types/react@18.3.18)(react@18.3.1))(acorn@8.14.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.2.2)
       '@docusaurus/preset-classic':
         specifier: 3.7.0
         version: 3.7.0(@algolia/client-search@5.20.0)(@mdx-js/react@3.1.0(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(acorn@8.14.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(search-insights@2.17.3)(typescript@5.2.2)

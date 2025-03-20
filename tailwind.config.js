@@ -2,7 +2,7 @@
  * @Author: cpasion-office-win10 373704015@qq.com
  * @Date: 2024-02-21 09:15:00
  * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2024-02-21 09:15:13
+ * @LastEditTime: 2025-03-20 15:36:54
  * @FilePath: \cps-blog-docusaurus-v3\tailwind.config.js
  * @Description: tailwind配置
  */
@@ -10,6 +10,13 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
+  safelist: [
+    // {
+    //   pattern:
+    //     /(transition|duration|ease|border|opacity|flex|max-w|justify|items|gap|rounded|hover|group-hover|xl|lg|md|sm|w|h|z|box|absolute|relative|text|pl|border)/, // 正则匹配所有用到的工具类
+    // },
+    "custom-ease-smooth", // 明确指定自定义类
+  ],
   theme: {
     extend: {
       transitionTimingFunction: {

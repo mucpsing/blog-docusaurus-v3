@@ -1,12 +1,14 @@
 /*
  * @Author: Capsion 373704015@qq.com
  * @Date: 2025-03-11 20:21:13
- * @LastEditors: Capsion 373704015@qq.com
- * @LastEditTime: 2025-03-19 21:44:24
+ * @LastEditors: cpasion-office-win10 373704015@qq.com
+ * @LastEditTime: 2025-03-20 15:37:42
  * @FilePath: \cps-blog-docusaurus-v3\src\pages\Home\ProjectSwper.tsx
  * @Description: 这是参考https://superpower.com/中相同功能的组件实现的
  * @demo https://codepen.io/ramzibach-the-styleful/pen/LYoYejb 无限滚动参考
  */
+
+import { gsap } from "gsap";
 import React, { useEffect, useRef } from "react";
 import { COLOR_LIST } from "@site/src/store";
 
@@ -34,30 +36,85 @@ interface SwiperRowProps {
   offset: number;
 }
 
-const LogoIconRow: React.FC = () => {
+// 新增自定义hook
+const useInfiniteScroll = (containerRef: React.RefObject<HTMLElement>, direction: "left" | "right" = "left") => {
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const content = containerRef.current.children[0] as HTMLElement;
+    const clone = content.cloneNode(true);
+    containerRef.current.appendChild(clone);
+
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({ repeat: -1 }).to([content, clone], {
+        xPercent: direction === "left" ? -100 : 100,
+        ease: "none",
+        duration: 20,
+        modifiers: {
+          xPercent: gsap.utils.wrap(-100, 0), // 无缝循环核心逻辑
+        },
+      });
+    }, containerRef);
+
+    return () => ctx.revert();
+  }, []);
+};
+
+const LogoIconRow: React.FC<{ direction?: "left" | "right"; loop?: boolean }> = ({ direction = "left", loop = false }) => {
   const maxWidth = 120;
   const height = 60;
+  const containerRef = useRef<HTMLDivElement>(null);
+  const svgList = [
+    <SvgLogoAntDesign className="w-auto" style={{ height, maxWidth }} />,
+    <SvgLogoTDesign className="w-auto" style={{ height, maxWidth }} />,
+    <SvgLogoElement className="w-auto" style={{ height, maxWidth }} />,
+    <SvgLogoElementPlus className="w-auto" style={{ height, maxWidth }} />,
+
+    <SvgLogoHeadless className="w-auto" style={{ height, maxWidth }} />,
+    <SvgLogoPython className="w-auto" style={{ height, maxWidth }} />,
+    <SvgLogoNodejs className="w-auto" style={{ height, maxWidth }} />,
+    <SvgLogoReactjs className="w-auto" style={{ height, maxWidth }} />,
+    <SvgLogoTailwindCSS className="w-auto" style={{ height, maxWidth }} />,
+
+    <SvgLogoVue className="w-auto" style={{ height, maxWidth }} />,
+    <SvgLogoNust className="w-auto" style={{ height, maxWidth }} />,
+    <SvgLogoNest className="w-auto" style={{ height, maxWidth }} />,
+    <SvgLogoElectron className="w-auto" style={{ height, maxWidth }} />,
+
+    <SvgLogoECharts className="w-auto" style={{ height, maxWidth }} />,
+    <SvgLogoFastAPI className="w-auto" style={{ height, maxWidth }} />,
+  ];
+
+  // 初始化滚动
+  useEffect(() => {
+    if (!containerRef.current) return;
+    if (!loop) return;
+
+    const content = containerRef.current.children[0] as HTMLElement;
+    const clone = content.cloneNode(true);
+    containerRef.current.appendChild(clone);
+
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({ repeat: -1 }).to([content, clone], {
+        xPercent: direction === "left" ? -100 : 100,
+        ease: "none",
+        duration: 20,
+        modifiers: {
+          xPercent: gsap.utils.wrap(-100, 0), // 无缝循环核心逻辑
+        },
+      });
+    }, containerRef);
+
+    return () => ctx.revert();
+  }, []);
 
   return (
-    <div className="inline-flex items-center justify-center gap-8 p-4 flex-nowrap">
-      <SvgLogoAntDesign className="w-auto" style={{ height, maxWidth }} />
-      <SvgLogoTDesign className="w-auto" style={{ height, maxWidth }} />
-      <SvgLogoElement className="w-auto" style={{ height, maxWidth }} />
-      <SvgLogoElementPlus className="w-auto" style={{ height, maxWidth }} />
-
-      <SvgLogoHeadless className="w-auto" style={{ height, maxWidth }} />
-      <SvgLogoPython className="w-auto" style={{ height, maxWidth }} />
-      <SvgLogoNodejs className="w-auto" style={{ height, maxWidth }} />
-      <SvgLogoReactjs className="w-auto" style={{ height, maxWidth }} />
-      <SvgLogoTailwindCSS className="w-auto" style={{ height, maxWidth }} />
-
-      <SvgLogoVue className="w-auto" style={{ height, maxWidth }} />
-      <SvgLogoNust className="w-auto" style={{ height, maxWidth }} />
-      <SvgLogoNest className="w-auto" style={{ height, maxWidth }} />
-      <SvgLogoElectron className="w-auto" style={{ height, maxWidth }} />
-
-      <SvgLogoECharts className="w-auto" style={{ height, maxWidth }} />
-      <SvgLogoFastAPI className="w-auto" style={{ height, maxWidth }} />
+    <div ref={containerRef} className="flex items-center max-w-[1550px] w-screen h-[120px] mx-auto overflow-x-hidden">
+      <div
+        className={["inline-flex items-center justify-center gap-8 p-4 flex-nowrap", direction == "left" ? "flex-row" : "flex-row-reverse"].join(" ")}
+      >
+        {svgList.map((svg, i) => svg)}
+      </div>
     </div>
   );
 };
@@ -151,9 +208,7 @@ const ProjectSwper = () => {
 
   return (
     <>
-      <div className="flex items-center max-w-[1550px] w-screen h-[120px] mx-auto overflow-x-hidden">
-        <LogoIconRow></LogoIconRow>
-      </div>
+      <LogoIconRow></LogoIconRow>
 
       <div
         ref={containerRef}
@@ -169,9 +224,7 @@ const ProjectSwper = () => {
         <SwiperRow colors={COLOR_LIST.slice(halfCount)} offset={halfCount} />
       </div>
 
-      <div className="flex items-center max-w-[1550px] w-screen h-[120px] mx-auto overflow-x-hidden justify-end">
-        <LogoIconRow></LogoIconRow>
-      </div>
+      <LogoIconRow direction={"right"} loop={true}></LogoIconRow>
     </>
   );
 };

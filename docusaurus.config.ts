@@ -8,6 +8,8 @@ import os from "node:os";
 import * as path from "path";
 import * as scripts from "./src/scripts";
 
+import disableSvgoCleanupIds from "./src/plugins/disable-svgo-cleanup-ids";
+
 import { extractTagline } from "./src/scripts/taglineList";
 // import pluginCdnReplacer from "./src/plugins/fixImageUrlToCDN";
 
@@ -69,21 +71,7 @@ export default async function createConfigAsync() {
       locales: ["en"],
     },
 
-    plugins: [
-      "@docusaurus/plugin-ideal-image",
-      "docusaurus-plugin-sass",
-      // [
-      //   pluginCdnReplacer,
-      //   {
-      //     replacements: [
-      //       {
-      //         search: "http://localhost:45462/image/",
-      //         replace: "/static/img/",
-      //       },
-      //     ],
-      //   },
-      // ],
-    ],
+    plugins: ["@docusaurus/plugin-ideal-image", "docusaurus-plugin-sass"],
 
     // 开启mermaid（思维导图）支持
     markdown: { mermaid: true },
@@ -120,13 +108,7 @@ export default async function createConfigAsync() {
             path: DOCS_PATH,
             exclude: excludeDirList,
           },
-          // blog: {
-          //   showReadingTime: true,
-          //   // Please change this to your repo.
-          //   // Remove this to remove the "edit this page" links.
-          //   editUrl:
-          //     'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
-          // },
+
           theme: {
             customCss: ["./src/css/custom.css", "./src/components/BubbleText/bubble.css", "./src/components/FallingItemsList/FallingItemsList.css"],
           },
