@@ -31,7 +31,7 @@ console.log("当前DOCS_PATH: ", DOCS_PATH);
 // 项目根目录
 const ROOT_PATH = path.resolve("./");
 
-// 因为css引入异常，这里将一些引入异常的css文件复制到static中，然后通过页面文件添加link的ref来解决
+// 因为css引入异常，这里将一些引入异常的css文件复制到static中，然后通过页面文件添加对应的link来引入
 scripts.copyCssToStatic([path.resolve("./src/components/FallingItemsList"), path.resolve("./src/components/BubbleText")]);
 
 /* 【首页】名人名言 */
@@ -91,14 +91,6 @@ export default async function createConfigAsync() {
         },
       ],
     ],
-    // 插入<scripts>标签，
-    scripts: [
-      // 修复本地host的开发图片跳转问题
-      {
-        src: "/scripts/replaceImaUrlToCDN.js", // 插入图片修复脚本
-        async: false,
-      },
-    ],
 
     presets: [
       [
@@ -110,6 +102,7 @@ export default async function createConfigAsync() {
           },
 
           theme: {
+            // customCss: ["./src/css/custom.css", "./src/components/BubbleText/bubble.css", "./src/components/FallingItemsList/FallingItemsList.css"],
             customCss: ["./src/css/custom.css", "./src/components/BubbleText/bubble.css", "./src/components/FallingItemsList/FallingItemsList.css"],
           },
         } satisfies Preset.Options,
@@ -262,6 +255,8 @@ export default async function createConfigAsync() {
     Object.assign(config, githubConfig);
   }
 
+  // config.stylesheets = [`${config.baseUrl}css/bubble.css`];
+  config.scripts = [{ src: `${config.baseUrl}scripts/replaceImaUrlToCDN.js`, async: true }];
   return config;
 }
 // export default config;
