@@ -8,6 +8,7 @@ import os from "node:os";
 import * as path from "path";
 import * as scripts from "./src/scripts";
 
+// 失效
 import disableSvgoCleanupIds from "./src/plugins/disable-svgo-cleanup-ids";
 
 import { extractTagline } from "./src/scripts/taglineList";
