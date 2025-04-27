@@ -16,7 +16,7 @@ import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import HomepageSwiper from "./body";
 import HomepageFeatures from "./features";
 import Skill from "./Skill";
-import ProjectSwper from "./ProjectSwper2";
+import ProjectSwper from "./ProjectSwper";
 // import ProjectSwper from "./ProjectSwper";
 
 export default function Home(): JSX.Element {
