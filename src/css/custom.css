@@ -28,14 +28,22 @@
 
 :root {
   /* #006dfe hsl(214deg, 100%, 60%); */
-  --ifm-color-primary: #23affc;
-
+  /* --ifm-color-primary: #23affc;
   --ifm-color-primary-dark: #119cc5;
   --ifm-color-primary-darker: #05879d;
   --ifm-color-primary-darkest: #007a87;
   --ifm-color-primary-light: hsl(214deg, 100%, 75%);
   --ifm-color-primary-lighter: #c6ebfc;
-  --ifm-color-primary-lightest: #f2fbff;
+  --ifm-color-primary-lightest: #f2fbff; */
+
+  --ifm-color-primary: #ff4058;
+  --ifm-color-primary-dark: #ff203c;
+  --ifm-color-primary-darker: #ff102e;
+  --ifm-color-primary-darkest: #df001c;
+  --ifm-color-primary-light: #ff6074;
+  --ifm-color-primary-lighter: #ff7082;
+  --ifm-color-primary-lightest: #ffa0ac;
+
   --ifm-code-font-size: 95%;
 
   /* --ifm-font-family-base: "Songti SC", "Noto Serif SC", STZhongsong, STKaiti, KaiTi, Roboto, serif; */

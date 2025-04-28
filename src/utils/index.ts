@@ -68,3 +68,14 @@ export function invertColor(color: string): string {
   // 如果没有匹配到任何已知格式，直接返回原颜色
   return color;
 }
+
+/**
+ * 更新:root中的CSS自定义属性（变量）
+ * @param {Object} variables 包含要修改的变量名和对应值的对象，例如 { '--color-primary': '#f00', '--spacing': '16px' }
+ */
+export function updateRootVariables(variables: Record<string, string>) {
+  const root = document.documentElement;
+  Object.entries(variables).forEach(([key, value]) => {
+    root.style.setProperty(key, value);
+  });
+}
