@@ -1,8 +1,8 @@
 /*
  * @Author: CPS holy.dandelion@139.com
  * @Date: 2023-02-07 19:55:02
- * @LastEditors: cpasion-office-win10 373704015@qq.com
- * @LastEditTime: 2025-04-28 15:39:13
+ * @LastEditors: Capsion 373704015@qq.com
+ * @LastEditTime: 2025-04-28 22:52:04
  * @FilePath: \cps-blog\src\pages\index.tsx
  * @Description: 首页
  */
@@ -19,16 +19,22 @@ import Skill from "./Skill";
 import ProjectSwper from "./ProjectSwper";
 // import ProjectSwper from "./ProjectSwper";.
 
-// import TT from "!!raw-loader!@site/src/pages/Home/test.mdx";
-import TT from "@site/src/pages/Home/test.mdx";
-import CodeBlock from "@theme/CodeBlock";
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
+import { Highlight, themes } from "prism-react-renderer";
 
 export default function Home(): JSX.Element {
   const { siteConfig } = useDocusaurusContext();
   const [colorIndex, setColorIndex] = useState(0);
-
+  const codeBlock = `
+  const GroceryItem: React.FC<GroceryItemProps> = ({ item }) => {
+    return (
+      <div>
+        <h2>{item.name}</h2>
+        <p>Price: {item.price}</p>
+        <p>Quantity: {item.quantity}</p>
+      </div>
+    );
+  }
+  `;
   return (
     <Layout title={siteConfig.title} description="Description will go into a meta tag in <head />">
       <Head>
@@ -36,15 +42,20 @@ export default function Home(): JSX.Element {
         <link rel="stylesheet" href={`${siteConfig.baseUrl}css/bubble.css`} />
       </Head>
 
-      {/* <CodeBlock language="jsx" title="/src/components/HelloCodeTitle.js" showLineNumbers>
-        {`function HelloCodeTitle(props) {
-  return <h1>Hello, {props.name}</h1>;
-}`}
-      </CodeBlock> */}
-
-      <CodeBlock>
-        <TT></TT>
-      </CodeBlock>
+      <Highlight theme={themes.shadesOfPurple} code={codeBlock} language="tsx">
+        {({ className, style, tokens, getLineProps, getTokenProps }) => (
+          <pre style={style}>
+            {tokens.map((line, i) => (
+              <div key={i} {...getLineProps({ line })}>
+                <span>{i + 1}</span>
+                {line.map((token, key) => (
+                  <span key={key} {...getTokenProps({ token })} />
+                ))}
+              </div>
+            ))}
+          </pre>
+        )}
+      </Highlight>
 
       {/* <div id="homepage.swiper" className="relative flex flex-col">
         <HomepageSwiper colorIndex={colorIndex} setColorIndex={setColorIndex} />
